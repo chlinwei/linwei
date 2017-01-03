@@ -1,0 +1,45 @@
+1.cat file | tr "abc" "xy"
+这里凡是在file中出现的"a"字母，都替换成"x"字母,
+"b"字母替换成"y"字母,"c"字母替换成"y"字母
+
+2.cat file | tr "e" "xy"
+这里”e“字母被替换成"x",y被忽略
+
+3.cat file | tr "[a-z]" "[A-Z]",和1一样
+a-z字母分别被替换成了A-Z
+
+4.cat file | tr [0-9] [a-j]
+将文件中的数字0-9替换成a-j
+
+5.cat file|tr -d "Snail"
+这里凡是在file文件中出现的'S','n','a','i','l',都会被删除
+而不是仅仅删除"Snail
+
+6.cat file | tr -d "\n\t"
+删除文件file中出现的换行'\n','\t'
+
+7.cat file | tr -s [a-zA-Z] 
+删除"连续的"重复字母，只保留地一个,注意这里是连续的
+例如file里hellohellohello
+cat file | tr -s "hello"
+结果helohelohelo
+分析:tr -s "hello",说明连续的"h","e","l","o",会被替换成一个
+,即hhh=>h eee=>e,本例子中hellohellohello中"ll"有三处,是连续的
+故每处被替换成"l"
+
+
+8.cat file | tr -s "\n"
+删除空行
+
+9.删除windows文件"造成"的"^M"字符
+cat file | tr -d "\r"
+或者
+cat file | tr -s "\r" "\n" 这里-s后两个参数"\r"和"\n"，用后者替换前者
+
+10.用空格符\040替换制表符\001
+cat file | tr -s "\001" "\040"
+
+11.把路径变量中的冒号":",替换成换行符"\n"
+echo $PATH | tr -s ":" "\n"
+
+总结:tr -s 后面有两个参数表示替换

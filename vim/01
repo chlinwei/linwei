@@ -1,0 +1,431 @@
+iMYVIMRC :指的是~/.vimrc                                                         
+vslit file:纵向分屏
+split file:横向分屏
+source $MYVIMRC<cr> :重新读取配置文件
+
+
+iabbrev adn and :在插入模式下输入adn,按空格就会变成and
+输入非字母,数字,下划线的字符就会引发abbreviations替换
+
+
+nnoremap <buffer> <leader>x dd
+<buffer>告诉vim这个映射只在定义它的缓冲区有效
+敲<leader>x,vim找不到一个跟它匹配的映射
+它将会被解析为两个命令<leader>和x
+
+
+<leader>x是一个本地缓冲区映射
+<localleader>是一个特定缓冲区的映射
+使用<localleader>来设置本地映射会防止你的
+插件覆盖别人用<leader>设置的全局映射
+
+
+setlocal nonumber=>setlocal本地缓冲区设置
+
+
+多个事件
+autocmd BufWritePre,BufRead *.html :normal gg=G
+BufWritePre,BufRead这些为要监听的事件
+*用于过滤的模式(pattern)
+:normal gg=G为要执行的命令
+
+FileType事件:会在vim设置一个缓冲区的filetype的时候触发
+autocmd FileType javascript nnoremap <buffer> <leader>c I//<esc>
+autocmd FileType python nnoremap <buffer> <leader>c I#<esc>
+
+help autocmd-events:查看autocmd可以绑定的事件
+
+
+<-------------------------------------
+automcd BufWrite * :echom "Writing buffer!"
+执行:messages命令查看消息日志
+automcd BufWrite * :echom "Writing buffer!"
+敲w后,messages,发现执行了两次Writing buffer!
+原因是:虽然第二个自动命令和第一个自动命令一样
+但是第二个自动命令不会覆盖第一个,而是具有两个
+相同的自动命令,因此执行了两次
+-------------------------------------->
+
+
+
+
+
+
+
+<-----------------------------
+把自动命令放到命令组
+执行
+augroup testgroup
+	autocmd BufWrite * :echom "Foo"
+	autocmd BufWrite * :echom "Bar"
+augroup END
+w后messages会看到"Foo" "Bar"
+执行
+augroup testgroup
+	autocmd BufWrite * :echom "Baz"
+augroup END
+w后messages 会看到"Foo" "Bar" "Baz"
+你会发现,testgroup命令组不会覆盖
+前面的命令组,而是会增加新的自动命令
+
+执行
+augroup testgroup
+	autocmd!
+	autocmd BufWrite * :echom "Cats"
+autocmd END
+autocmd!会清楚自动命令组testgroup之前
+包含的自动命令
+messages后会看到"Cats"
+----------------------------->
+
+
+
+<------------------------------
+移动命令(movements)
+:onoremap p i(
+return person.get_pets(type="cat",fluffy_only=Ture)
+光标在cat上,按dp就相当于di(
+
+onoremap b /return<cr>
+def count(i):
+		i +=1
+		print i
+
+		return  foo
+把光标放到i+=1上的i上,按db,会删除i +=1，print i和空行者三行
+/return<cr> 就是搜索return
+
+
+onoremap in( :<c-u>normal! f(vi(<cr>
+缓冲区 print foo(bar)
+将光标放置到print上面,敲cin( vim会自动删除(bar)里的bar了
+并进入插入模式
+解析:<c-u>会让这个映射在任何情况下都正常工作
+normal!表示运行后面的命令不会递归
+
+一般规则
+	1)你的operator-pending映射可以在可视模式下选中文本结束,
+	vim会操作这些文本
+	2)否则,vim会操会从光标的原始位置到一个新的位置之间的文本
+------------------------------>
+
+
+<--------------------------
+normal  gg相当于:gg<cr>
+execute后面接vim脚本字符串
+execute "write" => :write<cr>
+normal和excute差不多,normal不能识别特殊字符,如<cr>
+
+
+缓冲区
+例子:
+Topic One
+=========
+
+This is some text about topic one.
+
+It has multiple paragraphs.
+
+Topic Two
+=========
+
+This is some text about topic two.  It has only one paragraph.
+
+
+
+:onoremap ih :<c-u>execute "normal! ?^==\\+$\r:nohlsearch\rkvg_"<cr>
+光标放在This is ...这行执行cih,会将
+Topic One删除掉,并进入插入模式
+这条命令主要部分为:
+execute "normal! ?^==\\+$\r:nohlsearch\rkvg_"<cr>
+=>normal! ?^==\+$<cr>:nohlsearch<cr>kvg_
+
+\\为简单的\ , \r=><cr>
+
+
+?^==\+$ 正则表达式
+:nohlearch 关闭高亮
+kvg_ =>k向上移动一行v virsual模式g_移动到最后的非空字符上
+
+-------------------------->
+
+
+
+<--------------------------
+状态条
+set statusline=%f\ -\ FileType:\ %y
+\后面是用来转义空格的,因为set可以用空格设置多个选项
+%y:表示文件类型
+状态条显示:01.c - FileType: [c] 
+也可以这样
+:set statusline=%f         " 文件的路径
+:set statusline+=\ -\      " 分隔符
+:set statusline+=FileType: " 标签
+:set statusline+=%y        " 文件的类型
+set statusline=%05l =>00166
+set statusline=%-5l =>166   
+%l:当前光标处在多少行
+set statueline=%=%l =>%=作为前缀,将会把后面的%l显示在右边
+,后面所有的都会在右边
+
+%L:当前最大行数
+%f:显示当前文件名 01.c
+%F:完整路径文件~/linwei/vim/01.c
+set statusline=%.20F 完整路径最大长度为20个字节
+
+
+通用格式:%-0{minwid}.{maxwid}{item}
+-------------------------->
+
+
+
+
+<-------------------------
+augroup filetype_c
+	autocmd!
+	autocmd FileType c,vim,cpp setlocal foldmethod=marker
+augroup end
+这样你在vim,c,cpp文件中就可以折叠了
+比如01.c中
+//{{{
+int i=0;
+}}}
+光标在这三行中,任意位置za表示折叠,zi表示解除折叠
+-------------------------->
+
+
+<-------------------------
+let foo = "bar"
+echo foo //bar
+echo &foo是不行的
+
+//作为变量的选项
+set textwidth=80
+echo &textwidth //80,这是可以的,&表示引用,引用某个选项
+let &textwidth=200;let命令设置作为变量的选项
+set wrap
+echo &wrap //1,vim会将整型1当作true,0当作false
+
+set textwidth=80//这里set命令,=号右边，只能是常量
+let &textwidth=&textwidth + 10;//let命令,=号右边可以是变量
+
+-------------------------->
+
+
+
+<-------------------------
+本地选项
+let &l:number=1 本来应该是let &number=1
+-------------------------->
+
+<-------------------------
+作为变量的寄存器
+let @a = "hello" //a为寄存器,@a整体可以当作变量
+echo @a
+"也是个未命名的寄存器:复制时没指定寄存器,内容会保存在"里
+echo @" 可以打印出yy复制的内容
+echo @/ 可以打印出搜索的关键字
+-------------------------->
+
+
+<-------------------------
+当前缓冲区本地变量
+打开两个文件01.c,02.c
+01.c中
+执行
+let b:hello = "world"
+echo b:hello //显示world,b:变量表示当前缓冲区的本地变量
+
+-------------------------->
+
+<-------------------------
+多行语句
+:echom "dsfsdf" | echom "fsddsfsdffa"
+用"|"将每条语句分开
+-------------------------->
+
+
+<-------------------------
+echo 10+"11foo"//21
+vim将把11foo转化为11 
+echo 10+"foo10" //10
+vim把foo10转化为0
+------------------------->
+
+
+
+<-------------------------
+if else 语句
+
+if 0
+	echom "if"
+elseif "elseif"
+	echom "elseif"
+else
+	echom "finally"
+endif
+------------------------->
+
+
+
+<-------------------------
+比较
+if 10 > 1
+	echo "dsfsdfs"
+endif
+
+if 10==11
+	echom "first"
+elseif 10==10
+	echom "second"
+endif
+
+if "foo" == "bar" //都是两个字符串,字符串不会转化为数字
+	echom "one" //不显示
+elseif "foo" = "foo"
+	echom "two" //显示two
+endif
+
+if 0=="foo" //字符串foo会转化为0
+	echom "foo" //显示foo
+endif
+
+
+if "foo" == "FOO"
+	echo "haha"//vim本身是对大小写敏感的,不显示haha
+	//如果设置了set ignorecase则显示haha
+endif
+
+
+
+set noignorecase
+if "foo" ==? "FOO" //==?操作符是无论你怎么设,对大小写
+				//都不敏感的比较操作符
+	echo "haha"
+endif
+
+set ignorecase
+if "foo" ==# "FOO" //#是无论你怎么设,大小写都敏感
+				//的操作符
+	echo "hah"
+endif
+------------------------->
+
+
+*********函数********************
+
+<-----------------------------
+function meow()//error,没有作用域限制的函数名必须大写
+
+定义一个函数
+function Meow()
+	echom "Meow!"
+endfunction
+
+调用一个函数
+call Meow() //call命令后面节函数名()表示调用函数
+
+
+带返回值的函数
+function GetMeow()
+	return "Meow String"
+endfunction
+
+call GetMeow()//不显示任何东西,用call命令,函数返回值被丢弃
+echom GetMeow() //这两个都可以,GetMeow()把结果传给echo或echom
+echo GetMeow()
+echom Meow();将显示
+Meow!
+0
+如果一个函数没有返回值,那么echo或echom调用函数
+将返回0
+
+
+function TextwidthIsTooWide()
+	if &l:textwidth >#50
+		return 1
+	endif
+endfunction
+
+if TextwidthIsTooWide()
+	echo "too wide"
+endif
+----------------------------->
+
+
+<----------------------------
+函数参数
+function DisplayName(name)
+	echom "hello,my name is:"
+	echom a:name
+endfunction
+
+call DisplayName("linwei")
+显示:
+hello,my name is:
+linwei
+
+
+function Assign(foo)
+	let a:foo = "Nope"
+	echom a:foo
+endfunction
+
+call Assign("fdfsafsf")//调用时报错
+不能对参数变量重新赋值
+
+
+function AssignGood(foo)
+	let foo_tmp = a:foo
+	let foo_tmp = "yes"
+	echom too_tmp
+endfunction 
+call AssignGood("ahhaa")
+结果为:yes
+----------------------------->
+
+*********数字***************
+数字有两种类型:Number(32带符号整数) 和Float(浮点数)
+
+用echo而不用echom,echom对float类型的会报错
+echo 5.45+3e =>5450.0
+echo 5.453e =>5450.0
+
+echo 13.34e-3 =>0.01334
+
+Number和Float混合使用时,Number将转化为Float
+echo 2*2.0 =>4.0
+
+
+**********字符串*************
+echom "3 mice" + "2 cats"
+5
+这里+号左右的字符串(注意指的是字符串),将被强制转换为Number类型的
+而不是强制转化成Float,验证如下:
+echom 10 + "10.10"
+20 //字符串10.10将.10丢弃
+
+字符串连接符号不时"+"而是"."
+echom 10 . "foo" ,"."将左边的Number类型的
+10转化为"10"了
+
+echom 10.1 . "foo" error
+Float类型的不行
+
+echom "foo \"bar\"" //转义字符
+foo "bar"
+ 
+echo "foo\nbar" //echo 把\n当作换行符
+foo
+bar
+
+echom "foo\nbar" //echom不一样,^@在vim中时换行符
+foo^@bar 
+
+echom '\n\' //单引号,所见即所得
+\n\ 
+
+echom 'That''s enough.' //两个单引号比较特殊
+相当于转义''=>'
+That's enough
+

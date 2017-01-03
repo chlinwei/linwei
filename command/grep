@@ -1,0 +1,36 @@
+只输出文件中匹配到的部分-o
+echo this is a test line. | grep -o -E "[a-z]+\."
+line.
+
+echo "gun is not unix" | grep -o "un"
+un
+un
+
+
+
+统计文件或者文本中包含匹配字符串的行数-c
+grep -c "text" file_name
+
+
+输出包含匹配字符串的函数-n
+grep "text" -n file_name
+
+
+打印匹配的字符串和所位于的字符和部分内容
+echo "gun is not unix" | grep -b -o "is"
+4:is #这里
+echo "gun is not unix" | grep -o "is" #结果为#is,前面的4指的是is的位置
+从0开始
+
+
+搜索多个文件并查找匹配文本在哪些文件中
+grep -l "text"  file1 file2 file2 ...
+file1
+file2
+结果表示text是在file1,file2中,如果只在file1中
+结果为
+file1
+
+
+grep -i忽略匹配大小写
+grep -i "*.TXT"

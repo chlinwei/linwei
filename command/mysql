@@ -1,0 +1,22 @@
+grant all privileges on *.* to shenge1@'192.168.200.%' identified by 'linwei'
+flush privileges;
+grant 权限 on 数据库对象.表 to 用户@ip identified by 密码
+权限:REPLICATION SLACE,REPLICATION CLIENT
+数据库对象:*.*(*.*说明数据库.表名)
+用户:shenge1
+那个%号是通配符,表示用户relp能在192.168.200.1~192.168.200.254所在的服务登录密码:linwei
+mysql -u shenge1 -h 192.168.200.157 --password=linwei  登陆或者-p手动输入密码
+mysql < 01.sql  =>在01.sql中写好mysql语句,可以这样执行.
+mysql -u shenge1 -h 192.168.200.157 --password=linwei < 01.sql
+delete from mysql.user where User='shenge1'; 删除某个用户
+show databases;显示所有数据库
+show tables from mysql; 显示mysql数据库中的所有表名
+create database student;建一个student数据库
+drop database student;删除student数据库
+create table test.student(name char,math int);在数据库test中创建student表格
+drop table test.student;删除test数据库中的student表格
+show columns from 表名或者describe 表名 查看表的结构
+insert into test.student(name,math)values('xiaoming',87);插入数据
+alter table test.student drop name;删除name这个字段.
+alter table test.student add name(20);增加name这个字段
+update test.student set name="xiaoming" where math=78;更新某个数据的值

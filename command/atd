@@ -1,0 +1,22 @@
+at命令
+at [-mldv] TIME
+at -c 工作号码
+
+选项:
+-m:当at的工作完成后,即使没有输出信息,亦以emial通知使用者该工作已完成
+-l: at -l 相当于atq,列出目前系统上面所有该使用者的at排程
+-d: at -d相当于atrm,可以取消一个at排程中的工作
+-v:可以使用较明显的时间格式列出at排程中的工作列表
+-c:可以列出后面接的该工作的实际指令内容
+
+TIME:时间格式,
+HH:MM  :在今日的HH::MM时刻进行,若该时刻已超过,则明天的HH:MM进行此工作
+HH:MM YYYY-MM-DD 强制规定在某年某日某一天的特殊时刻进行该工作
+HH:MM[am|pm][Month][date] 04 pm july 30:和上述一样,强制的
+HH:MM[am|pm] + number[minutes|hours|days|weeks]
+ now + 5minutes
+
+
+
+
+

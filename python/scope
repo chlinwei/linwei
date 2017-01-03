@@ -1,0 +1,159 @@
+1.块级作用域
+
+if 1 == 1:
+	name = "lzl"
+print(name) 
+
+for i in range(10):
+	print(i)
+print(age)
+
+注释:结果没问题,在c++代码中会报错,提示name,age为定义,python
+中可以执行,因为python中没有块级作用域,在块里定义的是全局的
+
+
+2.局部作用域
+1)def func():
+	name = "lzl"
+print(name) #报错
+
+2)def func():
+	name = "lzl"
+func() #这里调用一下函数
+print(name)#依然报错
+
+注释:python中有局部作用域
+
+
+3.作用域链
+name = "lzl"
+def f1():
+	name = "Eric"
+	def f2():
+		name = "snor"
+		print(name)
+	f2()
+f1()
+注释:结果输出snor,变量会由内到外找,先去自己作用
+域去找,没找到,去上级作用域找,直到找不到报错
+
+
+4.终极版作用域
+name = "lzl"
+def f1():
+	print(name)
+def f2():
+	name = "eric"
+	return f1
+ret = f2()
+ret()
+注释:f2()执行结果为函数f1的内存地址,即ret=f1;
+执行ret()等同于执行f1(),执行f1()时与f2()时没有
+任何关系,即不存在作用域链的关系
+
+name = "lzl"
+def f1():
+	print(name)
+def f2():
+	name = "eric"
+	f1()
+f2()
+注释:结果为"lzl",执行f1()时与f2()无任何关系,
+即不存在作用域链
+
+
+
+新浪面试题
+li = [lambda :]
+li = [lambda:x for x in range(10)]
+print(type(li))
+print(li[0])
+<class 'list'>
+<function <listcomp>.<lambda> at 0x7f804908f620>
+
+
+res = li[0]()
+print(res) #9
+
+
+
+python中引用变量的顺序:
+当前作用域->外层作用域->当前模块中的全局变量->python内置变量
+
+
+一.global:这个关键字在函数或其他作用域中使用全局变量,
+			但是如果不修改全局变量也可以不加global
+gcount = 0
+def global_test():
+    gcount +=1
+    print(gcount)
+global_test() #报错
+注释:在global_test函数中程序会因为"如果内部函数有引用外部函数的同名变量或
+	全局变量,并且对这个变量有修改,python会把它当作局部变量,又因为局部变量
+	没有定义(即没有像gcount = 100这样的赋值所以报错)
+
+
+二.声明全局变量,如果在局部要对全局变量修改,需要用global关键字先声明该全局变量
+gcount = 0
+def global_test():
+	global gcount
+	gcount +=1
+	print(gcount)
+global_test() #1
+
+
+三.在局部如果不声明全局变量,并且不修改全局变量,则可以正常使用全局变量
+gcount = 0
+def global_test():
+	print(gcount)
+global_test() #0
+
+四.nonlocal关键字用来在函数或其他作用域中使用外层(非全局)变量
+def make_counter():
+    count = 0
+    def counter():
+        nonlocal count
+        count +=1
+        return count
+    return counter
+
+def make_counter_test():
+    mc = make_counter()
+    print(mc())
+    print(mc())
+    print(mc())
+
+make_counter_test() #1 2 3
+
+
+
+
+经典例子
+
+def scope_test():
+    def do_local():
+        spam = "local spam"
+    def do_nonlocal():
+        nonlocal spam
+        spam = "nonlocal spam"
+    def do_global():
+        global spam
+        spam = "global spam"
+
+    spam = "test spam"
+    do_local()
+    print("After local assignment:", spam)
+    do_nonlocal()
+    print("After nonlocal assignment:", spam)
+    do_global()
+    print("After global assignment:", spam)
+
+scope_test()
+print("In global scope:", spam)
+
+
+
+After local assignment: test spam
+After nonlocal assignment: nonlocal spam
+After global assignment: nonlocal spam
+In global scope: global spam

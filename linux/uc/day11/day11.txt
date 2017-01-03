@@ -1,0 +1,387 @@
+复习：
+1.进程的管理
+1.1 各种ID的获取
+      getpid() - 获取当前进程的进程号
+      getppid() - 获取当前进程的父进程进程号
+      getuid() - 获取用户的编号
+      getgid() - 获取用户组的编号
+      pid_t 本质就是 int 类型， 系统采用延迟重用
+
+1.2 进程的创建
+     fork() - 复制当前进程的方式来创建子进程
+     
+     子进程会复制父进程中除了代码区之外的其他内存区域，而代码区和父进程共享
+     
+     fork();
+     fork();
+
+     pid = fork();
+     if(0 != pid)
+     {
+          fork();
+     }
+   
+    while(1) {  fork();}
+
+1.3 进程的终止
+(1)正常终止进程的方式
+     a.执行了main函数中的return
+     b.调用exit()函数
+     c.调用_exit()/_Exit()函数
+     d.最后一个线程返回
+     e.最后一个线程调用了pthread_exit()函数
+(2)非正常终止进程的方式
+     a.使用信号终止进程
+     b.最后一个线程被其他线程调用pthread_cancel()函数
+
+1.4 进程的等待
+     wait() - 等待任意一个子进程结束
+     waitpid() - 等待指定的子进程结束    
+
+1.5 进程的其他管理函数
+     vfork() - 创建子进程
+     execl() - 执行指定的文件
+     system() - 执行指定的shell命令
+
+2.信号的处理
+2.1 基本概念和特性
+    信号本质就是一种软中断，它既可以作为进程间通信的机制，又可以终止一个正在执行的进程，更多地被用于处理意外情况
+
+2.2 基本概念和分类
+    在linux系统中支持的信号是 1 ~ 64，不保证连续，其中 1 ~ 31之间的信号叫做不可靠信息，不支持排队，信号可能会丢失，也叫做非实时信号；其中34 ~ 64之间的信号叫做可靠信号，支持排队，信号不会丢失，也叫做实时信号    
+     kill -l
+掌握的信号：
+     SIGINT   2   ctrl+c    默认处理方式为终止进程
+     SIGQUIT  3  ctrl+\    终止进程
+     SIGKILL   9  kill -9    终止进程
+
+作业：
+     查询和解析signal函数
+----------------------------------------------------------------------------
+今天内容：
+     (1)信号的处理
+
+1.信号的处理
+1.1 信号的处理方式
+(1)默认处理，绝大多数信号的处理方式为终止进程
+(2)忽略处理
+(3)自定义处理  
+
+注意：
+     其中信号SIGKILL只能采用默认处理方式
+     每个用户只能处理属于该用户的信号，只能给该用户的进程发送信号，其中root用户可以给几乎所有进程发信号
+
+     #include <signal.h>
+     typedef void (*sighandler_t)(int);
+     sighandler_t     signal(int    signum,
+          sighandler_t handler);
+函数原型解析：
+     typedef void (*sighandler_t)(int);
+ =>  typedef void (*)(int)  sighandler_t;
+ =>  typedef void (*p)(int)  sighandler_t;
+
+     sighandler_t     signal(int    signum,
+          sighandler_t handler);
+ => void (*)(int)  signal(int    signum,
+           void (*)(int) handler);
+ =>  void (*)(int)  signal(int    signum,
+           void (*handler)(int) );
+ =>  void (*signal(int    signum,
+           void (*handler)(int)) )(int);
+ =>  signal首先是一个函数
+        具有两个参数：一个是int类型，一个是函数指针类型
+        函数的返回值类型也是函数指针类型
+ =>  函数指针是一个 指向 int类型参数 void类型返回值的 
+            函数的 指针
+
+函数功能解析：
+     第一个参数：信号的名称/信号值(处理哪个信号)
+     第二个参数：函数指针类型
+          SIG_IGN - 忽略处理
+          SIG_DFL - 默认处理
+          自定义函数地址 - 自定义处理
+    返回值：成功返回之前的处理方式，失败返回SIG_ERR
+    函数功能：
+          主要用于设置信号的处理方式
+
+练习：
+    编程打印进程号，设置对信号SIGINT进行自定义处理，对信号SIGQUIT进行忽略处理，设置完毕之后使用fork函数创建子进程，打印子进程的进程号后进入无限循环，父进程直接结束，在另一个终端中采用kill命令发送信号进行测试
+
+总结：
+     (1)对于fork函数创建的子进程来说，完全照搬父进程对信号的处理方式，也就是父进程自定义，子进程自定义；父进程默认，子进程也默认；父进程忽略，子进程也忽略处理；
+     (2)对于vfork函数和execl函数启动的进程来说，父进程默认，子进程也默认；父进程忽略，子进程也忽略；父进程自定义处理，子进程采用默认处理；
+
+1.2 信号的发送方式
+(1)采用键盘方式发送(只能发送部分特殊的信号)
+      SIGINT   2   采用ctrl+c来发送
+      ... ...
+(2)采用程序出错方式发送(只能发送部分特殊的信号)
+      段错误  本质就是SIGSEGV信号   11
+      ... ...
+(3)使用kill命令发送信号(可以发送所有信号)
+      kill -信号值 进程号
+   => 表示给指定的进程发送指定的信号
+(4)采用系统函数发送信号(重点)
+      kill()/raise()/alarm()/sigqueue()
+
+1.3 发送信号的系统函数解析
+(1)kill函数
+    #include <sys/types.h>
+    #include <signal.h>
+    int kill(pid_t pid, int sig);
+第一个参数：进程号(给谁发信号)
+    >0 表示发送信号到进程号为pid的进程(重点)
+      0 表示发送信号给和当前进程在同一个进程组的每个进程
+          (了解)
+     -1 表示发送信号给当前进程可以发送的每个进程，除了进
+           程init(了解)
+   <-1 表示发送信号给进程组ID为-pid的每个进程(了解)
+第二个参数：信号值/信号名称(发送什么样的信号)
+     0 表示不会发送信号，而是判断进程/进程组是否存在
+函数功能：
+     主要用于给指定的进程发送指定的信号
+
+(2)raise函数
+     #include <signal.h>
+     int raise(int sig);
+函数功能：
+     主要用于给当前正在调用的进程/线程发送参数指定的信号，对于单线程的进程来说，等价于kill(getpid(),sig)
+     成功返回0，失败返回非0
+
+     #include <unistd.h>
+     unsigned int sleep(unsigned int seconds);
+函数功能：
+     主要用于按照参数指定的秒数进行睡眠，直到参数指定的秒数到了或者被一个不能忽略的信号打断，如果睡够了则返回值为0，如果没有睡够则返回还没有来得及睡的秒数(也就是剩余的秒数)
+
+(3)alarm函数
+     #include <unistd.h>
+     unsigned int alarm(unsigned int seconds);
+函数功能：
+     主要用于在经过参数指定的秒数之后发送SIGALRM信号给当前正在调用的进程
+     每次设置新闹钟之后会取消之前的闹钟，参数为0时不会设置新闹钟，专门用于取消闹钟
+    成功返回之前闹钟剩余的秒数，如果之前没有闹钟则返回0
+
+(4)sigqueue函数
+     等到讲完sigaction函数之后回来再讲
+
+1.4 信号集的基本概念和操作
+(1)基本概念
+     信号集本质就是由若干个信号组成的集合，当前系统支持的信号范围是 1 ~ 64，不保证连续
+
+分析：
+     采用最节省内存方式描述信号集，数据类型该如何设计？
+     char str[64];     需要64个字节
+     采用每一个二进制位代表一个信号，则需要64个二进制位，那么也就是8个字节，类型为：long long int;
+
+总结：
+     信号集的数据类型是sigset_t类型，大小是128个字节，但是底层采用每一个二进制位来代表一个信号;
+typedef struct
+{
+     unsigned long int __val[(1024 / (8 * sizeof (unsigned long int)))];
+} __sigset_t;
+typedef __sigset_t sigset_t;
+
+(2)基本操作
+     #include <signal.h>
+     sigemptyset() - 清空信号集//成功0失败-1
+     sigfillset() - 填满信号集//成功0失败-1
+     sigaddset() - 增加指定的信号到信号集中//成功0失败-1
+     sigdelset() - 删除信号集中指定的信号//成功0失败-1
+
+     sigismember() - 判断指定的信号是否存在
+	 //返回1：说明指定的信号存在,
+	 //返回0：说明指定的信号不存在
+	 //返回-1：说明出错
+
+1.5 信号的屏蔽
+(1)sigprocmask函数
+     #include <signal.h>
+     int   sigprocmask(int    how,    const sigset_t *set, sigset_t *oldset);
+第一个参数：屏蔽方式
+      SIG_BLOCK - ABC  CDE => ABCDE(原+新)
+      SIG_UNBLOCK - ABC  CDE => AB(原-新)
+      SIG_SETMASK - ABC  CDE => CDE(新替换原，重点)
+第二个参数：屏蔽的信号集
+第三个参数：获取之前的屏蔽集
+函数功能：
+      主要用于获取/修改屏蔽的信号集
+
+(2)sigpending函数
+     #include <signal.h>
+     int sigpending(sigset_t *set);
+函数功能：
+     主要用于获取在信号屏蔽期间来过但没有处理的信号，将这些来过的信号设置到参数指定的信号集中
+
+1.6 sigaction函数
+    => signal函数的增强版
+    #include <signal.h>
+     int sigaction(int signum, const struct sigaction *act,struct sigaction *oldact);
+第一个参数：信号名称/信号值
+      可以选择任何一个有效信号，除了SIGKILL和SIGSTOP
+第二个参数：设置针对上述信号的处理方式
+struct sigaction 
+{
+   void (*sa_handler)(int);
+=> 函数指针，主要用于设置信号的处理方式
+=> SIG_DFL，SIG_IGN，自定义函数的地址
+
+   void (*sa_sigaction)(int, siginfo_t *, void *);
+=> 函数指针类型，用于设置信号的处理方式，是否选用该成
+     员，取决于sa_flags;
+
+   sigset_t   sa_mask;
+=> 主要用于设置在执行信号处理函数期间屏蔽的信号集
+=> 默认屏蔽与触发信号处理函数相同的信号
+   
+   int sa_flags;
+=> SA_SIGINFO  使用第二个函数指针来设置信号处理方式 
+=> SA_NODEFER 解除对触发信号处理函数相同信号的屏蔽
+=> SA_RESETHAND 一旦信号处理函数调用后恢复信号的
+      默认处理方式(也就是自定义处理一次)
+
+   void     (*sa_restorer)(void);
+=> 函数指针类型，保留成员，暂时不使用
+};     
+第三个参数：用于获取之前的处理方式
+函数功能：
+     主要用于检查/修改指定信号的处理方式
+
+其中结构体中的第二个成员的第二个形参类型如下：
+struct siginfo_t
+{
+     ...
+     pid_t    si_pid;      /* 发送信号的进程号 */
+     sigval_t si_value;    /* 发送信号伴随的附加数据 */
+     ... 
+};
+
+作业：
+     查询和理解sigaction和sigqueue函数
+明日预报：
+     (1)信号的处理
+     (2)进程间的通信
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

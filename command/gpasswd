@@ -1,0 +1,45 @@
+gpasswd:群组管理员功能
+如果系统管理员太忙碌了，导致某些账号想要加入某个项目时找不到
+人帮忙！这个时候可以创建『群组管理员』喔！什么是群组管理员呢？
+就是让某个群组具有一个管理员，这个群组管理员可以管理哪些账号可
+以加入/移出该群组,那要如何『创建一个群组管理员』呢？就得要透过 gpasswd 啰！
+# 关于系统管理员(root)做的动作：
+[root@www ~]# gpasswd groupname
+[root@www ~]# gpasswd [-A user1,...] [-M user3,...] groupname
+[root@www ~]# gpasswd [-rR] groupname
+选项与参数：
+    ：若没有任何参数时，表示给予 groupname 一个口令(/etc/gshadow)
+	-A  ：将 groupname 的主控权交由后面的使用者管理(该群组的管理员)
+	-M  ：将某些账号加入这个群组当中！
+	-r  ：将 groupname 的口令移除
+	-R  ：让 groupname 的口令栏失效
+
+# 关于群组管理员(Group administrator)做的动作：
+[someone@www ~]$ gpasswd [-ad] user groupname
+选项与参数：
+-a  ：将某位使用者加入到 groupname 这个群组当中！
+-d  ：将某位使用者移除出 groupname 这个群组当中。
+
+范例一：创建一个新群组，名称为 testgroup 且群组交由 vbird1 管理：
+[root@www ~]# groupadd testgroup  <==先创建群组
+[root@www ~]# gpasswd testgroup   <==给这个群组一个口令吧！
+Changing the password for group testgroup
+New Password:
+Re-enter new password:
+# 输入两次口令就对了！
+[root@www ~]# gpasswd -A vbird1 testgroup  <==加入群组管理员为 vbird1
+[root@www ~]# grep testgroup /etc/group /etc/gshadow
+/etc/group:testgroup:x:702:
+/etc/gshadow:testgroup:$1$I5ukIY1.$o5fmW.cOsc8.K.FHAFLWg0:vbird1:
+# 很有趣吧！此时 vbird1 则拥有 testgroup 的主控权喔！身份有点像板主啦！
+
+范例二：以 vbird1 登陆系统，并且让他加入 vbird1, vbird3 成为 testgroup 成员
+[vbird1@www ~]$ id
+uid=504(vbird1) gid=505(vbird1) groups=505(vbird1) ....
+# 看得出来，vbird1 尚未加入 testgroup 群组喔！
+
+[vbird1@www ~]$ gpasswd -a vbird1 testgroup
+[vbird1@www ~]$ gpasswd -a vbird3 testgroup
+[vbird1@www ~]$ grep testgroup /etc/group
+testgroup:x:702:vbird1,vbird3
+

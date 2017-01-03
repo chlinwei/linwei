@@ -1,0 +1,182 @@
+1.如何过滤出已知的当前目录中的所有一级目录(不包含一级目录下的子目录和隐藏目录和当前目录下的隐藏目录)
+1)ls -l 结果中已d开头的 : ls -l | grep "^d"
+2)给目录加标识ls -F或-p : ls -lp | grep "/$" or ls -lF | grep "/$"
+3)通过find直接指定文件类型 不好写
+4)ls -ld */
+5)ls -l | sed -n /^d/p(-n取消默认输出)
+6)ls -F | sed -n '/\/$/p'
+7) ls -l | awk '/^d/'
+
+2.查看最近操作的文件
+ls -lrt 目录,-t是按照修改时间排序,-r是反转
+3.调试系统服务时,希望能实时查看系统/var/log/messages的更新
+1)tail -f /var/log/messages 
+2)tail -F /var/log/messages   -F比-f多了个重新链接的功能
+3)tailf  /var/log/messages
+一个终端里for n in `seq 100`;do echo $n;echo $n >> a.txt;sleep 1;done
+另一个终端里tail -F a.txt
+
+4.让ssh服务仅仅在3级别上开机自动启动
+1).chkconfig --list ssh
+2).chkconfig ssh  off
+3) chkconfig --level 3 ssh on
+
+5.如何查看/etc/services文件有多少行?
+1)wc -l /etc/services
+2)cat -n /etc/services | tail -1
+3)sed -n '$=' /etc/services
+4)awk '{print NR}' /etc/services  | tail -1
+5)grep -n $ /etc/services|tail -1
+
+6.过滤出/etc/services文件包含3306或1521两数字的行内容
+1)egrep "3306|1521" /etc/services
+
+7.过滤出ifconfig lo的ip地址
+1)ifconfig lo | grep "inet addr" | cut -d ":" -f2|cut -d " " -f 1
+2)ifconfig lo | grep "inet addr" | awk -F ":" '{print $2}' | awk '{print $1}'
+3)ifconfig lo | grep "inet addr" | awk -F "[ :]" '{print $13}'
+4)ifconfig lo | grep "inet addr" | awk -F "[ :]+" '{print $4}'
+5)ifconfig lo | sed -n '2p'...
+6)ifconfig lo | awk -F "[ :]+" 'NR == 2{print $4}' 
+7)ifconfig lo | sed -n '/inet addr/p' | sed 's#^.*addr:##g'|sed 's#  Mask.*$##g'
+8)ifconfig lo|sed -n 's#^.*addr:\(.*\)  Mask.*$#\1#gp'
+
+8.取/etiantian 文件的权限wr-r--r--将其转换为数字
+1)stat /etiantian |sed -n 's#Access: (\([0-7].*\)\/-rw.*$#\1#gp')'
+2)stat /etiantian | sed -n "4p" | awk -F "[(/]" '{print $2}'
+3)stat /etiantian | sed -n 's#^.*s: (\([0-9].*\)/-r.*$#\1#gp')'
+4)stat -c %a /etiantian
+5)ll /etiantian |cut -c 2-10|tr rwx- 4210|awk -F "" '{print $1+$2+$3 $4+$5+$6 $7+$8+$9}'
+
+
+9.每分钟打印自己的名字到/service/log/
+1)mkdir /service/log -p
+2)crontab -e ,里面写 
+#print a name
+* * * * * echo linwei >> /service/log/linwei.log
+3)crontab -l 查看有没有定时任务
+4)tail -f /service/log/linwei.log(时时查看) 
+5)crontab -r 删除当前的定时任务文件
+
+10.每周六,日上午9:00和下午14:00来老男孩linux培训学习(/service/scripts/oldboy.sh)
+答案:/service/scripts/oldboy.sh脚本的功能是打印当天的日期格式为:2014-03-23，随意追加到一个文件里或者干脆屏幕输出
+1)mkdir -p /service/scripts
+2)echo 'date +%F' > /service/scripts/oldboy.sh
+3)/bin/sh /service/scripts/oldboy.sh执行一下
+4)echo "echo 00 09,14 * * 6,7 /bin/sh /service/scripts/oldboy.sh > /dev/null 2>&1" > /var/spool/cron/linwei
+>/dev/null 2>&1 等价于 1>/dev/null 2>/dev/null 
+5)crontab -l
+
+11.每隔2个小时将/etc/services文件打包备份到/tmp下
+1)mkdir -p /service/scripts && cd /service/scripts
+2)vi tar.sh
+3)tar -zcf /tmp/service_$(date +%F-%H).tar.gz /etc/services 2>/dev/null
+4)crontab -e 
+5)# tar /etc/services by linwei
+00 *\2 * * * /bin/sh  /service/scripts/tar.sh >/dev/null >2&1
+   
+
+12.每天晚上12点,打包站点目录/var/www/html 到/data/目录下
+1)mkdir -p /data
+2)cd /service/scripts
+3)touch tar_var_www_html.sh,在里面添加
+ tar -zcf /data/html_$(data +%F).tar.gz /var/www/html 2>/dev/null
+4)crontab -e  里面添加
+ 00 00 * * * /bin/sh /service/scripts/tar_var_www_html.sh >/dev/null > 2&1
+
+13.请描述下列路径的内容是做什么的?
+1)/etc/sysctl.conf :内核优化文件
+2)/etc/rc.local:创建开机自启动脚本
+3)/etc/hosts:服务器本地域名解析
+4)/etc/fstab:开机设备自动挂载的文件
+5)/var/log/secure:系统登陆安全的日志
+
+14.授权oldboy目录及其子目录755的权限
+1)chmod -R 755 oldboy
+2)chmod -R u=rwx,g=rx,o=rx oldboy
+15.把oldboy目录及其子目录的属主改为oldboy,属组改为root
+1)chown -R oldboy.root oldboy
+2)chown -R oldboy oldboy;chgrp -R root oldboy或chown -R .root oldboy
+
+16.添加一个用户oldboy,并指定属于sa组,要求组ID为801,uid为808并且不建立家目录及禁止其登陆
+1)groupadd sa -g 801
+2)useradd -u 808 -g sa -M -s /sbin/nologin oldboy (这里在/etc/passwd里能看见/home/oldboy 但是实际并不存在)
+3)删除 groupdel sa ,userdel oldboy
+
+
+17.添加用户oldboy6,并设置其用户注释信息为HandsomeBoy,UID指定为806,归属为用户组root,oldboy,sa成员
+  其shell类型为/bin/sh/设置家目录为/oldboy6
+useradd -c HandsomeBoy -u 806 -G root,oldboy,sa -s /bin/sh -d /oldboy6 oldboy6
+-d指定家目录
+
+18.要求oldboy用户7天不能修改密码,60天以后必须修改密码,过期前10天通知oldboy用户
+过期20天后禁止用户登陆
+passwd 
+-n 多少天内不能修改密码
+-x 多少天后必须改
+-w 过期多少天提醒
+-i 过期多久禁止登陆
+passwd -n 7 -x 60 -w 10 -i 30 oldboy,chage -l oldboy查看情况
+chage -m 7 -M 60 -W 10 -I 30 oldboy同样可以实现此功能
+
+
+19.
+1)模拟创建用户角色
+建立3个初级运维，一个高级运维，一个网络运维工程师,一个运维经理统一密码是111111
+for user in chuji001 chuji002 chuji003 net001 senior001 manager001
+do  
+    useradd $user
+    echo "111111" | passwd --stdin $user
+done
+2)建立5个开发人员，属于phpers组2)建立5个开发人员，属于phpers组
+groupadd -g 1200 phpers
+for n in `seq 5`
+do 
+    useradd -g phpers php00$n
+    echo "111111" | passwd --stdin php00$n
+done
+3)建立一个开发经理，和高级开发人员
+for user in kaifamanager001 seniorphers
+do
+    useradd $user
+    echo "111111" | passwd --stdin $user
+done
+    
+
+
+20.ssh
+从A服务器发布数据到B.C客户端服务器或查看信息的免密码登录验证
+A----->B
+A----->C
+1)添加系统帐号
+在部署密钥之前，首先要分别在ABC添加oldboy用户并设置密码
+然后，通过oldboy用户来实现多个服务器之间免密码登录
+
+useradd oldboy 
+echo "123456" | passwd --stdin oldboy
+A B C都要执行上述命令
+
+开始部署
+因为A服务器为中心分发服务器,所以我们选择在A端建立Public Key(锁)
+与private key(钥匙)
+在整个方案实现中,private Key 和public Key仅需建立一次即可
+本文选择在A服务器来生成密钥对
+
+RSA与DSA加密算法的区别
+RSA是一种加密算法(PS:RSA也可以进行数字签名)
+DSA只能用于数字签名
+
+2)su - oldboy
+  ssh-keygen -t dsa(-t建立密钥类型)
+全部enter
+id_dsa 私钥
+id_dsa.pub 公钥
+
+3)把公钥(锁)从A拷贝到B.C端用户家目录各一份
+su - oldboy
+A: cd  .ssh && ssh-copy-id -i id_sda.pub oldboy@10.0.0.142
+此时B.C端的oldboy用户~下.ssh/authorized_keys(公钥)
+这里ssh-cpoy-id只能拷贝公钥不能拷贝私钥
+
+
+4)ssh oldboy@192.168.1.102 /sbin/ifconfig eth0(此时不需要输入密码)

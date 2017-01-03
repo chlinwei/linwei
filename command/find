@@ -1,0 +1,149 @@
+1.find ./ -name "*.txt" :找出./目录下以.txt结尾的文件名
+注意find ./ -name *.txt是错的要加引号
+
+2.find ./ -iname  "*.txt" 忽略大小写,同上
+
+3.当前目录及其子目录下所欲哦以.txt和.pdf结尾的文件
+find . \( -name "*.txt" -o -name "*.pdf" \)
+或
+find . -name "*.txt" -o -name "*.pdf"
+-o代表或者的意思
+
+4.匹配文件路径或者文件 
+find /usr/ -path "*local"
+
+5.基于正则表达式匹配文件名,即找出./ 目录下所有以.pdf和.txt结尾的文件名
+find . -regex ".*\(\.txt\|\.pdf\)$"
+find . -iregex ".*\(\.txt\|\.pdf\)$" 忽略大小写
+
+6.找出当前目录下不是以.txt结尾的文件
+find ./ ! -name "*.txt" (!表示非,很多情况下都可以加,注意!放在选项的前面)
+
+7.根据文件类型进行搜索
+find . -type 类型参数
+f:普通文件
+l:符号连接
+d:目录
+c:字符设备
+b:块设备
+s:套接字
+p:Fifo
+
+8.基于目录深度搜索
+向下最大深度搜索
+find . -maxdepth 1 -type f就是当前目录下的普通文件不包括子目录的
+find . -maxdepth 2 -type f最多到当前1级子目录(1级子目录指的是当前目录下的子目录,不包括子目录下的子目录)
+
+9.时间戳
+访问时间(-atime/天,-amin/分钟):用户最近一次访问时间
+修改时间(-mtime/天,-mmin/分钟):用户最近一次修改时间
+变化时间(-ctime/天,-cmin/分钟):文件数据元(权限)最后一次修改时间
+
+搜索最近7天内被访问的所有文件
+find . -type f -atime -7
+
+搜索第7天前被访问过的文件(即前7到前8天中间这端时间)
+find . -type f -atime  7
+
+搜索超过7天内被访问的所有文件(即>=7天前) 
+find . -type f -atime +7 
+
+搜索访问时间超过10分钟的所有文件
+find . -type f -amin +10
+
+找出比file.log修改时间还要新的文件
+find . -type f -newer file.log
+
+10.根据文件大小进行匹配
+find . -type -size 文件大小单元
+b:块(512字节)
+c:字节
+w:字(2字节)
+k:千字节
+M:兆字节
+G:吉字节
+
+搜索大于10KB的文件 
+find . -type f -size +10k(注意k是小写)
+
+搜索小于10KB的文件 
+find . -type f -size -10k(注意k是小写)
+
+搜索等于10KB的文件 
+find . -type f -size 10k(注意k是小写)
+
+11.删除匹配文件
+
+删除当前目录下所有.txt文件,包括子目录...
+find . -type f -name "*.txt"  -delete
+
+
+12根据文件权限进行匹配
+匹配当前目录(包括子目录)下权限为777的文件
+fin . -type f -perm 777
+
+找出当前目录下权限不是644的php文件
+find . -type f -name "*.php" ! -perm 644
+
+找出当前目录(.)属于tom的文件
+find . -type f -user  tom
+
+找出当前目录用户组sunk拥有的文件
+find . -type f -group sunk
+
+13.借助-exec选项与其他命令结合使用
+找出当前目录下所有的root文件,并把所有权限更改为tom
+find . -type f -user root -exec chown tom {} \;
+{}代表是有find找到的内容,find 找的的结果会被放置到{}位置中
+-exec一直到"\;"是关键字,代表find额外命令的开始(-exec)
+到结束(\;),例子中的额外命令就是"chown tom {}"了
+因为";"在bash中有特殊意义(分割命令),所以用转移'\'
+
+find . -type f -ok rm {} \;
+这里-ok和-exec行为一样,不过他会给出提示输入y就删除
+
+
+找出当前目录下所有.txt文件并把他们拼接起来写入到
+all.txt文件中
+find . -type f -name "*.txt" -exec cat {} \;> all.txt
+
+将30天前的.log文件移动到old目录中
+find . -type f -mtime +30 -name "*.log" -exec cp {} old \;
+
+因为单行命令中-exec还可以接自己写的脚本
+-exec ./01.sh {} \;
+
+列出长度为0的文件(包括目录)
+find . -empty
+
+查找当前目录或者子目录下所有.txt文件,但是跳过子目录
+find . -path "./sk" -prune -o -name "*.txt" -print
+
+
+查找所有SGID文件
+find / -perm /g=s
+
+查找所有SUID文件
+find / -perm /u=s
+
+
+查找所有只读文件
+find / perm /u=r
+
+
+查找所有可执行文件
+find / perm /a=x
+
+超找所有777权限的目录并修改为555权限
+find / -type d perm 777 -print -exec chmod 755 {} \;
+
+找一个单独文件并删除它
+find . -type f -name "tecmint.txt" -exec rm -f {} \;
+
+查找多个文件并且删除它们
+find -type -f -name "*.txt" -exec rm -f {} \;
+
+
+
+
+

@@ -1,0 +1,14 @@
+symbol table:记号表
+floating point constant:浮点常量
+object code:目标代码
+symbolic debugger:调试器
+scope:作用域
+block scope:区块作用域
+constness:常量性
+assignment:赋值
+initialization:初始化
+member initialization list:成员初值列表
+delimiter:分隔符
+customize:定制,定做
+expansion:扩张,膨胀
+interpreter:解释器

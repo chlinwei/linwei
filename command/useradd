@@ -1,0 +1,77 @@
+[root@www ~]# useradd [-u UID] [-g 初始群组] [-G 次要群组] [-mM]
+[-c 说明栏] [-d 家目录绝对路径] [-s shell] 使用者账号名
+选项与参数：
+
+-u  ：后面接的是 UID ，是一组数字。直接指定一个特定的 UID 给这个账号；
+-g  ：后面接的那个组名就是我们上面提到的 initial group 啦～
+该群组的 GID 会被放置到 /etc/passwd 的第四个字段内。
+-G  ：后面接的组名则是这个账号还可以加入的群组。
+这个选项与参数会修改 /etc/group 内的相关数据喔！
+-M  ：强制！不要创建用户家目录！(系统账号默认值)
+-m  ：强制！要创建用户家目录！(一般账号默认值)
+-c  ：这个就是 /etc/passwd
+的第五栏的说明内容啦～可以随便我们配置的啦～
+-d  ：指定某个目录成为家目录，而不要使用默认值。务必使用绝对路径！
+-r  ：创建一个系统的账号，这个账号的 UID 会有限制 (参考/etc/login.defs)
+-s  ：后面接一个 shell ，若没有指定则默认是 /bin/bash 的啦～
+-e  ：后面接一个日期，格式为『YYYY-MM-DD』此项目可写入 shadow 第八字段，
+亦即账号失效日的配置项目啰；
+
+-f  ：后面接 shadow
+的第七字段项目，指定口令是否会失效。0为立刻失效，
+-1 为永远不失效(口令只会过期而强制于登陆时重新配置而已。)
+
+
+
+useradd 账号时,系统默认做以下工作:
+
+在/etc/passwd 里面创建一行与账号相关的数据，包括创建 UID/GID/家目录等；
+在/etc/shadow 里面将此账号的口令相关参数填入，但是尚未有口令；
+在/etc/group 里面加入一个与账号名称一模一样的组名；
+在/home 底下创建一个与账号同名的目录作为用户家目录，且权限为700
+
+
+useradd -D:查看useradd的默认值,D=>default,可以修改/etc/default/useradd 
+[lw@www command]$ useradd -D
+GROUP=100
+#100指的是users这个群组,表示新账号默认群组为users,但是RHEL,fedora,centos不遵守,都是以账号名增加的群组
+HOME=/home
+INACTIVE=-1
+#是否过期,0表示立即过期,-1表示密码永不会过期,30表示30天后过期,与/etc/shadow的第7个字段有关
+EXPIRE=
+#账号失效日期
+/etc/shadow第8个字段,通常不会配置
+SHELL=/bin/bash
+#默认使用/bin/bash这个SHELL
+SKEL=/etc/skel
+#家目录所包含的东西,就时根据/etc/skel/下东西来的
+CREATE_MAIL_SPOOL=yes
+
+
+
+IUID/GID 和密码参考文件/etc/login.defs
+
+MAIL_DIR        /var/spool/mail	<==用户默认邮件信箱放置目录
+
+PASS_MAX_DAYS   99999	<==/etc/shadow 内的第 5 栏，多久需变更口令日数
+PASS_MIN_DAYS   0	<==/etc/shadow 内的第 4 栏，多久不可重新配置口令日数
+PASS_MIN_LEN    5	<==口令最短的字符长度，已被 pam 模块取代，失去效用！
+PASS_WARN_AGE   7	<==/etc/shadow 内的第 6 栏，过期前会警告的日数
+
+UID_MIN         500	<==使用者最小的 UID，意即小于 500 的 UID 为系统保留
+UID_MAX       60000	<==使用者能够用的最大 UID
+GID_MIN         500	<==使用者自定义组的最小 GID，小于 500 为系统保留
+GID_MAX       60000	<==使用者自定义组的最大 GID
+
+CREATE_HOME     yes	<==在不加 -M 及 -m 时，是否主动创建用户家目录？
+UMASK           077     <==用户家目录创建的 umask ，因此权限会是 700
+USERGROUPS_ENAB yes     <==使用 userdel 删除时，是否会删除初始群组
+MD5_CRYPT_ENAB yes      <==口令是否经过 MD5 的加密机制处理
+
+
+useradd在创建账号时,至少会参考:
+/etc/default/useradd
+/etc/login.defs
+/etc/skel/*
+例子:useradd -u 700 -g users vbird2
+

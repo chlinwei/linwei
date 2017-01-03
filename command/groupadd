@@ -1,0 +1,11 @@
+[root@www ~]# groupadd [-g gid] [-r] 组名
+选项与参数：
+-g  ：后面接某个特定的 GID ，用来直接给予某个 GID ～
+-r  ：创建系统群组啦！与 /etc/login.defs 内的 GID_MIN 有关。
+
+范例一：新建一个群组，名称为 group1
+[root@www ~]# groupadd group1
+[root@www ~]# grep group1 /etc/group /etc/gshadow
+/etc/group:group1:x:702:
+/etc/gshadow:group1:!::
+# 群组的 GID 也是会由 500 以上最大 GID+1 来决定！

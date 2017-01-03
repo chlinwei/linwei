@@ -1,0 +1,35 @@
+一.两个vsftp运作实例
+
+vsftpd服务本身是在22端口开启服务的
+现在要求是:
+	1)预设的port22:使用/etc/vsftpd/vsftpd.conf(配置文件),以及/usr/lib/systemd/system/vsftpd.service设定脚本
+	2)特殊的port555:使用/etc/vsftpd/vsftpd2.conf(配置文件),以及/etc/systemd/system/vsftpd2.service设定脚本
+
+过程:
+1)cd /etc/vsftpd
+2)cp vsftpd.conf vsftpd2.conf
+
+3)vim vsftpd2.conf
+添加:listen_port=555这一行
+
+4)cp /usr/lib/systemd/system/vsftpd.service /etc/systemd/system/vsftpd2.service
+
+5)vim /etc/systemd/system/vsftpd2.srevice
+修改为下面两行
+Description:Vsftpd second daemon
+ExecStart=/usr/sbin/vsftpd /etc/Vsftpd/vsftpd2.conf
+
+6)systemctl daemon-reload(systemd重新读入脚本)
+7systemctl list-unit-files --all | grep vsftpd(因该可以看到vsftpd2.service)
+...
+
+
+二.暂时新增vsftpd到2121端口
+1)cd /etc/vsftpd
+2)cp vsftpd.conf vsftpd3.conf
+3)vim vsftpd3.conf
+listen_port = 2121
+4)systemctl start vsftpd@vsftpd3.service
+
+
+

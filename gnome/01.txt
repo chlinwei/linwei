@@ -1,0 +1,154 @@
+1.如何安装chrome
+cd /etc/yum.repo.d
+创建一个google.repo的文件
+里面输入下面的内容
+[google64]
+name=Google - x86_64
+baseurl=http://dl.google.com/linux/rpm/stable/x86_64
+enabled=1
+gpgcheck=0 //注意这里改为0,否则出现警告安装不了
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+保存推出
+dnf install google-chrome-stable
+
+2.dnf命令
+1).dnf repolist 显示系统中可用的dnf软件库 
+2).dnf repilist all 查看系统中可用和不可用的所有DNF软件库
+3).dnf list 列出所与RPM包
+4).dnf list installed 列出所有安装了RPM包
+5).dnf list available 列出来自所有可用软件库的可供安装的软件包
+6).dnf search nano 搜索想要安装的软件包，serach后面接部分软件包名
+7).dnf info nano,查看软件包的详情 
+8) dnf install xxx 安装软件
+9).dnf update systemd 升级某个软件包
+10).dnf check-update 检查系统中所有软件包的更新
+11).dnf update或dnf upgrade 升级系统中所有可升级的软件包
+12).dnf remove nano或dnf erase nano 删除软件包
+13).dnf autoremove 某些用于解决特定软件依赖的软件包会变得没有存在的意思，这条命令将删除这些没用的孤立的软件包
+14).dnf clean all 在使用DNF的过程中,会因为各种原因在系统中残留各种过时的文件和未完成的编译工程，这条命令将删除这些没用的垃圾文件
+15) dnf history 查看DNF命令历史
+16).dnf grouplist 查看所有的软件包组
+17) dnf groupinstall 'Educational Software' 安装一个软件包组
+18) dnf groupdate 'Educational Software'升级一个软件包组中的软件包
+19) dnf groupremove 'Educational Software' 删除一个软件包组
+20) dnf reinstall nano 重新安装特定软件包
+21) dnf downgrade acpid 回滚某个特定软件的版本
+
+
+3.如何安装g++?
+1)dnf search g++
+2)dnf install gcc-c++
+
+4.fedora 24 默认没有sudo包
+ 添加 linwei	ALL=(ALL) 	ALL
+5.fedora 24  centos7 中
+  系统服务启动,重起,设置服务启动项命令合并为systemctl
+  以前用service或者/etc/init.d/命令重起停止等没效果,因为命令合并
+  为systemctl
+  以前命令是这样子的
+ service httpd start
+ service httpd restart
+ service httpd stop
+ chkconfig-levels 234 httpd on :开机启动httpd
+ 或者
+  /etc/init.d/httpd start
+  /etc/init.d/httpd restart
+  /etc/init.d/httpd stop
+  新版本fedora24 centos7,把这些命令全部合并了.
+  systemctl start httpd.service
+  systemctl restart httpd.service
+  systemctl stop httpd.service
+  systemctl kill httpd.service(有时服务停止不下来必须杀死服务)
+
+  systemctl enable httpd.service:开机启动httpd
+  systemctl disable httpd.service:禁止开机启动httpd
+
+  systemctl status sshd :查看sshd的状态
+  systemctl 和systemctl list-units等价:列出所有运行中的单元
+  systemctl --failed ：输出运行失败的单元
+  所有可用的单元文件放在/usr/lib/systemd/system/ 和
+  /etc/systemd/system/ 目录下(后者优先级更高) 
+  systemctl list-unit-files :查看已安装的服务(并不能查看的服务的状态)
+  systemctl list-unit-files | grep enabled:查看默认启动的服务
+  systemctl | grep sshd :查看当前服务状态
+  systemctl isolate runlevel3.target:切换到运行级别3,对下次启动无影响
+  systemctl isolate runlevel5.target:切换到运行级别5,对下次启动无影响
+    
+
+  systemd-analyze :可以查看总共开机时间
+  systemd-analyze blame:分析启动时各个进程花费的时间
+  systemd-analyze critical-chain:分析启动时的关键链
+  systemctl is-enabled sshd 检查某个单元是否启用
+  systemctl status  sshd 检查某个单元是否运行
+
+  systemctl is-active sshd :查看运行状态和systemctl status sshd差不多
+  systemctl enable sshd :启动某项服务(启动不代表能运行，要systemctl start sshd才能运行)
+  systemctl disable sshd:禁用某项服务
+  systemctl kill sshd :杀死某个服务
+  systemctl list-unit-files --type=mount:列出所有系统挂载点,还可以socket
+  systemctl start tmp.mount
+  systemctl stop tmp.mount
+  systemctl restart tmp.mount
+  systemctl reload tmp.mount
+  systemctl status tmp.mount
+
+  systemctl is-active tmp.mount
+  systemctl enable tmp.mount:在启动时激活挂载点
+  systemctl disable tmp.mount:在禁用时激活挂载点
+
+
+    
+一个单元配置文件可以描述如下内容之一：系统服务（.service）、挂载点（.mount）、sockets（.sockets） 、系统设备（.device）、交换分区（.swap）、文件路径（.path）、启动目标（.target）、由 systemd 管理的计时器（.timer）。详情参阅 man 5 systemd.unit。
+使用 systemctl 控制单元时，通常需要使用单元文件的全名，包括扩展名（例如 sshd.service）。但是有些单元可以在systemctl中使用简写方式。
+如果无扩展名，systemctl 默认把扩展名当作 .service。例如 netcfg 和 netcfg.service 是等价的。
+挂载点会自动转化为相应的 .mount 单元。例如 /home 等价于 home.mount。
+设备会自动转化为相应的 .device 单元，所以 /dev/sda2 等价于 dev-sda2.device。
+注: 有一些单元的名称包含一个 @ 标记， (e.g. name@string.service): 这意味着它是模板单元 name@.service 的一个 实例。 string 被称作实例标识符, 在 systemctl 调用模板单元时，会将其当作一个参数传给模板单元，模板单元会使用这个传入的参数代替模板中的 %I 指示符。 在实例化之前，systemd 会先检查 name@string.suffix 文件是否存在（如果存在，应该就是直接使用这个文件，而不是模板实例化了）。大多数情况下，包换 @ 标记都意味着这个文件是模板。如果一个模板单元没有实例化就调用，该调用会返回失败，因为模板单元中的 %I 指示符没有被替换。
+systemctl start <单元>
+
+6.修改crontab -e 的默认编辑器成vim 
+ echo "export EDITOR=/usr/bin/vim" >> ~/.bashrc
+ source ~/.bashrc
+
+7.如何添加fedora中文社区源
+进入http:///repo.fdzh.org  点击按Fedora版本浏览
+在https://repo.fdzh.org/FZUG/ 里点击readme
+此时浏览器会自动下载readme,readme有如何添加软件源
+
+wget http://repo.fdzh.org/FZUG/FZUG.repo -P /etc/yum.repos.d/
+8.如何添加rpmfusion源
+进入www.rpmfusion.org 
+For users里第一行
+Enable RPM Fusion on your system and verfiying RPM Fusion's signing keys,点击这行
+点击对应的RPM Fusion free for fedora 24,就开始下载了,然后直接安装
+
+9.fedora24 禁止光标闪烁 
+gsettings set org.gnome.desktop.interface cursor-blink false
+
+10.如何安装fcitx-googlepinyin
+1)安装fcitx,im-chooser(用来选择ibus或fcitx等输入法框架的),fcitx-configtool(用来选择fcitx输入法的)
+2)下载fcitx-googlepinyin
+4)fcitx-configtool来选择输入法googlepinyin
+3)命令行输入im-chooser 切换到fcitx重启生效,尽管右上角还是显示的ibus框架
+但是左下角已经显示是小企鹅框架了
+4)选择左下角图标，右键选择config=>Global Config
+5)在Trigger Input Method里的左边按shift,表示shift切换输入法
+6)在Commit when toggle state 默认是打勾的,取消勾,表示在输入中文时的
+一些字母突然切换到英文时舍弃
+
+
+
+fedora24配置..打开打开终端快捷键设置 
+1.右键 ->settings->keyboard->Custom Shortcuts->...
+2.添加fedora中文社区源
+wget http://repo.fdzh.org/FZUG/FZUG.repo -P /etc/yum.repos.d/
+3.dnf update
+4.安装vim ctrp delimiMate tagbar vim-pathogen vim-surround YouCompleteMe
+同时下载python-2.7 python-devel cmake clang 
+5.fedora24 禁止光标闪烁 
+gsettings set org.gnome.desktop.interface cursor-blink false
+6.修改默认编辑器
+echo "export EDITOR=/usr/bin/vim" >> ~/.bashrc
+export network=/etc/sysconfig/network-scripts
+7 sougoupinyin nmap screefetch
+

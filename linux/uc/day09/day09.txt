@@ -1,0 +1,266 @@
+复习：
+1.文件的管理
+    dup/dup2函数  - 主要用于复制文件描述符
+    fcntl函数 - 主要用于操作文件描述符
+    access函数 - 主要用于判断文件是否存在以及拥有权限 
+作业：
+-----------------------------------------------------------------------------
+今天内容：
+     (1)文件的管理
+     (2)目录的管理
+     (3)进程的管理
+
+1.文件的管理
+1.1 常用的文件管理函数
+(1)stat/fstat函数(重点)
+     #include <sys/types.h>
+     #include <sys/stat.h>
+     #include <unistd.h>
+     int stat(const char *path, struct stat* buf);
+     int fstat(int fd, struct stat *buf);
+第一个参数：文件的路径名/文件描述符
+第二个参数：结构体指针
+struct stat
+{
+      ...
+      mode_t    st_mode;/*文件的类型和权限信息*/
+      off_t     st_size;    /*文件的大小信息*/
+      time_t    st_mtime;   /*文件的最后一次修改时间*/
+      ...
+      // 其中off_t本质就是long int类型
+      // 其中time_t本质就是long int类型
+};
+函数功能：
+     主要用于获取参数指定文件的状态信息
+
+     #include <time.h>
+     char *ctime(const time_t *timep);
+  => 主要用于将整数类型的时间转换为字符串形式的时间
+     struct tm *localtime(const time_t *timep);
+  => 主要用于将整数类型的时间转换为结构体指针类型时间
+     struct tm 
+     {
+         int tm_sec; /* 秒 */
+         int tm_min;/* 分 */
+         int tm_hour;/* 时 */
+         int tm_mday;/* 日 */
+         int tm_mon; /* 月 +1 */
+         int tm_year; /* 年 +1900 */
+
+         int tm_wday;/* 星期 */
+         int tm_yday; /* 一年中的第几天 */
+         int tm_isdst; /* 夏令时 了解 */
+    };
+
+扩展：
+    获取一个文件大小的方法主要有三种：
+        a.使用fseek函数将文件读写位置重置到末尾，使用
+            ftell函数来获取文件的大小
+        b.使用lseek函数将文件读写位置重置到末尾，通过返
+            回值获取文件的大小
+        c. 使用stat/fstat函数可以获取文件的大小
+
+(2)chmod/fchmod函数
+     #include <sys/stat.h>
+      int  chmod(const  char  *path,  mode_t mode);
+      int fchmod(int fd, mode_t mode);
+第一个参数：文件的路径名/文件的描述符
+第二个参数：文件的权限信息
+函数功能：
+      主要用于修改指定文件的权限信息
+
+(3)truncate/ftruncate函数(重点)
+     #include <unistd.h>
+     #include <sys/types.h>
+     int truncate(const char  *path,  off_t length);
+     int ftruncate(int fd, off_t length);
+第一个参数：文件的路径名/文件描述符
+第二个参数：文件的最新长度
+函数功能：
+      主要用于修改文件的大小信息
+注意：
+      如果文件变小了，则多余的数据会被丢弃，如果文件变大了，则文件会被扩展，扩展出来的空间读取到的数据是'\0'
+
+(4)umask函数(了解)
+     #include <sys/types.h>
+     #include <sys/stat.h>
+     mode_t umask(mode_t mask);
+函数功能：
+     主要用于设置文件创建时的权限屏蔽字为：mask & 0777，通过返回值返回之前旧的权限屏蔽字
+
+(5)又见mmap/munmap函数
+     建立文件到虚拟内存地址之间的映射
+  => 通过映射的机制可以将对文件的读写操作转换为对内存
+        地址的读写操作，因此又多了一种访问文件的方式     
+
+(6)其他功能函数
+     link() - 主要用于创建硬链接
+     unlink() - 主要用于删除硬链接
+     rename() - 主要用于重命名
+     remove() - 主要用于删除文件
+     ... ... 
+
+2.目录的管理
+2.1 常用的管理函数
+(1)opendir函数
+     #include <sys/types.h>
+     #include <dirent.h>
+     DIR *opendir(const char *name);   
+函数功能：
+     主要用于打开参数指定的目录，成功返回目录的首地址，失败返回NULL
+
+(2)readdir函数
+     #include <dirent.h>
+     struct dirent *readdir(DIR *dirp);
+函数功能：
+     主要用于读取参数指向的目录中的内容，成功返回目录指针，失败返回NULL，结构体的类型如下：
+struct dirent
+{
+      ...
+      unsigned char  d_type;/* 文件的类型 */
+      char   d_name[256]; /* 文件名称 */
+};
+
+(3)closedir函数
+     #include <sys/types.h>
+     #include <dirent.h>
+     int closedir(DIR *dirp);
+函数功能：
+     主要用于关闭参数指定的目录
+练习：
+     编程实现递归打印指定目录中的所有内容，要求子目录中的内容也要打印出来
+
+2.2 其他目录管理函数
+    mkdir() - 创建目录
+    rmdir() - 删除目录
+    chdir() - 切换目录
+    getcwd() - 获取当前工作目录的绝对路径
+    ... ...
+
+3.进程的管理
+3.1 基本概念和基本命令
+(1)基本概念
+     程序 - 存放在磁盘上的可执行文件
+     进程 - 运行在内存中的程序
+     同一个程序可以启动多个进程
+(2)基本命令
+     ps  -  查看当前终端启动的进程信息(进程的快照)
+ps命令的执行结果如下：
+     PID  -  进程的编号(重点)
+     TTY  - 终端的次要装置号码(了解)
+     TIME - 消耗CPU的时间(了解)
+     CMD - 进程的名称(重点)
+
+     ps -aux 表示显示所有包含其他使用者的进程信息
+     ps -aux|more  表示分屏显示进程信息
+ps -aux | more的执行结果如下(了解)：
+     USER  -  用户名称
+     PID - 进程号
+     %CPU -  占用CPU的百分比
+     %MEM  - 占用内存的百分比
+     VSZ - 虚拟内存的大小
+     RSS - 真实物理内存的大小
+     TTY - 终端的次要装置号码     
+     STAT - 进程的状态信息
+     START - 进程的启动时间
+     TIME - 消耗CPU的时间
+     COMMAND -  进程的名称
+
+进程的常见状态有(了解)：
+     S  - 休眠状态，为了减轻CPU的压力
+     s  -  进程的领导者，拥有子进程
+     Z  -   僵尸进程(已经结束但是资源没有释放的进程)
+     R  -  正在运行的进程
+     O  -  可以运行的进程
+     T  -   挂起的进程
+     <  -  优先级比较高的进程
+     N  -   优先级比较低的进程
+     ...  ... 
+    
+     ps -ef  表示以全格式的方式显示所有进程信息
+     ps -ef | more  表示以分屏方式显示进程信息
+ps -ef | more的执行结果如下(了解):
+      UID  -  用户的编号
+      PID  -  进程的编号 
+      PPID -  父进程的编号
+      C  - 占用CPU的百分比
+      STIME - 进程的启动时间
+      TTY  - 终端的次要装置号码          
+      TIME - 消耗CPU的时间
+      CMD  - 进程的名称
+  
+      kill -9 进程号   表示杀死指定的进程 
+  
+      目前主流的操作系统支持多进程，在操作系统中，如果进程A启动了进程B，那么进程A就叫做进程B的父进程，进程B就叫做进程A的子进程
+      操作系统中进程0(系统级的进程)负责启动进程1(init)和进程2，其他所有的进程都是直接/间接  由 进程1/进程2 启动的，所有的进程组成了树形结构
+
+作业：
+      查询和尝试使用文件和目录的其他管理函数
+明日预报：
+     (1)进程的管理
+     (2)信号的处理
+
+
+
+
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+     
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

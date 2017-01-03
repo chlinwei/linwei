@@ -1,0 +1,3 @@
+bash
+-c string  该选项表明string中包含了一条命令bash -c "echo haha"
+

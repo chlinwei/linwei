@@ -1,0 +1,205 @@
+1.source 01.sh 或者 . 01.sh,可以将自身脚本中的变量
+的值或函数等数的返回值传递到当前父shell脚本中使用
+例子: echo "userdir=`pwd`" > testsource.sh ,source或者. testsource.sh,echo $userdir
+2.变量:
+1)局部变量:只能在创建他们的shell函数或脚本中使用
+2)环境变量(全局变量):可以在创建他们的shell及其
+派生出来的任意子进程shell中使用
+3.环境变量
+可以在命令行中设置,但用户退出时这些变量
+值也会丢失,因此最好在用户家目录下的.bash_pfole文件中
+或全局配置/etc/profile文件或/etc/bashrc,或/etc/profile.d/中定义
+,将环境变量放入profile文件中，每次用户登录时这些变量都将被初始化 
+4.设置环境变量
+1)export 变量名=value
+2)变量名=value;export 变量名
+3)declare -x 变量名=value
+
+5.局部变量
+变量名=value
+变量名='value'
+变量名="value"
+cmd=`date`
+cmd=$(date +%F)
+习惯:数字不加引号，其他默认加双引号
+
+6.shell特殊变量
+1).位置变量
+$0 获取当前执行shell脚本名称,包括路径
+
+$n获取当前shell脚本的第n个参数,当
+n=0时表示脚本的文件名,如果n大于10
+则用大括号扩起来,${10}
+
+$#获取当前shell命令的个数
+dirname $0 脚本的目录
+basename $0 脚本的名称
+$*:将所有命令行所有参数视为单个字符串等同于 "$1$2$3"
+$@:将命令行每个参数视为单独的字符,等同于"$1" "$2" "$3"
+
+2)进程状态变量
+$$ 获取当前shell的进程号(PID)
+
+$? 获取上一个命令的返回值
+返回值参考:
+0 表示运行成功
+2 权限拒绝
+1~125 表示运行失败,脚本命令、系统命令错误、参数传递错误
+126 找到命令,但是无法执行
+>127 命令被系统强制结束
+
+$!执行上一个指令的PID
+$_ 在此之前执行的命令或脚本的最后一个参数
+
+
+7.set -- "I am" handsome oldboy 将参数传入,本shell
+
+for i in $@;do echo $i;done #没有双引号下$*和$@都是一眼不过
+I
+am
+handsome
+oldboy
+
+for i;do echo $i;done #这里in变量列表相当与in "$@"
+I am
+handsome
+oldboy
+
+
+[linwei@lw shell]$ for i in "$*";do echo $i;done
+I am handsome oldboy
+[linwei@lw shell]$ for i in $*;do echo $i;done
+I
+am
+handsome oldboy
+[linwei@lw shell]$ for i in $@;do echo $i;done
+I
+am
+handsome
+oldboy
+[linwei@lw shell]$ for i in "$@";do echo $i;done
+I am
+handsome
+oldboy
+
+8.bash内部变量
+有些内部变量在目录列表时是看不见的
+由shell本身提供,常见的内部命令有:
+echo eval exec export readonly read shift
+wait exit和.
+
+
+字符串操作
+1)${#string}:返回string字符串的长度(wc -m) echo $string|wc-m
+2)${string:position}在$string中,从位置$position之后开始提取字符串(不包含第position个字符)
+3)${string:position:length} 在$string中，从位置$position之后开始提取字符串长度为$length
+4)${string#substring}从变量$string开头开始删除最短匹配$substring子串
+5)${string##substring}从变量$string开头开始删除最长匹配$substring子串
+6)${string%substring}从变量$string结尾开始删除最短匹配$substring字串
+7)${string%%substring}从变量$string结尾开始删除最长匹配$substring字串
+8)${string/substring/replace}使用$replace,来代替地一个匹配的 $substring
+9)${string/#substring/replace}如果$string前缀匹配$substring,就用$replace来代替匹配$substring
+10)${string/%substring/replace}如果$string后缀匹配$substring就用$replace来代替匹配$substring
+
+
+9.变量的数值计算
+变量的数值计算常见的有一下几个命令
+(()) let expr bc $[]
+
+(()):此法很常用,且效率高,用于执行简单的整数计算
+let赋值表达式功能等同于:((赋值表达式))但是没有(())效率高,i=1;let i=i+1;echo $i,只能用于整数
+expr命令一般用户整数值，但也可用于字符串,用来求表达式变量的值,expr也是个手工命令行计算器,expr 1 + 1运算符左右要有空格
+expr 1 \* 2
+
+expr $[2+3],可以没有空格
+expr $[2**3]
+expr "test.pub" : ".*\.pub" && echo 1 || echo 0 #判断字符串扩展名
+expr判断对整数的判断
+expr $x + 0 &> /dev/null
+[ $? -eq 0 ] && echo int || echo no int
+
+i=2; echo $i + 1.1 | bc =>效率低
+seq -s "+" 10|bc
+echo "scale=2;1.1 / 2"|bc =>保留2位小数
+echo "obase=2;8"|bc =>进制的转换
+
+typeset -i A=1 B=2;A=A+B;echo $A
+
+echo $[3+2]
+
+
+read 参数
+-p prompt:设置提示信息
+-t timeout:设置输入等待的时间,单位默认为秒
+read -p "please input two number:" a1 a2
+
+
+格式1: test<测试表达式>
+格式2: [ <测试表达式> ]
+格式3: [[ <测试表达式> ]]
+格式1和格式2是等价的 
+格式3为扩展的test命令,&& || > <等操作符可以应用于[[]]中，但是不能用于[]中
+例子:[[ -f a.txt && -d example ]] && echo 1 || echo 0 
+[ -f a.txt && -d example ] && echo 1 || echo 0 这个有语法错误
+但是可以这样写
+[ -f a.txt -a -d example ] && echo 1 || echo 0
+
+
+字符串测试操作符
+-z "$string"
+-n "$string"
+"$string1" = "$string2"等价于 "$string1 == $string2"//注意等号两边有空格
+
+整数二元比较操作符
+在[]中使用的比较符    在(())和[[]]中使用的比较符    说明
+-eq                   ==                            equal,相等
+-ne                   !=                            not equal 不相等
+-gt                   >                             greater than 大于
+-ge                   >=                            greater equal大于等于
+-lt                   <                             less than 小于
+-le                   <=                            less equal 小于等于 
+
+注意:
+1)if [[ "$a" < "$b" ]],if["$a" \< "$b" ],在单[]里需要转义,因为shell也用<>重定向
+2)if [[ "$a" > "$b" ]],if["$a" \> "$b" ],在单[]里需要转义,因为shell也用<>重定向
+3)if[[ "$a" = "$b" ]],if[ "$a" = "$b" ]在单[]里不需要转义
+
+
+逻辑操作符
+在[]中使用的逻辑操作符  在[[]]中使用的逻辑操作符 说明
+-a                             &&                  与
+-o                             ||                  或
+!                              !                   非
+
+
+结尾小括号用法
+[ 3 == 3 ] && (echo 1;echo 2)可以
+[ 3 == 3 ] && [echo 1;echo 2] 错误
+a=1;
+[ "$a" == 1 ] && {
+echo haha;
+echo 123e3;
+} 可以
+
+单分支结构
+if 条件;then
+    指令
+fi
+
+双分支结构
+if 条件;then
+    指令
+else
+    指令
+fi
+
+多分支结构
+if 条件;then
+elif 条件;then
+    指令
+elif 条件;then
+    指令
+else
+    指令
+fi
+

@@ -1,0 +1,14 @@
+cc -g 01.c -o test
+gdb test
+
+l :list,从第一行开始列出源码
+enter:重复上一条命令
+break n:在第n行打断点
+break func:在func函数这行打断点
+info break;查看断点信息
+p 变量:打印出变量的值
+bt:查看函数堆栈
+finish:退出函数
+c:继续运行
+q:退出gdb
+

@@ -1,0 +1,68 @@
+"let myleader=","
+let mapleader=";"
+nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
+nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel
+"注视一行
+"nnoremap <leader>cc viw<esc>a*/<esc>hbi/*<esc>lel  
+
+
+"基本配置-----------------------------------
+set nu
+set title
+inoremap jk <esc>
+set incsearch
+set ignorecase
+set ruler
+set wildmenu
+set laststatus=2
+set cursorline
+syntax enable
+syntax on
+filetype indent on
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set nocompatible
+nnoremap <C-b> o{}<left><cr><cr><up><tab>
+nnoremap <leader>w <C-c>:wq<enter>
+vnoremap <leader>w <C-c>:wq<enter>
+nnoremap <leader>q <esc>:q!<enter>
+vnoremap <leader>q <esc>:q!<enter>
+inoremap ( ()<LEFT>
+inoremap [ []<LEFT>
+inoremap { {}<LEFT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+nnoremap <leader>a  <Shitf>a;
+"开启文件类型侦测
+filetype on
+"根据侦测到的不同类型加载对应的插件
+filetype plugin on
+runtime bundle/pathogen/autoload/pathogen.vim
+execute pathogen#infect()
+"插件nerdcommenter 
+"<leader>cc  <leader>cu
+"插件vim-powerline的配置
+let g:Powerline_colorscheme='solarized256'
+"插件a.vim .h和.cpp文件之间的切换
+nmap <leader>ch :A<CR>
+nmap <leader>sch :AS<CR>
+"NEREtree插件 
+" 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
+nmap <Leader>fl :NERDTreeToggle<CR>
+6  " 设置NERDTree子窗口宽度
+let NERDTreeWinSize=32
+" 设置NERDTree子窗口位置
+let NERDTreeWinPos="right"
+" 显示隐藏文件
+let NERDTreeShowHidden=1
+" NERDTree 子窗口中不显示冗余帮助信息
+let NERDTreeMinimalUI=1
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer=1
+"开启树
+nnoremap <leader>t :NERDTree<cr>
+"关闭树 和关闭普通窗口一样,;q ;w
+"切换窗口
+"CRTL+w+w

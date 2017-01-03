@@ -1,0 +1,351 @@
+awk命令:awk是一种编程语言,用于在linux/Unix下
+对文本和数据进行处理,数据可以来自标准输入(stdin),
+一个或多个文件,或者它命令的输出,它支持用户自定义
+函数和动态正则表达式等先进功能,是linux/unix下
+的一个强大编程工具,它在命令行中使用,但更多的是
+作为脚本来使用,awk有很多内建功能,比如数组,函数等
+,这是它和c语言的相同之处,灵活性是awk最大的优势
+
+awk命令格式和选项
+语法形式
+awk [options] 'script' var=value file(s)
+awk [options] -f scriptfile var=value file(s)
+
+常用的命令选项
+-F fs fs指定输入分割符,fs可以是字符串或正则表达式,如-F:
+-v var=value 赋值一个用户自定义变量,将外部变量传递给awk
+-f scripfile 从脚本文件中读取awk命令
+-m[fr] val 对val值设置内在限制,-mf选项限制分配给val的最大
+块数目,-mr选项限制记录的最大数目,这两个功能是Bell实验室版
+awk的扩展功能,在标准awk中不适用
+
+akw脚本是由模式和操作组成的
+
+模式
+模式可以是下任意一个:
+1)/正则表达式/:使用通配符的扩展集
+2)关系表达式:使用运算符进行操作,可以是字符串或数字的比较测试
+3)模式匹配表达式:用运算符~(匹配)和~!(不匹配)
+4)BEGIN语句块,pattern语句块,END语句块:参见awk工作原理
+
+操作
+操作由一个或多个命令,函数,表达式组成，之间
+由换行符或分号隔开,并位于大括号内,主要是:
+1)变量或数组赋值
+2)输出命令
+3)内置函数
+4)控制流语句
+
+awk脚本基本机构
+awk 'BEGIN{print "start"} pattern {commands} END{print "end"}' file
+awk 'BEGIN{print "start"} pattern {commands} pattern{commands}.. END{print "end"}' file
+对于没输入一行,BEING块执行完了,在执行pattern块...最后执行END块
+
+一个awk脚本通常由:BEGIN语句块,能够使用模式匹配的通用语句块,END语句块
+3部分组成,这三个部分是这样的任何一个部分都可以不出现在
+脚本中,脚本通常是被单引号或双引号中
+awk 'BEGIN {i=0} {i++} END{print i}' filename
+awk "BEGIN {i=0} {i++} END{print i}" filename
+
+awk工作原理
+awk 'BEGIN{commands} pattern{commands} END{commands}'
+第一步:执行BEGIN{commandsd} 语句块中的语句
+第二步:从文件或标准输入(stdin)读取一行,然后执行
+pattern{commands}语句块,它逐行扫描文件,从第一行
+到最后一行重复这个过程,直到文件全部被读取完毕
+第三步:当读取输入流末尾时,执行END{commands}语句块
+
+BEGIN语句块在awk开始从输入流中读取行之前被执行,
+这是一个可选的语句块,比如变量初始化,打印输出表格
+的表头等语句通常可以写在BEGIN语句块中
+
+END语句块在awk从输入流中读取完所有的行之后
+即被执行,比如打印所有行的分析结果这类信息汇总
+都是在END语句块中完成,它也是一个可选语句块
+
+pattern语句块中通用的命令是最终要的部分,它也是
+可选的,如果没有提供pattern语句块,则默认执行
+{print},即打印每一个读取到的行,awk读取的每一行
+都会执行该语句块
+
+echo -e "A line \nA line 2" |\
+	awk 'BEGIN{print "start"} {print} END{print "END"}'
+当使用不带参数的print时,它就打印当前行,当print的参数
+是以逗号进行分隔时,打印时则以空格作为定界符
+
+echo | awk '{var1="v1";var2="v2";var3="v3";print var1,var2,var3;}'
+结果为 v1 v2 v3
+注释:print var1,var2,var3中的逗号","只能为,或者空格
+如果为空格的话结果为 v1v2v3
+echo | awk '{var1="v1";var2="v2";var3="v3";print var1"="var2"="var3;}'
+这里用"="进行字符串的拼接,结果为v1=v2=v3
+
+/#########################
+cat a
+wo shi linwei
+wo lai jin nian 23
+haha
+
+cat a | awk '{print "line"NR"":" "}' 
+line1:
+line2:
+line3:
+这里NR要加双引号,NR表示当前行
+/##########################
+
+
+echo -e "line1 f2 f3\nline2 f4 f5" | awk '{print $(NF-1)}'
+f2
+f4
+这里要加园括号才能计算,NF表示字段总数
+
+
+awk内置变量(预定义变量)
+说明:[A][N][P][G]表示第一个支持变量的工具,
+[A]=awk,[N]=nawk,[P]=POSiXawk,[G]=gawk
+$n 当前记录的第n个字段，比如n为1表示第一个字段，n为2表示第二个字段。
+$0 这个变量包含执行过程中当前行的文本内容。
+[N] ARGC 命令行参数的数目。
+[G] ARGIND 命令行中当前文件的位置（从0开始算）。 
+[N] ARGV 包含命令行参数的数组。 
+[G] CONVFMT 数字转换格式（默认值为%.6g）。
+[P] ENVIRON 环境变量关联数组。 
+[N] ERRNO 最后一个系统错误的描述。
+[G] FIELDWIDTHS 字段宽度列表（用空格键分隔）。
+[A] FILENAME 当前输入文件的名。
+[P] FNR 同NR，但相对于当前文件。
+[A] FS 字段分隔符（默认是任何空格）。
+[G] IGNORECASE 如果为真，则进行忽略大小写的匹配。
+[A] NF 表示字段数，在执行过程中对应于当前的字段数。 
+[A] NR 表示记录数，在执行过程中对应于当前的行号。 
+[A] OFMT 数字的输出格式（默认值是%.6g）。
+[A] OFS 输出字段分隔符（默认值是一个空格）。
+[A] ORS 输出记录分隔符（默认值是一个换行符）。 
+[A] RS 记录分隔符（默认是一个换行符）。
+[N] RSTART 由match函数所匹配的字符串的第一个位置。
+[N] RLENGTH 由match函数所匹配的字符串的长度。 
+[N] SUBSEP 数组下标分隔符（默认值是34）。
+
+
+统计文件中的行数
+awk 'END{print NR}' filename
+
+将外部变量值传递给awk
+var=1000
+echo | awk -v variable=$var '{print variable}':注意这里不要加$
+另一种方法
+var1="aaa"
+var2="bbb"
+echo | awk '{print v1,v2}' v1=$var1 v2=$var2
+注意:把变量赋值放在最后,不能放在前面,而且两个赋值表达式
+中间只能为空格
+
+
+当输入来自于文件时使用:
+awk '{print v1,v2}' v1=$var1 v2=$var2 filename
+
+作为一种程序设计语言所具有的特点之一,awk支持多种运算,
+这些运算与c语言提供的基本相同,awk还提供了一系列内置运算如(log,sqr,cos,sin等)
+和一些对于字符串进行操作(运算)的函数(如length,substr等等)
+这些函数的引用大大提高了awk的运算功能,作为对条件
+转移指令的一部分,关系判断是每种程序设计语言都
+具备的功能,awk也不例外,awk中允许进行多种测试哦
+作为样式匹配,还提供了模式匹配表达式
+~(匹配)和!~(不匹配)作为对测试的一种扩展,awk
+也支持用逻辑运算符
+
+算术运算符
++-             加,减
+& / *          求余,除,乘
++ - !          一元加,减和逻辑非
+^ ***          求幂
+++ --		    ++ --
+
+awk 'BEGIN{a="b";print a++,++a;}'
+注意:所有用作算术运算符进行的操作,操作数自动转化为数值,所有非数值都变为0
+
+
+赋值运算符
+= += -= *= /= %= ^= **=
+逻辑运算符
+|| &&
+awk 'BEGIN{a=1;b=2;print (a>5 && b<=2),(a>5 || b<=2);}' 
+0 1
+注释:(a>5 && b<=2)是表达式,结果为假是0
+
+正则表达式
+~ (匹配正则表达式) 
+!~(不匹配正则表达式)
+awk 'BEGIN{a="100testa";if(a ~/^100*/){print "ok"};}'
+ok
+注释:正则表达式要放在//中间
+
+关系运算符
+< <= > >= != ==
+awk 'BEGIN{a=100;if(a>34){print "ok"}}'
+ok
+其它元算符
+$ 字段引用
+空格 字符串连接符
+? c条件表达式
+in 数组中是否存在某键值
+
+awk 'BEGIN{a="b";print a=="b"? "ok":"err";}'
+ok
+
+in判断的是键是否在某个字典的键(keys)里面
+awk 'BEGIN{a="b";arr[0]="b";arr[1]="c";print (a in arr);}' 
+
+awk 'BEGIN{a="b";arr[0]="b";arr["b"]="c";print (a in arr);}' 
+
+
+awk高级输入输出
+读取下一条记录
+awk中next语句使用:在循环逐行匹配,如果遇到next,就会跳过当前行
+直接忽略下面语句,而进行下一行匹配
+cat 01.c
+a
+b
+c
+d
+e
+awk 'NR%2==1{next}{print NR,$0;}' 01.c
+
+2 b
+4 d
+cat text.txt 
+web01[192.168.2.100] 
+httpd ok
+tomcat ok 
+sendmail ok 
+web02[192.168.2.101]
+httpd ok
+postfix ok
+web03[192.168.2.102] 
+mysqld ok
+httpd ok 0 
+
+awk '/^web/{T=$0;next;}{print T":\t"$0;}' test.txt
+
+web01[192.168.2.100]:   httpd ok 
+web01[192.168.2.100]:   tomcat ok
+web01[192.168.2.100]:   sendmail ok
+web02[192.168.2.101]:   httpd ok 
+web02[192.168.2.101]:   postfix ok 
+web03[192.168.2.102]:   mysqld ok 
+web03[192.168.2.102]:   httpd ok
+
+简单地读取一条记录
+awk getline用法:输出重定向需要用到getline函数,getline从标准输入
+管道或者当前正在处理的文件之外的其他
+输入文件获得输入,它负责从输入获得
+下一行内容,并给NF,NR和FNR等内建变量
+赋值,如果得到一条记录,getline函数
+返回1,如果到达文件末尾就返回0,
+如果出现错误,例如打开文件失败,返回-1
+getline语法:getline var,变量var包含了特定行的内容
+
+getline从整体角度来说:
+1)当其左右无重定向符|或<时:getline作用与当前文件
+,读入当前文件的第一行给其后跟的变量var或$0(无变量)
+应该注意到,由于awk在处理getline之前已经读入了一行,
+所以getline得到的返回结果是隔行的
+
+2)当其左右有重定向符|或<时:getline则作用于定向输入
+文件,由于该文件是刚打开的,并没有被awk读入一行,只是
+getline读入,那么getline返回的是该文件
+的第一行,而不是隔行
+
+awk 'BEGIN{"date" | getline out;print out}' test
+注释:getline是将date这个shell命令运行完了后,将输出结果给out变量
+
+
+执行shell的date命令，并通过管道输出给getline，然后getline
+从管道中读取并将输入赋值给out，split函数把变量out转化成数组mon
+，然后打印数组mon的第二个元素
+
+命令ls的输出传递给getline作为u输入,循环使getline从ls的输出中读取
+一行,并把它打印到屏幕,这里没有输入文件,因为BEGIN块
+在打开输入文件前执行,所以可以忽略输入文件
+awk 'BEGIN{ while( "ls" | getline) print }'
+
+关闭文件
+awk中允许在程序中关闭一个输入或输出文件,方法是使用awk的close语句
+close("filename")
+filename可以是getline打开的文件,也可以是stdin,包含文件名的变量或者
+getline使用的确切命令,或者一个输出文件,stdout,包含
+文件名的变量或者使用管道的确切命令
+
+输出到一个文件
+awk中允许用如下方法将结果输出到一个文件
+echo | awk 'print("hello,world") > "datefile"'
+或者
+echo | awk 'print("hello,world") >> "datefile"'
+
+设置字段定界符
+默认的字段定界符是空格,可以使用-F "定界符" 明确执行一个定界符
+awk -F : '{print $NF}' /etc/passwd
+NF表示每一行拥有的字段总数,print $NF就是打印以:分割的最后一行
+或者
+awk 'BEGIN{FS=":"}{print $NF}' /etc/passwd
+在BEGIN语句块中可以用FS="定界符"设置输出字段的定界符,和-F一样
+
+流程控制语句
+在linux awk的while,do-while和for语句中允许使用break,continue语句
+来控制流程走向,也允许使用exit这样的语句来退出
+break中短当前正在执行的循环并跳到循环外执行下一条语句
+,if是流程选择用户,awk中,流程控制语句,语法结构，
+与c语言类似,有了这些语句,其实很多shell程序都
+可以交给awk,而且性能非常快
+
+
+
+条件判断语句
+if(表达式)
+	语句1
+else
+	语句2
+
+if(表达式)
+	{语句1}
+else if(表达式)
+	{语句2}
+else
+	{语句3}
+
+awk 'BEGIN{
+test=100; if(test>90){
+print "very good";
+}
+else if(test>60){
+	print "good";
+}
+else {
+	print "no pass"
+}
+}'
+每条语句后面以;结尾
+
+循环语句
+while语句
+while(表达式)
+{语句}
+
+
+awk 'BEGIN{
+test=100;
+sum=0
+while(test>0)
+	{
+		sum+=test;
+		--test;
+	}
+	print sum
+}'
+
+
+for循环
+for循环有两种格式
+for(变量 in 数组)
+{语句}
+

@@ -1,0 +1,666 @@
+1.echo "我是林威" 命令执行后所回传的信息会流到标准输出(stand output)中
+2.echo "我是林威" > 01.txt 将标准输出的信息重定向到01.txt中
+3.cat >> 01.cpp << eof  
+123 eof  或者 cat > 01.cpp << eof 123
+eof (这里eof前面不能有空格)
+将123添加到文件01.cpp中去
+cat > 01.cpp
+123
+然后ctrl+D 或者ctrl+C(不会执行该命令) 
+4.cp 
+参数 -a :相当于-pdr
+	 -d :若若源文件为链接文件(link file) 则复制链接文件属性,而非档案本身
+	 -f :强制,若目标档案已经存在且无法开启,则
+		 移除后再尝试
+	 -i :若目标文件已经存在,在覆盖时会先询问
+	 -p :连同档案的属性一起复制过去,非使用默认属性 -r :递归,用于复制目录
+	 -u :若目标文件存在,则目标文件比源文件旧时才复制
+ cp  -i 01.cpp  lianxi/   如果lian下有01.cpp则会提示是否覆盖
+ \cp  -i 01.cpp  lianxi/  命令前面加上\则不会出现提示是否覆盖
+5.rm 
+-f:强制删除文件,-r递归删除删除文件或目录
+rmdir:删除空目录
+5.head -2 01.cpp 或者 head -n 2 01.cpp:显示前两行内容,什么都不写,默认显示十行,下面的tail一行
+6.tail -2 01.cpp:显示后两行内容
+7.grep 
+-v 排除
+grep 中 \{\}
+egrep 中{}
+8.sed 取各种内容 sed 参数 动作
+参数
+-n :安静模式(silent),在一般sed的用法中所有来自STDIN的数据一般都会被列出到屏
+	幕上,加上-n后只有经过sed特殊处理过的那一行(或操作),才会被列出来
+-e :直接在命令模式上进行sed的动作编辑
+-f :直接在sed的动作写在一个文件内,-f filename可执行filename内的sed动作
+-r :sed的动作扩展的是正则表达式的语法(默认的是基础正则表达式的语法)
+-i :直接修改读取的文件内容,而不是由屏幕输出
+n1,n2function
+function:
+a :新增,a的后面可以接字符串,而这些字符串会在新的一行出现(目前的下一行)
+c :替换,c的后面可以接字符串,这些字符串可以替换n1,n2之间的内容
+d :删除,因为是删除,所以d的后面通常不接任何参数
+i :输入,i的后面可以接字符串,而这些字符串会在新的一行出现(目前的上一行)
+p :打印也就是将某个选择的数据打印出来,通常p会与-n一起使用
+s :替换,可以直接进行替换的工作,通常这个s的动作可以搭配正则表达式
+   例如:1,20三/old/new/g就是
+
+例子:
+1)nl /etc/passwd | sed '2,5d' ,将/etc/passwd 的内容删除2-5行,并打印出来
+2)nl /etc/passwd | sed '2a drink tea',在第二行后增加一行drink tea
+3)nl /etc/passwd | sed '2,5c No 2-5 number' 将2,5行的内容改为No 2-5 number
+4)n1 /etc/passwd | sed -n '2,5p',将2-5行的内容打印出来
+5)sed -i '$a hahaha' 01.cpp 在最后一行追加一行 hahaha
+grep haha 01.cpp和 sed -n /haha/p 01.cpp
+awk /haha/ 01.cpp
+
+
+8.mkdir  a b c 创建三个目录
+  mkdir -p /a/b 递归创建
+
+9 which qmake ,查看文件的位置
+/usr/bin/qmake
+10 find / -type f -name "cat"
+find / -type f -name "01.cpp" -exec rm -f {} \;
+这里\是转义,{}表示的是find查找到的文件
+find ./ -type d -and -type f 并且,默认是and
+find ./ -type d -o -type f 或者
+find / -type f -name "01.cpp" | xargs rm -f
+find / -type f -mtime +1 将>=2天的内容找出来(修改时间查找)
+find / -type f -mtime -1 将一天前到现在的内容找出来
+find / -maxdepth levels 查找目录的深度
+11.查找ett.txt文件(100行)中的20到30行,seq 100 > ett.txt
+ 1)head -30 ett.txt | tail -11 ,-11是倒数十一行
+seq 1 5 | tac   (倒着打印出来)
+seq -s ":" 10 
+-s指定分割符
+ 2)sed -n 20,30p ett.txt
+ 3)awk '{if(NR>19&&NR<31) print$0}' ett.txt,NR表示行号,$0表示一整行数据内容
+ 4)将ett.txt里的oldboylinux替换为linwei
+   sed s#oldboylinux#linwei#g (sg表示全局替换),改的是输出结果
+   sed s/oldboylinux/linwei/g (sg表示全局替换),改的是输出结果
+   sed -i s#oldboylinux#linwei#g (sg表示全局替换),改变文件内容
+   find / -type f -name ett.txt | xargs sed -i s#oldboylinux#haha#g:将所/下所有ett.txt的文件内容oldboylinux替换为haha
+小结:sed擅长行
+小结:awk擅长列
+
+11.awk -F ":" '{print $1}' /etc/passwd; 以:为分隔符,将第一列打印出来
+
+12.将/oldboy目录下及其子目录下所有扩展名为.sh结尾的文件中包含./hostlists.txt的字符串全部替换为../idctest_iplist
+13.xargs:man一下,将find.ls的输出交给后面处理
+14.seq:打印数字序列echo {1..5},echo {a..f},大括号{}表示的是序列
+15.32为操作系统理论有2^32个字节的内容算成GB为4GB,实际上3.2GB
+    64位的操作系统只能装在64位的电脑上(即CPU64),同时需要装64位的常用软件
+    以发挥64位(X64)最佳性能,32位操作系统安装在64位电脑上硬件性能会大打折扣
+    32位CPU也可以支持8G内存,使用PAE可以扩展32位内存
+16. 光驱(IDE) /dev/fdN(N=0,1...)
+    光驱(SCSI) /dev/cdrom(->/dev/hdX)
+    硬盘(IDE) /dev/hdX(X=a,b,c...)
+    硬盘(SCSI) /dev/sdX(X=a,b,c...)
+    U盘        /dev/sdX(X=a,b,c...)
+
+
+17.
+    1)常规分区方案
+    / 剩余硬盘大小
+    swap 1.5倍
+    /boot 100M
+
+    2)DB及存储:有大量重要的数据
+    /data/ 剩余硬盘大小
+    / 50-200G
+    swap 1.5倍
+    /boot 100M
+    3)门户大网站
+    /50-200G
+    swap:1.5倍 
+    /boot 100M
+    不在进行分区,保留.
+    4)网友
+    /boot   
+    swap    
+    /
+    以下分区几乎没必要
+    /usr    
+    /home
+    /var
+    
+18.vimdiff,diff比较工具
+
+19. useradd xiaoming :添加一个小明的帐号
+    adduser xiaoming :添加一个小明的帐号
+    userdel -r xiaoming :删除一个用户,登陆目录及登陆目录中所有文件
+    passwd xiaoming:更改xiaoming的密码(有则更改,没有则添加)
+
+
+20.su和su - 都是切换用户的命令
+    区别:su只是切换了身份,但是shell环境仍然是切换前的环境,
+         su - 连用户与Shell环境一起切换了
+21.echo linwei232529 | passwd --stdin linwei(另一种该密码的方式,没有提示)
+22.history -d 行号 可以将指定的行号对应的内容删除
+   history  -c 将全部历史记录清空
+23.runlevel
+    0-half(Do not set initdefault to this)(关机模式)
+    1-Signal user mode(单用户模式)
+    2-Multiuser,widthout NFS(多用户模式)
+    3-命令行模式
+    4-unused没有使用
+    5-X11桌面模式
+    6-reboot重启模式
+24.ubuntu无线网络图标不见了用NetworkManager
+25.runlevel 查看当前运行级别
+26.init 3 切换到运行级别3
+27.msconfig windows启动
+28.netstat:查看网络状态,service可以用来立即启动某个服务
+-a(all)显示所有选项,默认不显示LISTEN相关
+-t(tcp)仅显示tcp相关选项
+-u(udp)仅显示与udp相关选项
+-n拒绝显示别名,能显示数字全部转化为数字
+-l仅列出有在listen的服务状态
+-p显示建立相关链接的程序名
+-r显示路由信息
+-e显示扩展信息,例如uid等
+-s按各个协议进行统计
+-c每隔一个固定时间执行该netstat命令
+提示:LISTEN和LISTENING的状态只有-a或-l才能看到
+    参数an lnput
+29.centos里面的ntsysv和ubuntu里的sysv-rc-config一样,
+   setup-systemservice
+    service 服务名 start:启动某项服务
+30.chkconfig --list|grep "3:on"
+31.终端下使用ctrl+l表示相当于clear
+32.chkconfig 服务名 off把这个服务在6个级别上全部关掉
+   chkconfig --list 服务名:查看这个服务
+33.1)for oldboy in 'chkconfig --list|grep 3:on | awk'{print $1}'';do chkconfig$oldboy off;done
+   for oldboy in crond network rsyslog sshd;do chkconfig --level 3 $oldboy   on;done
+   2)for oldboy in 'chkconfig --list|grep "3:on" | awk'{print $1}' | grep -vE "crond|network|sshd|rsyslog"';do chkconfig $oldboy off;done
+    
+34.ulimit -n:查看当前文件描述符的最大个数
+   ulimit -HSn 20000 :将当前文件描述符最大个数修改成20000
+   修改/etc/security/limits.config,在最后添加
+    *       -       nofile  65535,文件描述符够用就好
+35.centos /etc/init.d/sshd restart => service sshd restart
+36./etc/init.d/iptables stop:关闭防火墙
+37./etc/ssh/sshd_config ssh服务的配置文件
+38.netstat -an | grep 192.168.1.102
+39.ubuntu修改root密码,先sudo su 切换到root用户
+   再passwd修改
+30.普通用户切换到root sudo su - 和su - root
+31./etc/sudoers 关于sudo的配置
+32.sudo -l 查看当前sudo下有哪些权限
+33. 全局生效/etc/profile 普通用户生效~/.bashrc,~/.bash_profile
+34. lsof -i :52113,查看端口,文件占用情况
+35.什么是字符集?
+   答:是一套文字符号及其编码
+ GBK    定长    双字节  不是国际标准    支持的系统不少
+ UTF-8  非定长  1-4字节 广泛支持        MYSQL也使用UTF-8
+  /etc/sysconfig/il8n 下可以修改字符集
+36.ntp服务器的配置
+37. > 01.cpp 清空01.cpp
+38.chattr +i 文件 锁住某个文件,即使是root都不能改,必须   先chattr -i 文件 解锁
+39.lsattr 文件 查看文件属性
+40.linux 基础优化回顾内容
+   1)不用root,添加普通用户,通过sudo授权管理
+   2)更改默认的远程连接ssh服务端口,及禁止root用户远程连接
+   3)定时自动更新服务器时间
+   4)配置yum更新源,从国内更新源下载安装
+   5)关闭selinux和iptables(iptables工作场景如果有wan ip 一般要打开,高并发除外)
+   6)调整文件描述符的数量,进程及文件的打开都会消耗文件描述符
+   7)定时自动清理/var/spool/clientmquene/目录下的垃圾文件,防止inodes被占满
+   8)精简开机自动服务(crond ,sshd,network,rsyslog)
+   9)linux内核参数优化,/etc/sysctl.config,执行sysctl -p生效,更改的是/proc/sys/net 
+   10)更改字符集,支持中文,但建议还是用英文字符集
+   11)锁定关键系统文件
+    chattr +i /etc/passwd /etc/shadow /etc/group
+   12清空/etc/issue
+41.1)linux的所有目录结构是一个有层次的倒挂着树形目录结构
+   2)根 "/" 是所有目录的顶点
+   3)目录结构和分区设备是没有关系的,也就是不同可以跨越不同的磁盘设备或分区
+   4)所有的目录都是按照一定的类别有规律的组织命名的
+42.FHS:目录层次标准(Filesystem hierarchy standard)
+43.mount /dev/sdb1 /mnt  将U盘挂在到/mnt下
+44.关机命令 shutdown -h now ,halt,init 0
+   重启命令 reboot, shutdown -r now
+45.重要配置文件
+    1)/etc/sysconfig/network-scripts/ifcfg-eth0:网卡配置文件
+     重启网卡:/etc/init.d/network restart或者
+     ifdown eth0 && ifup eth0
+    2)/etc/resolv.conf 本地的客户端DNS文件
+    3)/etc/host:设定用户IP与名字(或域名)的对应解析表相当于本地Lan内DNS
+    4)/etc/fstab:记录开机要mount的文件系统的一个文件
+    5)/etc/rc.local存放开机自启动程序命令的文件(chkconfig只能管理yum或rpm安装的程序的启动服务)
+    6)/etc/inittab:设定系统启动时init进程将把系统设置成什么样的runlevel以及
+    7)./var/spool/cron/root:定时任务crontab默认路径,按用户名命名的文件
+    8)./var/spool/main:系统用户邮件存放目录
+    9)./var/spool/clientmquene,临时邮件存放目录
+    10)/proc:虚拟目录,是内存映射,内核和进程的虚拟文件系统目录
+    11)/proc/version内核版本
+    12)/proc/sys/kernel系统内核功能
+    13)/proc/sys/net/ipv4/
+    14)/proc/cpuinfo:关于处理器的信息
+    15)/proc/meminfo:系统内存信息
+    16)/proc/devices:当前运行内核所配置的所有设备清单
+    17)/proc/dma:当前正在使用的DMA通道
+    18)/proc/filesystems当前运行内核所配置的文件系统
+    19)/proc/interrupts当前使用的中断和曾经有多少个中断
+    20)/proc/ioports当前正在使用的I/O端口
+    21)/proc/loadavg系统负债平均值信息
+加载相关的启动文件设置(开机启动流程)
+008.11完了
+46.fdisk命令
+   d delete a partition:删除一个分区
+   l list known partition types:列出分区类型
+   m print this menu:列出帮助信息
+   n add n  new partition:添加一个分区
+   o create a new empty DOS partition table
+   p print the partition table:列出分区表
+   q quit without saving changes:不保存退出
+   s create a new empty Sun disklabel
+   t change a partition's system id:改变分区类型
+   u change display/entry units
+   v verify the partition table
+   w write table to disk and exit:把分区表写入硬盘并退出
+   x extra functionality(experts only):扩展应用,专家功能
+46.last:显示最近登陆的用户列表
+48.df -i查看inodes使用情况
+49.lastlog - 报告所有用户的最近登录情况，或者指定用户的最近登录情况
+50.file 文件   查看文件类型
+51.ls -F或-p ,在目录文件后面添加/,
+    -F还可以给其他文件添加*/=@等符号
+    -p只给目录添加/
+50./dev/tty是字符设备,字符设备主要有串行端口的接口设备,如猫,串口设备等,
+    /dev/sda*是块设备
+51.mknod - 建立块专用或字符专用文件
+    mknod hahah c 5 1,创建一个字符设备
+    mknod hahah b 5 1,创建一个块设备
+52,sudo dumpe2fs /dev/sda1 | grep  -i "inode size" 查看inode大小
+53.tree -L levels / :-L表示目录的层数
+54.less -N filename :-N显示行号
+55.1)tar -zcvfX 包名 a.txt  filename(要打包的文件)
+    a.txt里面包含了不想打包的包名
+   2).tar -zcvf 包名 filename(要打包的文件) --exclude=filename
+56.vi a,ln -s a b(创建一个软链接),readlink b(将软链接的值打印出来)
+57.链接文件结论
+    1)全局结论:删除软链接文件对源文件及硬链接文件无任何影响
+    2)全局结论:删除硬链接文件对源文件及硬链接文件无任何影响
+    3)全局结论:删除源文件对硬链接文件无影响,软链接文件失效
+    4)对于目录,不可以创建硬链接,但是可以创建软链接
+    5)目录的硬链接不能跨越文件系统,所以不能创建硬链接
+    6)每个目录下面都有一个硬链接"." ".."
+    7)在目录里创建一个目录,父目录的链接数会+1(子目录里的..会指向父目录)
+    =>父目录的硬链接数=子目录的个数 + 1(自己) +1(父目录里的.)
+58控制文件删除:一下两个条件同时具备才生效
+    1)受文件的硬链接数的控制,增加一个硬链接i_link +1,减少一个硬链接i_link -1,当i_link=0时,文件就被删除了
+    例:创建一个文件i_link=1,为这个文件创建一个硬链接i_link=2,删除一个硬链接i    i_link=1
+    2)受进程占用控制,当有有进程占用这个文件时,i_count+1,当减少一个程序占用
+    此文件时i_count-1,当没有进程调用时,i_count=0,文件就被删了
+    即:i_link=0 和i_count=0时,文件被删除
+58.服务的运行时需要用户角色的,可以不同登陆,因此,工作中我们需要运行如mysql数据库,可以创建如下用户
+    1)groupadd mysql -g 49  
+    2)useradd mysql -u 49 -s /sbin/nologin -g mysql
+    3)id mysql
+    4)tail -l /etc/passwd
+    5)su -mysql
+
+59.ls -l --time-style=long-iso .(long-iso比较好)
+    --time-style可以等于long-iso,full-iso,locale,iso
+60.source ~/.bashrc 等价于 . ~/.bashrc
+61.chmod -R 755 test,将test所有文件(包括目录)权限递归全部改为755
+62.chmod u=x,g=rwx,o=w a.sh 
+
+63.chown linwei.linwei a.sh,将a.sh的属主,属组分别改成linwei,linwei
+   .和:都一样
+   chown linwei a.sh,将a.sh的属主改成linwei
+   chown .linwei a.sh,将a.sh的属组改成a.sh 等价于 chgrp linwei a.sh
+   chown -R递归
+   chgrp -R 
+64.linux 文件与目录权限对比说明:
+1)r(read,读取权限):
+    对文件而言，表示具有读取文件内容的权限
+    对目录而言，表示具有浏览目录列表的权限（与进入目录的权限不同）,也需要x权限配合(即没有x权限，有r也无法读取目录里的内容)
+2)w(write,写入权限)
+    对文件而言，表示具有新增,修改文件内容的权限(注意:删除和移动文件和文件本身属性无关，看上级目录)
+    对目录而言，表示具有新增,移动,删除目录内文件的权限(需要与x权限配合)
+3)x(Execute,执行权限)
+    对文件而言，表示具有执行文件的权限
+    对目录而言，表示具有进入目录的权限
+attention
+
+mkdir test1 test2
+touch test1/a
+chmod -r test1 test2
+rm -rf test2  --ok
+rm -rf test1 没有权限,因为test1里面含有文件a,rm -rf 是第归删除,由于test1没有r
+权限
+
+网站安全权限目录:755,文件:644,并且用户为root用户组root
+
+65.linux的定时任服务crond(crontab)服务
+一.crond是什么?
+crond是linux系统中用来定期执行命令或者制定程序
+任务的一种服务或软件.
+crond服务默认情况(每分钟),会检查系统中是否有需要执行的定时任务
+,如果有就会根据事先定义好的规则来执行这个定时人物 
+二.秒级任务
+1)crond无能为力
+2)自己写守护进程shell程序
+服务器上数据最低一天备份一次,没分钟(时时备份)再增量
+三.linux定时任务分类
+1).系统自身定时任务(不用管)
+ll /etc/ | grep cron 
+2).用户执行的定时任务
+ 1)at适合执行一次就结束的调度任务,突发性任务,每天晚上
+ 2)anacron适合于非7*24小时开机的服务器准备的,开机执行的.
+   检测停机期间没有执行的任务，在开机后一次性执行一遍
+ 3)crond服务默认情况(每分钟),会检查系统中是否有需要执行的定时任务
+  ,如果有就会根据事先定义好的规则来执行这个定时人物 
+crond:是一个定时任务守护进程
+crondtab:是用户用来设置定时任务规则的命令
+crontab 
+-l 查看crontab文件内容
+-e 编辑crontab文件内容
+-i 删除crontab文件内容，删除前会提示确认
+-u 制定使用用户执行任务
+crontab的主配置文件在/etc/crontab
+cron默认配置调度任务分别为:hourly,daily,weekly,mouthly
+默认配置文件为/etc/anacrontab  
+将需要执行的脚本放在相应的目录下即可,目录分别为:
+/etc/cron.hourly
+/etc/cron.daily
+/etc/cron.weekly
+/etc/cron.mouthly
+
+Crontab默认没分钟读取/etc/crontab文件,/etc/crond.d/目录和/var/spool/cron目录一次
+/etc/cron.deny 该文件中所列用户不允许使用crontab名令
+/etc/cron.allow 该文件中所列用户允许使用crontab命令,优先于/etc/cron.deny
+
+crontab定时任务的书写格式,用户的定时任务规则
+一般分为6段(每个段通过空格来分隔，系统的定时任务为/etc/crontab分为7段,空格分隔)
+前5段为时间的设定,第6段为要执行的命令或脚本任务段
+分时日月周
+crontab语法格式中特殊符号
+*表示任意时间 00 23 * * * cmd表示每月每周没日的23点执行cmd任务,分位上*表示0-59每分,同理...
+-分隔符的意思 00 17-19 * * * cmd,就是17,18,19
+,分隔时段的意思 30 17,18,19 * * * cmd 等家于 30 17-19 * * * cmd,20 3-5,17-19 * * * cmd
+/n n表示数字 每隔n个单位 */10 * * * * cmd 表示每隔10分钟执行一次,*表示的是0-59,因此可以写成这样0-59/10 * * * * cmd
+
+例子 
+1)30 3,12 * * * cmd 每天凌晨3点和中午12点的半点时刻执行cmd
+2)30 */6 * * * cmd 每隔6个小时的半点执行cmd.相当于6,12,18,24
+3) 30 8-18/2 * * * cmd 早晨8-18点每个两个小时30分,
+4)45 4 1,10,22 * * cmd 每月的1,20,22号凌晨4点45分执行cmd
+5)10 1 * * 6,0 cmd 每周6周日的凌晨1:10分
+6)0,30 18-23 * * * cmd 每天18-23之间每隔30分钟执行cmd
+7)00 */1 * * * cmd 每隔1小时整点
+8)* 23,00-07/1 * * * cmd  晚上23点和早上0-7点之间每隔一个小时的每分都执行cmd
+9) 00 11 * 4 1-3 cmd 每4月的每周一到周三的上午11整点执行...
+强调:周和日尽量不要同时用，否则可能达不到想要的效果
+例：5月5日上午9:00去老男孩培训上课,规则为
+    00 09 05 05 * 去老男孩培训上课
+
+66.定时任务8大要领
+1)加注释
+2)执行脚本要加/bin/sh
+3)定时任务的结尾要加 >/dev/null 2 > &1 或 & > /dev/null
+4)定时任务超过2条的命令执行，最好用脚本文件
+5)在指定的用户下执行相关的定时任务,crontab -u oldboy -l,查看指定用户的定时任务(root才能执行)
+6)生产任务程序不要随意打印输出信息 tar zcf ,echo 123 > a.log
+7)定时任务执行的脚本要规范路径
+8)配置定时任务规范操作过程
+
+67.crontab定时任务生产应用问题的8大箴言
+1)系统环境变量的问题
+2)定时任务要用绝对路径
+3)脚本权限问题加/bin/sh
+4)时间变量问题用反斜线 date +\%F-%\H
+5)>/dev/null > 2>&1问题
+6)定时任务规则之前加注释
+7)使用脚本程序代替命令行定时任务
+8)避免不必要的程序及命令输出
+9)切到目标目录的上一级打包目标
+10)定时任务脚本中的程序命令用全路径
+
+68.一个test目录的文件太多时,不能cd test,rm -f *,方法有2种
+1)cd test ,ls | xargs rm -f
+2)find test -type f | xargs rm -f
+3)rm -rf test 然后创建test
+
+69./etc/skel目录,是用来存放新用户配置文件的目录,当我们添加
+用户时，这个目录下的所有文件会自动被复制到新添加的
+用户的家目录下:默认情况下/etc/skel目录下的所有
+文件都是隐藏的;通过修改，添加，删除/etc/skel目录下的
+文件，我们可以新创建的用户提供统一,标准的，初始化用户环境
+70./etc/login.defs是用来设置用户账户限制的文件
+
+71./etc/default/useradd文件,是在使用useradd添加用户时的一个需要调用的一个
+默认的配置文件，可以使用useradd -D 来修改文件里的内容,注意是能修改文件
+useradd -D -s /bin/sh,这样就修改了/etc/default/useradd 里的SHELL了
+
+72.useradd -e 2016-8-13 xiao3 指定用户密码对应什么时候过期
+  chage -l 用户名 可以查看指定用户的有效期,就是/etc/shadow里的内容
+  chage -E 2016-8-13 xiao3 指定账户什么时候失效
+73.echo "123456" | passwd --stdin xiao3
+   修改xiao3的密码
+
+74.root 用户 passwd -l xiao3 锁定xiao3的密码使xiao3不能修改自己的密码,但是root能改
+   root用户 passwd -u xiao3 解除锁定
+
+75.chage -l xiao3
+Last password change					: Aug 11, 2016  =>-d
+Password expires(过期)					: never 
+Password inactive(过期多少天用,用户被禁止掉,仅仅root能登陆)	: never =>-I
+Account expires						: Aug 13, 2016 =>-E
+Minimum number of days between password change(两次变换密码的最小天数)	: 0 =>m
+Maximum number of days between password change(两次变换密码的最大天数)	: 99999 =>M
+Number of days of warning before password expires	: 7 =>W
+
+76.用户信息修改相关的命令usermod,useradd是添加用户信息,usermod是修改用户信息的
+usermod能更改用户shell类型,用户组，用户密码有效期，登陆名等用户信息
+77.w.who.users.last.lastlog,groups,newgrp
+78.su - xiao3 -c id(-c的作用是切换到xiao3身份执行一个命令又回到之前的用户)
+79.su 
+-l 列出用户在主机上可用的和被禁止的命令
+-k 删除时间戳，下一个sudo命令要求提供密码,前提是该用户授权中不能有NOPASSWD:参数
+
+80./etc/sudoers里面大致分为两类：一类是别名定义,另一类是授权规则
+81.sudo配置注意事项
+1)命令别名下的成员必须是文件或目录的绝对路径
+2)别名名陈是包含大写字母，数字,下划线，如果是字母都要大写
+3)也个别名下有多个成员，成员与成员之间通过半角","号隔开,成员必须是有效实际存在的
+4)别名成员受别名类型Host_Alias,User_Alias,Runas_Alias,Cmnd_Alias制约
+定义什么类型的别名，就要有什么类型的成员想配
+5)别名规则是每行算的一个规则,如果一个别名规则一行容不下时，可以通过"\"
+来续行
+6)指定切换到用户要()括起来，如果省略括号，默认为root用户
+如果括号是ALL,则代表能切换到所有用户
+7)如果不需要密码直接运行命令，应该加NOPASSWD参数
+8)禁止某类型程序或命令执行，要在命令动作前面加上"!"号，并且在允许执行
+命令的后面
+9)用户组前面必须加%号
+
+82
+Rsync的特性
+1)支持拷贝特殊文件如链接，设备等
+2)可以有排除指定文件或目录同步的功能，相当与tar
+3)可以做到保持原来文件或目录的权限，时间，软硬链接等所有属性均不改变
+4)可以增量同步，既只同步发生变化的数据，因数据传输效率高
+5)可以使用rop,rsh,ss等方式来配合传输文件，也可以通过直接的socket连接
+6)支持匿名的或认证的进程模式传输，方便进行数据备份及镜像
+rsync大致使用三种主要方式来传输数据:
+1)本地数据传输(类似cp)
+2.通过rep,ssh,等通道传输(类似scp)
+3)以守护进程(sock)的方式传输数据(这个最重要)
+
+rsync -avz /opt/ /tmp/:把/opt下的内容同步过来，目录本身不同步
+rsync -avz /opt  /tmp/:opt本身及内容全都同步过去
+-v是"--verbose",即详细模式输出
+-z表示"--compress"即传输时对数据进行压缩处理
+-r表示"-recursive"即对子目录以递归的模式处理
+-t是"--time"即保持文件时间信息
+-o表示"owner"，用来保持文件的属组信息
+-g是"group"用来保持文件的属组属性
+-p是"perms,用来保持文件权限
+--progress,和-P一样,显示同步过程
+-a是"-rpltgoD",以archive模式操作,表示以递归的方式传输文件,并保持文件所有属性
+-e ssh的参数建立起加密的连接
+-delete 是指如果服务器端删除了这个文件,那么客户端也行应把文件删除
+-l,--links保留软链接
+-D,--devices保持设备文件属性
+-e,--rsh=COMMAND使用的信道协议,指定替代rsh的shell程序，例如:ssh
+--passwd-file=/etc/path/file来指定密码文件,这样就可以在脚本中使用
+而不需交互式的输入验证码了
+1) 本地/etc/下的内容备份到/tmp/下
+ rsync -avz -P /etc/ /tmp/
+## avz相当于vzrtopDl
+2)推送(把本地目录oldboy推送到远端test001用户的/tmp/目录下)
+rsync -avzP -e "ssh -p 22" ./a linwei@192.168.1.102:~/(把本地a传送到远端linwei~/)
+
+3)拉取(把远端/tmp/oldboy目录更新到本地/tmp/下)
+rsync -avzP -e "ssh -p 22" linwei@192.168.1.102~/01.c ./(把远端linwei~/01.c 拷贝到本地./)
+/etc/rsyncd.config配置文件默认不存在,请自己创建
+/etc/rsyncd.secrets(密码文件)
+/etc/rsyncd.motd(rsync服务器信息)
+默认端口873提供服务
+
+83.如何查看网卡卡号,一般笔记本都有两张网卡
+有线网卡和无线网卡
+ifconfig | grep ether
+ether 20:89:84:1f:31:9d  txqueuelen 1000  (Ethernet)
+ether 20:68:9d:2f:12:d3  txqueuelen 1000  (Ethernet)
+
+ip link show | grep ether
+link/ether 20:89:84:1f:31:9d brd ff:ff:ff:ff:ff:ff
+link/ether 20:68:9d:2f:12:d3 brd ff:ff:ff:ff:ff:ff
+
+ip address show | grep ether
+link/ether 20:89:84:1f:31:9d brd ff:ff:ff:ff:ff:ff
+link/ether 20:68:9d:2f:12:d3 brd ff:ff:ff:ff:ff:ff
+
+84.ethtool -i eth0
+85.ssh
+
+默认状态下ssh本身提供两个服务:
+1)类似telnet的远程联机使用shell的服务,即
+俗称SSH,另一个是类似FTP服务的ftp-server
+从客户端来看,SSH提供两种级别的安全验证
+
+第一种级别(基于口令的安全验证)
+只要知道自己的帐号和口令就可以登录到
+远程的主机，所有的传输的数据都会被加密
+
+第二种级别(基于密钥的安全验证)
+需要依靠密钥，也就是你必须为自己创建一个密钥
+并把共用密钥放在需要访问的服务器上，
+如果你要连接到SSH服务器上，客户端SSH软件
+就会向服务器发出请求，请求你的密钥进行安装
+验证,服务器收到请求之后，先在该服务器上你
+的用户主目录下寻找你的共用密钥，然后把它
+和你发送过来的用密钥进行比较，如果两个密钥
+一致，服务器就会用共用密钥加密"质询"(Challenge),并把它发送给客户端软件
+
+
+网络数据包的加密技术通常是通过所谓的一对公钥与私钥组合成的密钥
+对进行加密与解密的操作,主机端所要传给Client端的数据，
+先通过公钥加密后再传到网络上传输，而到达client端后，
+再经由私钥将加密的数据解开，由于在Ineternet上
+传输的数据是加密过的，所以数据内容当然是安全的
+
+rename .c .html 01.c
+
+acl是由一系列的Access Entry所组成的,每一条Access Entry定义了
+特定的类型对文件拥有的操作权限Access Entry有三个组成部分:
+Entry tag,qualifier(optional),权限
+Entry tag type有一下几个类型
+ACL_USER_OBJ:相当于linux里file_owner的权限 u::
+ACL_USER:定义了额外的用户可以对此文件拥有的权限 u:
+ACL_GROUP_OBJ:相当于linux的group的权限 g::
+ACL_GROUP:定义了额外的组可以对此文件拥有的权限 g:
+ACL_MASK:定了ACL_USER,ACL_GROUP_OBJ,ACL_GROUP的最大权限 :m
+ACL_OTHER:相当于linux的other权限
+
+pkill sshd,mysqld等
+
+linux上进程有5中状态
+1)运行(正在运行或运行队列中等待)
+2)中断(休眠,受阻,在等待某个条件的形成或接受到信号)
+3)不可中断(收到信号不唤醒和不可运行,进程必须等待直到有中断发生)
+4)僵尸(进程已经死,但进程描述符存在,直到父进程掉调用wait4()系统调用后释放)
+5)停止(进程收到SIGSTOP,SIGSTP,SIGTIN,SIGTOU信号后停止运行)
+
+ps工具标识进程的5种状态码
+D不可中断uninterruptible sleep(usually IO)
+R运行runnable(on run quene)
+S中断sleeping
+T停止traced or stopped
+Z僵尸a defunct("zombie")process
+参数
+l 长格式输出
+u按用户名和启动时间的顺序来显示进程
+j用于任务格式来显示进程
+a显示所欲用户的所有进程(包括其他用户)
+x显示无控制终端的进程
+r显示运行中的进程
+ww 避免详细参数被截断
+
+-A列出所有的进程
+-w显示加宽可以显示较多的信息
+-au显示较详细的信息
+-aux显示所有包含其他使用者的进程
+-e 等于"-A"
+-f全格式
+-h不显示标题
+
+/etc/profile:此文件为系统的每个用户设置环境信息,当用户第一次
+登录时,该文件被执行,并从/etc/profile.d目录的配置文件中搜集shell的设置
+
+/etc/bashrc:,ubuntu没有此文件与之相对应的是/etc/bash.bashrc为每一个运行bash shell的用户执行此文件,当bash shell被打开时,该文件被读取
+
+~/.bash_profile:每个用户都可用该文件输入专用于自己使用的shell信息,
+当用户登录时,该文件仅仅被执行一次,默认情况下,它设置一些环境变量,执行用户的~/.bashrc
+
+~/.bashrc:该文件包含专用与你的bash shell的bash信息,当登录时,以其每次打开新的shell时,该文件被读取
+
+~/.bash_logout:注销时,且是login形式,此文件才会被读取,也就是说,在文本模式下,此文件才会被读取
+
+刚登录时读取/etc/profile文件以及/etc/profile.d目录内的文件
+图形界面,如果打开终端,则读取~/.bash_profile如果存在~/.bashrc也此时会调用~/.bashrc ,如果
+存在/etc/bashrc,则又去调用/etc/bashrc
+
+最终执行顺序为:/etc/profile => /etc/profile.d => (~/.bash_profile | ~/.bash_login | ~/.profile) => ~/.bashrc =>/etc/bashrc => ~/.bash_logout
+
+rpm
+-q  包名 查询包是否存在
+-i 安装package(s)
+-v provide more detailed output
+-e erase package
+-U upgrade package(s)
+--test 安装测试,并不实际安装
+-l list files in package
+-d list all documentation files
+-f query/varify package(s) owning file(查询/验证包拥有文件)
+-ivh :按路径安装,并显示进度条
+-ivh --test:用来检查依赖关系,并不是真正的安装
+
+shutdown命令
+shutdown -h now          now相当于0的意思,立刻关机
+shutdown -h 20:23         20:23关机
+shutdown -h +10           十分钟后关机
+shutdown -r now           立刻重启
+shutdown -r +30 'The system will reboot'  三十分钟后系统会重启,并显示后面的消息给用户
+shutdown -k  'The system will reboot' 仅发出警告信件的参数 
+
+
+iptables 命令
+iptables -n -L --line-number
+iptables -D INPUT 2     删除链INPUT下的序号为2的规则
+
+journalctl命令
+-b过滤在启动时产生的信息
+--since=yesterday只显示自从昨天登录开始的信息
+--since=2014-03-15 --until=2014-03-17 23:59:39
+journalctl -u httpd since=00:00 --until=8:00查看昨晚登录的httpd进程
+
+
+
+
+04begin
+

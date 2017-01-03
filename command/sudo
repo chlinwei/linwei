@@ -1,0 +1,20 @@
+sudo
+[root@www ~]# sudo [-b] [-u 新使用者账号]
+选项与参数：
+-b  ：将后续的命令放到背景中让系统自行运行，而不与目前的 shell 产生影响
+-u  ：后面可以接欲切换的使用者，若无此项则代表切换身份为 root 。
+
+范例一：你想要以 sshd 的身份在 /tmp 底下创建一个名为 mysshd 的文件
+[root@www ~]# sudo -u sshd touch /tmp/mysshd
+[root@www ~]# ll /tmp/mysshd
+-rw-r--r-- 1 sshd sshd 0 Feb 28 17:42 /tmp/mysshd
+# 特别留意，这个文件的权限是由 sshd 所创建的情况喔！
+
+范例二：你想要以 vbird1 的身份创建 ~vbird1/www 并于其中创建 index.html 文件
+[root@www ~]# sudo -u vbird1 sh -c "mkdir ~vbird1/www; cd ~vbird1/www; \
+>  echo 'This is index.html file' > index.html"
+[root@www ~]# ll -a ~vbird1/www
+drwxr-xr-x 2 vbird1 vbird1 4096 Feb 28 17:51 .
+drwx------ 5 vbird1 vbird1 4096 Feb 28 17:51 ..
+-rw-r--r-- 1 vbird1 vbird1   24 Feb 28 17:51 index.html
+# 要注意，创建者的身份是 vbird1 ，且我们使用 sh -c "一串命令" 来运行的

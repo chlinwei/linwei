@@ -1,0 +1,228 @@
+复习：
+1.基于tcp协议的通信模型(重点)
+服务器：
+     (1)创建socket，使用socket函数
+     (2)准备通信地址，使用结构体类型
+     (3)绑定socket和通信地址，使用bind函数
+     (4)监听，使用listen函数
+     (5)响应客户端的连接请求，使用accept函数
+     (6)进行通信，使用send/recv函数
+     (7)关闭socket，使用close函数
+客户端：
+     (1)创建socket，使用socket函数
+     (2)准备通信地址，使用服务器的地址
+     (3)连接，使用connect函数
+     (4)进行通信，使用send/recv函数
+     (5)关闭socket，使用close函数
+
+2.基于udp协议的通信模型(重点)
+服务器：
+     (1)创建socket，使用socket函数
+     (2)准备通信地址，使用结构体类型
+     (3)绑定socket和通信地址，使用bind函数
+     (4)进行通信，使用recvfrom/sendto/recv/send函数
+     (5)关闭socket，使用close函数
+客户端：
+     (1)创建socket，使用socket函数
+     (2)准备通信地址，服务器的地址
+     (3)进行通信，使用sendto/recvfrom/send/recv函数
+     (4)关闭socket，使用close函数
+作业：   
+-----------------------------------------------------------------------------
+今天内容：
+     (1)多线程的编程
+     (2)综合小项目
+
+1.多线程的编程
+1.1 基本概念
+      线程本质就是进程内部的程序流，隶属于进程，目前主流的操作系统都支持多进程，而在每一个进程的内部又可以支持多线程，从而实现并行处理的效果
+      进程是重量级的，每个进程都需要独立的内存空间，新建进程对资源的消耗是比较大的；而线程是轻量级的，共享所在进程的内存资源，但是每个线程都有一个独立的栈区；
+
+1.2 线程的创建
+(1)pthread_create函数
+     #include <pthread.h>
+     int pthread_create(pthread_t *thread, const pthread_attr_t *attr,void *(*start_routine) (void *), void *arg);
+第一个参数：整数指针，用于存放新线程的线程编号
+第二个参数：线程的属性，给NULL选择默认的属性
+第三个参数：函数指针类型，新线程的处理函数
+第四个参数：作为第三个参数指向函数的实参
+返回值：成功返回0，失败返回具体的错误编号
+函数功能：
+      主要用于在当前正在调用的进程中启动新线程，让新线程去执行第三个参数指向的函数，函数执行完毕后，线程结束
+注意：
+       Compile and link with -pthread.
+
+(2)多线程执行的关系
+     执行main函数的线程  叫做  主线程
+     使用pthread_create函数创建出来的新线程 叫做 子线程
+     多线程创建完毕之后各自独立运行，执行的先后次序取决于操作系统，多线程之间相互独立也会相互影响，因为主线程结束时main函数结束，而main函数结束表示整个进程结束，一旦整个进程结束，则整个进程内部的所有线程结束
+
+(3)pthread_self函数
+     #include <pthread.h>
+     pthread_t pthread_self(void);
+函数功能：
+     主要用于获取当前正在调用线程的编号，通过返回值返回
+     Compile and link with -pthread.
+
+练习：
+     使用malloc函数申请4个字节的动态内存，提示用户输入一个半径存放到动态内存中，使用pthread_create函数创建子线程，在线程处理函数中计算圆形的周长和面积并且打印出来，等待子线程结束后，释放动态内存
+
+1.3 线程的汇合和分离
+(1)pthread_join函数
+     #include <pthread.h>
+     int pthread_join(pthread_t thread, void **retval);
+第一个参数：线程的编号(等待哪一个线程)
+第二个参数：该参数不为空时，将目标线程的退出状态信息拷
+       贝到*retval指向的位置中
+返回值：成功返回0，失败返回错误编号
+函数功能：
+      主要用于等待参数一指向的线程终止，并且获取终止的退出状态信息，同时回收该线程的所有资源，当然前提是thread指向的线程可以被等待
+      Compile and link with -pthread.
+
+练习：
+     使用pthread_create函数创建子线程，在子线程中计算1 ~ 100之间的和并存放在sum变量中，要求将最终的计算结果返回给主线程，主线程通过pthread_join函数进行接受并打印出来
+
+(2)pthread_detach函数
+     #include <pthread.h>
+     int pthread_detach(pthread_t thread);
+函数功能：
+     主要用于将参数指定的线程设置为分离状态，一个分离状态的线程终止时，它的资源会被自动地释放给系统不需要其他线程的帮助/等待/加入，其他线程调用pthread_join也无法等待
+     Compile and link with -pthread
+
+1.4 线程的终止和取消
+(1)pthread_exit函数
+    #include <pthread.h>
+    void pthread_exit(void *retval);
+函数功能：
+     主要用于终止当前正在调用的线程，该函数的参数作为当前终止线程的退出状态信息，在同一个进程中的其他线程可以通过pthread_join来获取该参数值
+     Compile and link with -pthread.
+
+(2)pthread_cancel函数
+     #include <pthread.h>
+     int pthread_cancel(pthread_t thread);
+函数功能：
+//给thread线程发送终止信号
+     主要用于给参数指定的线程发送取消的请求，是否取消以及何时取消取决于线程的属性信息:state  和  type
+     Compile and link with -pthread.
+
+     #include <pthread.h>
+     int pthread_setcancelstate(int state, int *oldstate);
+第一个参数：设置新的取消状态
+     PTHREAD_CANCEL_ENABLE - 表示可以被取消(默认)
+     PTHREAD_CANCEL_DISABLE - 表示不可以被取消
+第二个参数：用于带出旧的取消状态，给NULL表示不获取
+
+     int pthread_setcanceltype(int type, int *oldtype);
+第一个参数：设置新的取消类型
+     PTHREAD_CANCEL_DEFERRED - 延迟取消(默认)
+     PTHREAD_CANCEL_ASYNCHRONOUS - 立即取消
+第二个参数：用于带出旧的取消类型，给NULL表示不获取
+
+     Compile and link with -pthread.
+
+2.线程的同步问题
+2.1 基本概念
+    当一个进程中有多个线程时，多线程之间共享所在进程的资源，如果多个线程同时访问同一个共享资源时，需要相互协调，以防止数据出现不一致和不完整的问题，线程之间的协调和通信叫做线程的同步问题
+
+2.2 实现线程同步的具体方案
+     让多个线程依次串行访问共享资源即可
+
+2.3 使用互斥量/互斥锁实现线程的同步
+(1)定义互斥量
+     pthread_mutex_t  mutex;
+(2)初始化互斥量
+     pthread_mutex_init(&mutex,NULL);
+(3)使用互斥量进行加锁
+     pthread_mutex_lock(&mutex);
+(4)使用共享资源
+(5)使用互斥量进行解锁
+     pthread_mutex_unlock(&mutex);
+(6)如果不再使用，销毁互斥量
+     pthread_mutex_destroy(&mutex);     
+
+2.4 使用信号量实现线程的同步问题
+(1)基本概念
+     信号量本质就是一个计数器，主要用于控制同时访问共享资源的进程/线程个数
+     当信号量的值为1时，效果等同于互斥量；
+
+(2)使用流程
+    #include <semaphore.h>
+    a.定义信号量
+       sem_t sem;
+    b.初始化信号量
+       sem_init(&sem,0,最大的初始值);
+    c.获取一个信号量(信号量的值减1)
+       sem_wait(&sem);
+    d.使用共享资源
+    e.释放一个信号量(信号量的值加1)
+       sem_post(&sem);
+    f.如果不再使用，删除信号量
+       sem_destroy(&sem);
+
+3.综合小项目
+     采用C/S架构通过tcp通信模型和多线程实现聊天室
+服务器：
+     (1)要求服务器可以不断地响应客户端的连接请求
+          => 使用while(1)无限循环
+          => 将每一个连接上来的客户端通信地址和对应的描述
+                 符保存起来，采用数组/链表都可以
+     (2)要求服务器可以同时和多个客户端通信
+          => 使用多线程的技术来实现
+     (3)要求服务器针对每一个客户端可以不断地通信
+          => 使用while(1)无限循环
+     (4)要求客户端发来"bye"时，表示客户端已下线
+          => 进行字符串比较，终止对应的线程pthread_exit
+          => 从数组/链表中删除已经下线的客户端信息
+     (5)要求服务器可以将接受到的消息转发给其他所有客户端
+          => 使用send函数对上述保存过的每一个描述符进行
+                发送数据即可
+          => 注意跳过已经下线的客户端
+     (6)使用信号2来关闭服务器
+          => 对信号2进行自定义处理
+客户端：
+     (1)要求每一个客户端启动时需要指定一个昵称
+     (2)要求客户端不断地和服务器进行通信，发送的内容由
+          用户手动输入
+     (3)要求客户端收发功能独立运行，采用多线程技术
+     (4)当客户端发送"bye"时，表示客户端下线
+
+扩展功能：
+     (1)编程实现传输文件的功能
+     (2)使用网络编程和多线程技术重构银行项目
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

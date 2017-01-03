@@ -1,0 +1,7 @@
+userdel:
+参数-r:连同家目录一起删掉
+如果你只要暂时不使用某个账号:则手动修改
+/etc/passwd 和/etc/shadow就可以了
+如果真的不在使用该用户的任何数据了就可以用userdel
+在useradd -r username之前,先/find / -user username
+查出整个系统属于username的文件,然后再删除

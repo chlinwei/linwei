@@ -1,0 +1,10 @@
+[root@www ~]# groupmod [-g gid] [-n group_name] 群组名
+选项与参数：
+-g  ：修改既有的 GID 数字；
+-n  ：修改既有的组名
+
+范例一：将刚刚上个命令创建的 group1 名称改为 mygroup ， GID 为 201
+[root@www ~]# groupmod -g 201 -n mygroup group1
+[root@www ~]# grep mygroup /etc/group /etc/gshadow
+/etc/group:mygroup:x:201:
+/etc/gshadow:mygroup:!::

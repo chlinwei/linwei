@@ -1,0 +1,175 @@
+二十四 异常（Exception）
+...
+3.C++异常
+      结合两种传统错误处理机制，同时避免它们的缺点，在形式上实现一步到位的错误处理，同时保证所有的局部对象得到正确的析构。
+
+4. 异常语法
+4.1 异常的抛出
+     throw  异常对象
+1）可以抛出基本类型的对象
+   throw  -1;
+   throw  "file open error";
+2）可以抛出类 类型的对象
+    FileException ex("file open error");
+    throw  ex;
+         ||
+    throw  FileException("file open error");
+
+4.2 异常的捕获
+     try{
+          //可能引发异常的语句
+     }
+     catch(异常类型1){
+          //针对异常类型1的处理	
+     }
+     catch(异常类型2){
+          //针对异常类型2的处理	
+     }
+     ...
+     catch(...){
+           //针对其它异常的处理
+     }
+
+4.3 catch子句根据异常对象的类型自上而下顺序匹配，而非最优匹配，因此对子类类型异常的捕获不要放在对基类类型异常的捕获后面。否则前者将被后者提前捕获。
+
+4.4 建议在catch子句中使用引用接收异常对象，避免拷贝构造的性能开销，同时可以减少浅拷贝引发的风险。
+
+4.4 标准异常类
+class exception{
+public:
+     exception() throw(){}
+     virtual ~exception() throw(){}
+     virtual const char* what() const throw() {}
+};
+class Error:public execption{
+    virtual const char* what() const throw() {}
+};
+
+Error ex;
+exception& r = ex;
+r.what();//调用子类的what函数
+
+5 异常说明
+1）可以在函数原型中增加异常说明，说明该函数所可能抛出的异常。
+返回类型 函数名(形参表)throw(异常说明表){...}
+void fun(const string& file,int size)throw(FileError,MemoryError)
+2）函数的异常说明是一种承诺，表示该函数所抛出的异常不会超出说明的范围。如果不守承诺，抛出异常说明以外的异常类型，该异常无法被正常捕获，而会继续向上层抛出，最终被系统捕获，终止进程。
+3）不写异常说明，表示可以抛出任何异常
+4）空异常说明，throw(),表示不会抛出任何异常
+5）如果函数的声明和定义分开，要保证异常说明类型一致。
+6）如果基类中的虚函数带有异常说明，那么该函数在子类中的覆盖版本不能说明比基类版本抛出更多的异常，否则将因为"放松throw限定"导致编译失败。
+
+6 构造函数和析构函数中的异常
+1)构造函数抛出异常，对象将会被不完整构造，这样的对象其析构函数不会被执行。因此在构造函数抛出异常之前，需要手动销毁所有在异常产生之前动态分配的资源。
+2)析构函数最好不要抛出异常，在析构函数中有引发异常的操作，都应该在析构函数内部消化掉.
+class A{
+    ~A(void){
+         ...
+         try｛
+              throw ...
+              ...
+        ｝
+         catch(){
+         }
+    }
+};
+int main(void)
+{
+     try{
+           A a;
+     }
+     catch (){
+            ....
+     }
+}
+
+===========
+二十五  I/O流
+===========
+C++ I/O流   istream/ostream
+C语言 ---     fopen()/fread()/fwrite()...
+I/O子系统    open() /read()
+驱动程序      寄存器，中断控制...
+I/O硬件      
+
+		           ios
+	               /                               \
+                       istream                           ostream
+                /         |              \                /        |          \         
+   istrstream     ifstream      iostream     ofstream  ostrstream  
+                                             /          \
+                                    strstream    fstream
+1.格式I/O
+1)格式化函数：通过I/O对象的成员函数，改变或者获取其中的状态，进而影响格式化字符串的形式。
+int  ios::precision(int);//设置浮点精度
+int  ios::width(int);//设置显示域宽
+long ios::setf(long);//添加格式标志位
+...
+
+2）流控制符：通过将流控制符对象插入输出流，或提取自输入流，改变其中的状态，进而影响格式化数据的形式。
+setprecision(int);//设置浮点精度
+endl；//换行
+....
+
+2 字符串流
+#include <strstream>
+istrstream 、ostrstream、strstrem
+------------------------
+#include <sstream>
+istringstream、ostringstream、stringstream
+
+
+3 文件流
+#include <fstream>
+ifstream \ ofstream \ fstream
+
+构造函数：
+ifstream(const char* filename,openmode mode)
+ofstream(const char* filename,openmode mode)
+fstream(const char* filename,openmode mode)
+filename：文件路径包含文件名
+mode：打开文件权限，缺省值可读可写可创建
+
+通过成员函数打开I/O流
+void open(const char* filename,openmode mode)
+
+=========================
+4 随机读写
+istream& istream::seekg(off_type offset,ios::seekidr origin);
+ostream& ostream::seekp(off_type offset,ios::seekidr origin);
+origin:
+   ios::beg  从文件头偏移
+   ios::cur   从当前位置偏移
+   ios::end  从文件尾偏移
+
+5 二进制I/O（fread,fwrite,read,write）
+ostream& ostream::write(const char* buffer,size_t num);
+istream& istream::read(const char* buffer,size_t num);
+
+===========================
+GNU  make
+
+Makefile：描述一个工程的编译连接等规则
+make：根据Makefile生成可执行文件
+
+目标：依赖
+         命令.......
+=============================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

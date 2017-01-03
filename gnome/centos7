@@ -1,0 +1,2 @@
+1.修改网卡名字
+vi /etc/default/gr

@@ -1,0 +1,24 @@
+gpg: 钥匙环‘/tmp/tmpnvd3am7v/secring.gpg’已建立
+gpg: 钥匙环‘/tmp/tmpnvd3am7v/pubring.gpg’已建立
+gpg: 下载密钥‘8231B6DD’，从 hkp 服务器 keyserver.ubuntu.com
+gpg: /tmp/tmpnvd3am7v/trustdb.gpg：建立了信任度数据库
+gpg: 密钥 8231B6DD：公钥“Launchpad PPA for Neovim PPA Team”已导入
+gpg: 合计被处理的数量：1
+gpg:               已导入：1  (RSA: 1)
+OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

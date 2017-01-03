@@ -1,0 +1,147 @@
+大纲
+man journald.conf
+
+选项
+Storage:
+	volatile:表示仅保存在内存中,也就是仅保存在/run/log/journal目录中
+	(将会被自动按需创建)
+
+	persistent:表示优先保存在磁盘上,也就优先保存在/var/log/journal目录中(将
+	会被自动创建),但若失败(例如在系统启动早期"/var"尚未挂载),则转而保存在
+	/run/log/journal目录中(将会被自动按需创建)
+
+	auto:默认值与"persistent"类似,但不自动创建/var/log/journal目录,因此可以
+	根据该目录的存在与否决定日志的保存位置,
+
+	"none":表示不保存任何日志(直接丢弃所有收集到的日志),但日志转发不受影响,默认值是auto
+
+Compress:
+    yes:为默认值,将大于特定阀值的对象存储到日志中时先压缩在存储
+
+Seal:
+	yes:默认值,如果一个"sealing key(有journalctl(1)的--setup-keys命令创建),
+	那么就为所有持久保存的日志文件启用FSS(Seekable Sequential Key Generators)
+	保护,以避免日志文件被恶意或无意的修改
+
+SplitMode:
+	设置如何按用户分割日志文件,以实现不同的访问
+	控制策略(日志守护进程会且包每个用户都能读取自己的日志文件)
+	注意仅分割持久保存的日志(/var/log/journal),内存
+	中的日志永不分割(/run/log/journal),可以使用的
+	分割策略如下:
+	"uid":表示每个用户都有自己的专属日志文件(无论该用户是否
+	拥有登录会话),但系统用户的日志依然记录到系统日志中
+	这是默认值。
+	"none":表示不对日志文件进行分割,所有日志
+	都将记录到系统日志中,这意味着非特权用户根本无法读取
+	属于自己的日志信息
+
+RateLimitIntervalSec=,RateLimitBurst:
+	用于限制日志的生成速度(设置为0表示不作限制),
+	RateLimitIntervalSec=用于设置一个时间段长度,默认值是30秒
+	RateLimitBurst=用于设置一个正整数,表示消息条数,默认值是1000条
+	含义是在RateLimitIntervalSec=时间段内,每个服务最多允许产生
+	RateLimitBurst=数量(条数)的日志,在同一时间段内,超出数量限制
+	的日志将被丢弃,直到下一个时间段内才能再次开始记录,对于所被丢弃的日志
+	消息,仅用一条类似"xxx条消息被丢弃"的消息来替代,这个限制
+	是针对每个服务的限制,一个服务超限时并不会影响到
+	另一个服务的日志记录,RateLimitIntervalSec=可以使用的
+	单位:"ms","s","min","h","d"
+
+SystemMaxUse=, SystemKeepFree=, SystemMaxFileSize=, SystemMaxFiles=,
+RuntimeMaxUse=, RuntimeKeepFree=, RuntimeMaxFileSize=, RuntimeMaxFiles=
+ 限制日志文件的大小,
+ 以"System开头的选项用于限制磁盘使用量,也就是/var/log/journal的使用量
+ 以"Runtime"开头的选项用于限制内存使用量,也就是/run/log/journal的使用量
+ 以"System"开头的选项仅在/var/log/journal目录确实存在而且可 写时才有意义
+ 但以"Runtime"开头的选项永远有意义,也就是说在系统启动早期
+ /var尚未挂载时,或这系统管理员禁止在磁盘上存储日志的时候,
+ 仅有"Runtime"开头的选项有意义,journalctl与systemd-journald工具
+ 会忽略日志目录中所有后缀名不等于".journal"或".journal~"的文件
+ 换句话说,日志目录中不应该存在后缀名不等于"jiurnal"或
+ "journal~"的文件
+
+ SystemMaxUse与RuntimeMaxUse限制全部日志文件加再一起最多
+ 可以占用多少空间,SystemKeepFree与RuntimeKeepFree表示
+ 除日志文件之外,至少保留多少空间给其他用途,systemd-journald会
+ 同时考虑这两个因素,并且尽量限制日志文件的总大小
+
+SystemMaxUse 与RuntimeMaxUse的默认值是10%空间与4G空间两者中的较小者
+SystemKeepFree与RuntimeKeepFree的默认值是15%空间与4G空间两者中较大者
+如果在systemd-jouirnald启动时,文件系统即将被填满并且已经超过了
+SystemKeepFree或RuntimeKeepFree的限制,那么日志文件记录将暂停,
+就是说,如果创建日志文件时,文件系统有充足的空闲空间,但是后来文件
+系统被其他非日志文件占用过多,systemd-journald只会立即暂停日志记录,
+但不会删除已经存在的日志文件 
+
+SystemMaxFileSize与RuntimeMaxFileSize限制单个日志的最大体积,
+到达此限制后日志文件将被自动滚动,默认值是对应的,SystemMaxUse与
+RuntimeMaxUse值的1/8这也意味着日志滚动默认保留7个历史文件
+日志大小的值可以使用1024为基数的K,M,G,T,P,E后缀,分别对应于
+1024,1024^2,...字节
+SystemMaxFiles与RuntimeMaxFiles限制最多允许同时存在多少个日志文件
+，超过此限制后,最老的日志文件将被删除,而当前的活动日志文件不受影响,默认值
+为100个
+
+MaxFileSec=
+	日志滚动的时间间隔,通常不需要使用基于时间的日志滚动策略,因为
+	由SystemMaxFileSize与RuntimeMaxFileSize控制
+	的基于文件大小的日志滚动策略,已经可以确保日志文件
+	的大小不会超标,默认值是一个u月,设置为0表示禁止
+	基于时间的日志滚动策略,可以使用"year","month"
+	"week","day","h","m"时间后缀,若不使用后缀则表示
+	以秒为单位
+
+MaxRetentionSec=
+	日志文件的最大保留期限,当日志文件的最后修改时间
+	超过此期限将被删除,默认值0表示不使用基于时间的日志
+	删除策略,通常并不需要使用基于时间的日志删除策略,
+	因为有由SystemMaxUse与RuntimeMaxUse控制基于文件大小
+	的日志滚动策略，已经可以确保日志文件的大小不会超标
+	可以使用"year","month","week","day","h",'m'时间
+	后缀,若不使用后缀则表示以秒为单位
+
+SyncIntervalSec=
+	向磁盘刷写日志文件时间间隔,默认值是5分钟,刷写之后,日志
+	文件将会处于离线状态(OFFLINE)状态,注意，当接受到
+	CRIT,ALERT,EMERG级别的日志消息后,将会无条件的立即
+	刷写日志文件,因此此设置仅对ERR,WARNING,NOTICE,INFO,DEBUG级别
+	的日志消息有意义
+
+ForwardToSyslog=, ForwardToKMsg=, ForwardToConsole=, ForwardToWall=
+	ForwardToSyslog= 表示是否将接收到的日志消息转发给传统的 syslog 守护进程，默认
+	值为"no"。 如果设为"yes"，但是没有任何进程监听对应的套接字，那么这种转发是无意
+	义的。 此选项可以被内核引导选项"systemd.journald.forward_to_syslog="覆盖
+	ForwardToKMsg= 是否将接收到的日志消息转发给内核日志缓冲区(kmsg)，默认值
+	为"no"。 此选项可以被内核引导选项"systemd.journald.forward_to_kmsg="覆盖
+	ForwardToConsole= 是否将接收到的日志消息转发给系统控制台，默认值为"no"。 如果
+	设为"yes"，可以通过下面的 TTYPath= 指令指定转发目标。 此选项可以被内核引导选
+	项"systemd.journald.forward_to_console="覆盖。 ForwardToWall= 是否将接收到的日
+	志消息作为警告信息发送给所有已登录用户，默认值为"yes"。 此选项可以被内核引导选
+	项"systemd.journald.forward_to_wall="覆盖。
+
+MaxLevelStore=, MaxLevelSyslog=, MaxLevelKMsg=, MaxLevelConsole=, MaxLevelWall=¶
+	MaxLevelStore= 设置记录到日志文件中的最高日志等级，默认值为"debug"；
+	MaxLevelSyslog= 设置转发给传统的 syslog 守护进程的最高日志等级，默认值
+	为"debug"； MaxLevelKMsg= 设置转发给内核日志缓冲区(kmsg)的最高日志等级，默认值
+	为"notice"； MaxLevelConsole= 设置转发给系统控制台的最高日志等级，默认值
+	为"info"； MaxLevelWall= 设置作为警告信息发送给所有已登录用户的最高日志等级，
+	默认值为"emerg"； 这些选项的值可以设为日志等级的名称， 也可以设为日志等级的数
+	字： "emerg"(0), "alert"(1), "crit"(2), "err"(3), "warning"(4), "notice"(5), 
+	"info"(6), "debug"(7) 。 所有高于设定等级的日志消息都将被直接丢弃， 仅保存/转
+	发小于等于设定等级的日志消息。
+
+TTYPath=
+	指定ForwardToConsole=yes时所有使用的控制台TTP,默认是/dev/console
+
+
+日志转发
+	有两种不同的日志转发方法： (1)通过套接字文件(/run/systemd/journal/syslog)
+	可以将收集到的日志消息 立即转发给套接字的监听进程(传统的 syslog 守护进程)。
+	此方法受 ForwardToSyslog= 指令的控制。 (2)日志接收进程作为客户端运行，就像 
+	journalctl(1) 一样读取日志文件。 因此，此方法在 Storage=none 时无效。
+	此方法不能实时读取日志消息， 但是可以读取先前保存的日志消息(例如在系统启动
+	完成之后读取系统启动早期的日志消息)。 此方法还可以读取到完整的日志元数据。 
+	此方法一般无法读取当前最新的日志消息， 只能读取已经被记录到文件系统上的日志消息。 
+	注意，syslog 守护进程通常使用此方法(而不是前一种方法)， 因此 Storage= 选项(而不是
+	ForwardToSyslog= 选项) 不应该设为"none"。

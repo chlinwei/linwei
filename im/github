@@ -1,0 +1,54 @@
+git init //创建仓库
+git config --global user.name "chlinwei"
+git config --global user.email"862350707@qq.com"
+git add filename 把文件添加到暂存区(stage)
+git commit -m "wrote a readme file " 把所有文件提交到仓库
+git status 获取当前仓库的状态
+git diff查看修改前和修改后的区别
+git log 查看日志
+git log --pretty=oneline 
+HEAD表示当前版本也就是最新的版本
+HEAD^ 表示上个版本
+HEAD^^表示上上个版本 以此类推
+git reset --hard HEAD^ 退回上个版本
+git reflog//查看历史命令
+工作区(working directory):就是在电脑里能看到的目录
+版本库(repository):工作区有一个隐藏目录.这不算
+工作区，而是git的版本库,
+以及指向master的一个指针叫HEAD
+git add把文件添加进去,实际上就是把文件修改添加到暂存区
+git commit 提交更改就是把暂存区的所有内容提交到当前分支
+创建git版本库时git自动为我们创建了唯一一个master分支
+所以现在git commit 就是往master提交更改
+
+git diff HEAD -- filename //查看工作区和版本库里的最新版本的区别
+git checkout -- filename //撤销
+1)一种是readme.txt自修改后还没有被放到暂存区，现在，撤销
+修改就回到和版本库一模一样的状态；
+2)一种是readme.txt已经添加到暂存区后，又作了修改，现在，
+撤销修改就回到添加到暂存区后的状态
+git reset HEAD readme.txt 将暂存区的修改撤掉,重新回到git add 前的状态
+git rm --cached filename 保留本地文件删除stage(暂存区文件)
+ssh-keygen -t rsa -C"qq邮箱"
+然后直接回车
+在住目录下生成.ssh目录里面有两个文件
+id_rsa id_rsa.pub
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+git remote add origin git@github.com:michaelliao/learngit.git//将本地仓库
+的"内容推送到github仓库,origin是远程仓库名
+
+git checkout -b dev //-b 表示创建dev分支并切换到dev分支
+相当于以下两条命令
+git branck dev
+git checkout dev
+
+
+git branch//查看所有分支,当前分支前面会标有一个*
+git checkout master//切回到master
+git merge dev//将dev的工作合并到master
+git branch -d dev//删除dev分支
+git log --graph --pretty=oneline --abbrev-commit
+ git merge --no-ff -m "merge with no-ff" dev
+ //--no-ff 参数表示禁止 fast forward
+ 因为本次合并时要床家新的commit所以加上-m选项

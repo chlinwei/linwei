@@ -1,0 +1,41 @@
+1.一个信号可以连接多个槽
+connect(slider,SIGNAL(valueChanged(int)),
+spinBox,SLOT(setValue(int)));
+connect(slider,SIGNAL(valueChanged(int)),
+this,slot(updateStatusBarIndicator(int)));
+发射信号的时候,会以不确定的顺序一个接一个的
+调用这些槽
+2.多个信号可以连接同一个槽
+conect(lcd,SIGNAL(overflow()),
+this,SLOT(handleMathError()));
+connect(calculator,SIGNAL(divisionByZero()),
+this,SLOT(handleMathError()));
+无论发射哪个信号,都会调用这个槽
+3.一个信号可以与另外一个信号相连接
+connect(lineEdit,SIGNAL(textChanged(const QString&)),
+this,SIGNAL(updatRecord(const QString&)));
+当发射一个信号时,也会发射第二个信号,除此之外
+信号与信号之间的连接和信号与槽之间的连接是
+难以区分的
+4.连接可以被移除
+disconnect(lcd,SIGNAL(overflow()),
+this,SLOT(handleMathError()));
+这种情况较少用到,因为当删除对象时Qt会自动
+移除和这个对象相关的所有连接,要把信号成功
+连接到槽(或者连接到另一个信号),他们的参数
+必须具有相同的顺序和相同的类型
+connect(ftp,SIGNAL(rawCommandReply(int,const QString&)),
+this,SLOT(processReply(int,const QString&)));
+这里有个例外,如果信号的参数比它所连接的槽的
+参数多,那么多余的参数将会被简单的忽略掉,
+connect(ftp,SIGNAL(rawCommandReply(int,const QString&)),
+this,SLOT(checkErrorCode(int)));
+如果参数不类型不匹配,或者如果信号或槽不存在,则当应用程序使用
+调试模式构建后,Qt会在运行时发出警告
+QT设计师创建对话框所包含的步骤
+1.创建并初始化子窗口部件
+2.把子窗口部件放到布局中
+3.设置Tab键顺序
+4.建立信号-槽之间的连接
+5.实现对话框中的指定义槽
+

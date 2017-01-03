@@ -1,0 +1,12 @@
+curl命令可以用来执行下载,发送各种http请求,指定头部等操作
+curl是将下载文件输出倒stdout,将进度条信息输出倒stderr
+
+--silent :不显示进度条信息
+curl localhost
+
+-o:将文件保存为命令行中指定的文件中
+curl -o a.txt  localhost
+
+-O:使用URL中默认的文件名保存倒本地
+
+

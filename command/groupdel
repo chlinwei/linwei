@@ -1,0 +1,22 @@
+groupdel mygroup
+
+[root@www ~]# groupdel [groupname]
+
+范例一：将刚刚的 mygroup 删除！
+[root@www ~]# groupdel mygroup
+
+范例二：若要删除 vbird1 这个群组的话？
+[root@www ~]# groupdel vbird1
+groupdel: cannot remove user's primary group.
+
+
+为什么 mygroup 可以删除，但是 vbird1 就不能删除呢？原因很简单，『有某个账号
+(/etc/passwd) 的 initial group 使用该群组！』 如果查阅一下，你会发现在
+/etc/passwd 内的 vbird1 第四栏的 GID 就是 /etc/group 内的 vbird1 那个群组的 GID
+，所以啰，当然无法删除～否则 vbird1 这个用户登陆系统后， 就会找不到 GID
+，那可是会造成很大的困扰的！那么如果硬要删除 vbird1 这个群组呢？ 你『必须要确认
+/etc/passwd 内的账号没有任何人使用该群组作为 initial group
+』才行喔！所以，你可以：
+
+修改 vbird1 的 GID ，或者是：
+删除 vbird1 这个使用者。

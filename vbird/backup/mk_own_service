@@ -1,0 +1,100 @@
+一.制作自己的服务
+目的:备份自己~linwei/linwei ~linwei/.vimrc
+
+过程:
+
+1)vim /service/scripts/backup_~linwei_linwei.sh
+
+#!/bin/bash
+#备份~linwei/linwei 和 ~linwei/.vimrc
+#创建日期:2016.9.29
+#心情,听着歌,看着鸟哥私房菜,时间过的好快
+dir="/home/linwei"
+cd ${dir}
+source="./linwei ./.vimrc"
+target="${dir}/backup/backup-linwei-.vimrc-$(date +%F).tar.gz"
+[ ! -d ${dir}/backup ] && mkdir ${dir}/backup
+tar -zvcf ${target} ${source} &> "${dir}/backup/backup-linwei-.vimrc-$(date +%F).log"
+
+2)chmod +x  /service/scripts/backup_~linwei_linwei.sh
+
+3)sudo vim /etc/systemd/system/backup-linwei.service
+
+[Unit]
+Description=backup ~linwei/linwei .vimrc
+Requires=atd.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "echo /service/scripts/backup_~linwei_linwei.sh|at now"
+
+[Install]
+WantedBy=graphical.target
+
+
+4)systemctl daemon-reload
+5)systemctl start backup.service
+
+注释:bash -c string :表明string中包含了一条命令,如 bash -c "echo ahaaj"
+
+
+
+
+二.利用timer执行上述的备份服务backup-linwei.service
+1)vim /etc/systemd/system/backup.timer
+
+[Units]
+Description=backup ~linwei/linwei timer
+
+[Timer]
+#开机1小时后执行backup-linwei.service
+OnBootSec=1hrs
+#自从第一次执行完后,每1天都执行一次backup-linwei.service
+OnUnitActiveSec=1days
+
+[Install]
+WantedBy=graphical.target
+
+2)systemctl daemon-reload
+
+3)systemctl enable backup-linwei.timer
+4)systemctl restart backup-linwei.timer
+
+systemctl show timers.target:查看timer这个unit启动时间
+systemctl show backup-linwei.service:backup-linwei.service上次执行的时间
+systemctl show back-linwei.timer 
+
+
+把timer的名字和要执行的服务的名字一样就可以了
+backup-linwei.timer
+backup-linwei.service
+最后启动backup-linwei.timer就ok了那个
+backup-linwei.service不用管
+
+
+
+三,星期天凌晨2运作backup-linwei.service
+vim /etc/systemd/system/backup-linwei2.timer
+
+[Unit]
+Description=backup ~linwei/linwei timer2
+
+[Timer]
+#星期天2点
+OnCalendar=Sun *-*-* 02:00:00
+#持续执行
+Persistent=true
+#如果service和timer名字不相同时就要指定一个service
+Unit=backup-linwei.service
+
+[Install]
+WantedBy=graphical.target
+
+
+systemct daemon-reload
+systemct enable backup2.timer
+systemct start backup2.timer
+systemct show backup2.timer
+NextElapseUSecRealtime
+时间与1970-01-01 00:00:00比较的
+

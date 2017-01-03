@@ -1,0 +1,19 @@
+医药网
+
+#:username:linwei password:iv9n0sjo7s5#
+跳板机:222.73.228.119 密码: iv9n0sjo7s5#
+
+nginx 10.103.33.187 
+	只有外网的ip的nginx和web:zyp#b=jc6e,m
+	只有内网ip的web:nbpo!(3vj,
+	一般数据库:home199
+
+
+
+
+squid 10.103.33.184
+web 10.103.33.154
+db(主) 10.103.33.222
+db(从) 10.103.33.220
+usernam:linwei password:xjufsybm9
+dbk:10.103.33.88 密码654321 

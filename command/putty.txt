@@ -1,0 +1,12 @@
+1字体更换:最上方右击点击Change Settings->选择左边的Appearance->Font setttings里的change按钮,选择默认的Courier New的字体就好了
+2.确定字符集:Change Settings里,点击左边的trainslation,选择utf-8
+3.窗口保存的输出有点少了，前面的看不到
+    Change Settings->Window->Lines of scrollback 改为20000,80000
+4.注销登录,exit
+5.Connection里有个Seconds between keepaliaves:这里就是每间隔
+ 指定的秒数，就给服务器发送一个空的数据包，来保持连接，以免登录的主机
+ 在那边长时间没接到数据后，会自动断开SSH的连接,默认输入0是用来
+ 禁用保持连接,下面的Low-level TCP Connection options都选上
+5.Connection->Data 里面有个Auto-login username,可以指定默认的登录用户
+  ，如果每次登录主机都是用一个用户，不妨在这里设置一下，SSH,Telent,Rlogin
+ 这三种协议都支持，但不是所有的telnet服务器都支持自动登录用户

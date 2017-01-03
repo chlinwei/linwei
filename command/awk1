@@ -1,0 +1,60 @@
+普通模式
+awk '/pattern/{action}' files
+patter:是一个正则表达式,action是一系列命令
+
+显示一个文件的所有行
+awk '{print ;}' 01.c #print后面不接参数,表示打印整行,';'表示命令结束
+
+格式化打印输出
+cat a.txt
+Fruit Price/lbs
+Banana 0.89
+Paech 0.79
+Kiwi 1.50
+Pineapple 1.29
+Apple 0.99
+
+awk '{ printf "%-15s %s\n", $1, $2 ;}' a.txt 
+Fruit           Price/lbs
+Banana          0.89
+Paech           0.79
+Kiwi            1.50
+Pineapple       1.29
+Apple           0.99
+注释:-左对齐,这里是printf而不是print
+
+匹配模式
+#!/bin/bash
+while true
+do
+	read -p "please input x:" x
+	echo $x | awk '/[0-9]+/{print "Integer"}'
+	echo $x | awk '/[A-Za-z]+/{print "string"}'
+	echo $x | awk '/^$/ {print"a blank line"}'
+done
+判断输入是整数？字符串?空行?
+
+echo a b c d | awk 'BEGIN{one = 1;two = 2} {print $(one + two)}'
+
+统计空行数
+awk '/^$/{++x}END{print x}' 01.c
+
+/####################/
+cat a
+john 85 92 78 94 88
+andrea 89 90 75 90 86
+jasper 84 88 80 92 84
+
+vi 01.awk
+{total = $2 + $3 + $4 + $5 + $6
+print $1,total / 5}
+
+awk -f 01.awk a
+
+john 87.4
+andrea 86
+jasper 85.6
+
+shell脚本写法
+cat a | awk '{total = $2 + $3 + $4 + $5 + $6
+print $1,total / 5}'

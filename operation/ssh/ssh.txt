@@ -1,0 +1,16 @@
+SecureCRT
+ssh服务的端口号(22)
+ssh客户端连接不上:
+1)服务器防火墙iptabes  /etc/init.d/ stop
+2)SSH服务有问题
+3)客户端到服务器端的线路有问题,ping 服务器IP地址
+
+
+小结:
+1)上传rz 覆盖-y
+2)下载sz 覆盖-y
+3)包含再装时的Dial-up NetWorking Support
+	yum install lrzsz -y
+	yum groupinstall "Dial-up NetWorking Support"  -y
+4)只能上传下载文件
+5)上传的文件可以电脑里的任意文件

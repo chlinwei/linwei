@@ -1,0 +1,52 @@
+1.标题
+HTML标题(Heading)是通过<h1>-<h6>等标签进行定义的,标题由大到小
+2.段落
+HTML段落是通过<p>标签进行定义的,产生一个新的段落会自动换行
+<p> This is a paragraph</P>
+<p> This is a another paragraph</P>
+3.链接
+<a href="http://www.w3school.com.cn"> This is a link</a>
+4.图片
+<img src="w3school.jpg" width="104" height="142"/>
+
+
+
+HTML元素:元素指的是从开始标签(start tag)到结束标签(end tag)的所有代码
+
+<p> This is a paragraph </P>
+<a href="default.htm"> This is a link </a>
+<br/>
+
+HTML元素以开始标签起始
+HTML元素以结束标签终止
+元素内容是开始标签和结束标签之间的内容
+空元素在开始标签中进行关闭(以开始标签的结束而结束)
+大多数HTML元素可拥有属性
+
+
+<body>元素:定义了HTML文档的主体,这个元素拥有一个
+开始标签<body>和一个结束标签</body>
+<html>元素:定义了整个HTML文档
+<br> 就是没有关闭标签的空元素,定义换行
+
+HTML:对大小写不敏感,最好标签都小写
+
+<a>HTML链接属性
+<a href="http://www.w3school.com.cn"> This is a link</a>
+
+关于对齐方式的属性
+<h1 align="center"> 
+bgcolor关于背景颜色的属性
+<body bgcolor="yellow">
+
+始终为属性值加上引号
+属性值应该始终被包括在引号内,双引号是最常用的
+不过使用单引号也没有问题
+在某写个别情况下,比如属性值本身就含有双引号,
+那么就必须用单引号
+name='Bill "HelloWorld" Gates'
+<hr />标签在HTML页面中创建水平线
+
+HTML折行:如果希望不产生逸一个新段落下进行换行,请使用<br />
+为了解决中文乱码
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">

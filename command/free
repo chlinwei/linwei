@@ -1,0 +1,23 @@
+free 的参数
+-b -k -m -g :分别以Byte,KB,MB,GB为单位显示内存的使用情况
+-l :show detailed low and high memory statistics
+-o :使用旧的格式显示内存使用的信息,没有描述-+/buffers /cache信息这一行
+-t:显示内存总和列
+-s:<间隔秒数> 持续观察内存使用状况
+-c:结合参数-s使用,表示更新多少次
+-a:show available memory if exported by kernel(>80 characters per line)
+-V:显示free命令版本信息并退出该命令
+
+
+free指标介绍
+total:总的物理内存大小total=used + free
+userd:已经使用的物理内存,一般这个值比较大,use=buffers + cached(
+	  maybe add shared also) + -buffers/cache(used)
+free:完全未使用的物理内存
+shared:应用程序共享的物理内存
+buffers:缓存,主要用于块设备缓存,列入用户目录,inode值等
+cached:缓存,主要用于缓存文件
+
+
+
+

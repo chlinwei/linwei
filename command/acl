@@ -1,0 +1,65 @@
+acl:主机的细部权限规划
+acl对于文件,目录主要通过,使用者,群组,默认属性(mask)来配置
+
+dumpe2fs  /dev/sda1 | grep acl:查看文件系统是否支持acl
+
+setfacl:配置某个目录/文件的ACL规范
+[root@www ~]# setfacl [-bkRd] [{-m|-x} acl参数] 目标文件名
+选项与参数：
+-m ：配置后续的 acl 参数给文件使用，不可与 -x 合用；
+-x ：删除后续的 acl 参数，不可与 -m 合用；
+-b ：移除所有的 ACL 配置参数；
+-k ：移除默认的 ACL 参数，关于所谓的『默认』参数于后续范例中介绍；
+-R ：递归配置 acl ，亦即包括次目录都会被配置起来；
+-d ：配置『默认 acl
+参数』的意思！只对目录有效，在该目录新建的数据会引用此默认值
+
+
+setfacl命令可以识别以下的规则格式:
+
+[d[efault]:] [u[ser]:]uid [:perms] 指定用户的权限，文件所有者的权限（如果uid没有指定）
+[d[efault]:] g[roup]:gid [:perms] 指定群组的权限，文件所有群组的权限（如果gid未指定） 
+[d[efault]:] m[ask][:] [:perms] 有效权限掩码 [d[efault]:] o[ther] [:perms] 其他的权限
+
+[root@www ~]# touch a
+[root@www ~]# ll a
+-rw-r--r-- 1 root root 0 Nov 25 15:59 a
+[root@www ~]# 
+[root@www ~]# setfacl -m u:lw:rx a  在使用者上增加一个用户lw对文件a的权限为rx
+[root@www ~]# ll a
+-rw-r-xr--+ 1 root root 0 Nov 25 15:59 a //注意多了个+号
+[root@www ~]# getfacl a
+# file: a  //文件名
+# owner: root //文件拥有者
+# group: root //文件所属群组
+user::rw- //使用者上时空的,代表文件拥有者
+user:lw:r-x //针对用户lw的配置为rx
+group::r-- //针对文件群组的权限配置r
+mask::r-x //文件默认的有效权限(mask)
+other::r-- //其他人拥有的权限
+
+[root@www ~]# groupadd mygroup1 
+[root@www ~]# setfacl -m g:mygroup1:rx a
+[root@www ~]# getfacl a
+# file: a
+# owner: root
+# group: root
+user::rw-
+user:lw:r-x
+group::r--
+group:mygroup1:r-x  #这里就是增加的部分
+mask::r-x  #注意这里
+other::r--
+
+[root@www ~]# setfacl -m m:r a
+[root@www ~]# getfacl a
+# file: a
+# owner: root
+# group: root
+user::rw-
+user:lw:r-x			#effective:r-- 注意这里
+group::r--
+group:mygroup1:r-x		#effective:r--
+mask::r-- #注意这里
+other::r-- 
+

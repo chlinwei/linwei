@@ -1,0 +1,217 @@
+一.开机启动
+配置文件主要放在/usr/lib/systemd/system/目录里
+也可能在/etc/systemd/system目录
+systemctl enable httpd(让某个服务开机启动)
+systemctl disable httpd(让某个服务开机不启动)
+上面的命令相当于/etc/systemd/system目录添加了一个
+符号链接,指向/usr/lib/systemd/system里面的httpd.service文件
+这是因为开机时,systemd只是执行了/etc/systemd/system
+目录里面的配置文件。
+
+
+
+二.启动服务
+设置开机启动后,软件并不会立即启动,必须等到下一次开机
+,如果想现在就运行该软件,执行systemctl start
+执行上面的命令以后,有可能失败,因此要用systemctl status
+命令查看一些该服务的状态
+
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled)
+   Active: active (running) since 金 2014-12-05 12:18:22 JST; 7min ago
+ Main PID: 4349 (httpd)
+   Status: "Total requests: 1; Current requests/sec: 0; Current traffic:   0 B/sec"
+   CGroup: /system.slice/httpd.service
+           ├─4349 /usr/sbin/httpd -DFOREGROUND
+           ├─4350 /usr/sbin/httpd -DFOREGROUND
+           ├─4351 /usr/sbin/httpd -DFOREGROUND
+           ├─4352 /usr/sbin/httpd -DFOREGROUND
+           ├─4353 /usr/sbin/httpd -DFOREGROUND
+           └─4354 /usr/sbin/httpd -DFOREGROUND
+
+12月 05 12:18:22 localhost.localdomain systemd[1]: Starting The Apache HTTP Server
+12月 05 12:18:22 localhost.localdomain systemd[1]: Started The Apache HTTP Server.
+12月 05 12:22:40 localhost.localdomain systemd[1]: Started The Apache HTTP Server.
+
+上面输出的结果含义如下:
+Loaded行:配置文件的位置,是否设为开机启动
+Active行:表示正在运行
+Main PID行:主进程PID
+Status行:有应用本身(这里是httpd)提供的软件当前状态
+CGroup块:应用所有子进程
+日志块:应用的日志
+
+
+三,停止服务
+systemctl stop命令
+有时候可能没有响应,服务停不下来,这时候就不得不杀死进程了
+systemctl kill httpd.service
+此外,重启服务要执行systemctl restart命令
+
+四.配置文件
+
+[Unit]
+Description=OpenSSH server daemon
+Documentation=man:sshd(8) man:sshd_config(5)
+After=network.target sshd-keygen.service
+Wants=sshd-keygen.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/sshd
+ExecStart=/usr/sbin/sshd -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+Type=simple
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]单元:启动顺序与依赖关系
+Description字段给出当前服务的简单描述
+Documentation字段给出文档位置
+After,Before:只涉及启动顺序,不涉及依赖关系
+Wants,与Requires:只涉及以来关系,不设计启动顺序,默认是同时启动的
+
+[Service]单元:启动行为
+EnvironmentFile字段:指定当前服务的环境参数文件,该文件内部的
+key=value键值对,可以$key的形式,在当前配置文件中获取
+上面的例子中,sshd的环境参数是/etc/sysconfig/sshd
+ExecStart字段:定义启动进程时的执行命令,上面例子中,启动sshd,
+执行的命令是/usr/sbin/sshd -D $OPTION,其中$OPTION就来自EnvironmentFile字段 指定的环境参数文件
+
+ExecReload字段：重启服务时执行的命令
+ExecStop字段：停止服务时执行的命令
+ExecStartPre字段：启动服务之前执行的命令
+ExecStartPost字段：启动服务之后执行的命令
+ExecStopPost字段：停止服务之后执行的命令
+
+[Service]
+ExecStart=/bin/echo execstart1
+ExecStart=
+ExecStart=/bin/echo execstart2
+ExecStartPost=/bin/echo post1
+ExecStartPost=/bin/echo post2
+上面这个配置文件，第二行ExecStart设为空值
+，等于取消了第一行的设置，运行结果如下。
+
+execstart2
+post1
+post2
+
+所有的启动设置之前，都可以加上一个连词号（-），表示"抑制错误"，即发生错误的时候
+，不影响其他命令的执行。比如，EnvironmentFile=-/etc/sysconfig/sshd（注意等号后面的那个连词号）
+，就表示即使/etc/sysconfig/sshd文件不存在，也不会抛出错误。
+
+启动类型
+Type字段定义启动类型,它可以设置的值如下
+simple(默认值):ExecStart字段启动的进程为主进程
+forking:ExecStart字段将以fork()方式启动,此时父进程将会推出,子进程将会成为主进程
+oneshot:类似simple,但只执行一次,systemd会等待它执行完,才启动其他服务
+dbus:类似simple,但会等待D-Bus信号后启动
+notify:类似simple,启动结束后会发出通知信号,然后systemd再
+启动其他服务
+idle:类似simple,但是要等到其他任务都执行完了,才会启动该服务,
+一种场合是为让该服务的输出,不与其他服务的输出想混合
+
+
+如果关闭以后，将来某个时候还想打开，配置文件修改如下。
+
+[Unit]
+Description=Switch-off Touchpad
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/touchpad-off start
+ExecStop=/usr/bin/touchpad-off stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+上面配置文件中，RemainAfterExit字段设为yes，表示进程退出以后，服务仍然保持执行。这样的话，一旦使用
+systemctl stop命令停止服务，ExecStop指定的命令就会执行，从而重新开启触摸板。
+
+Service区块有一些字段,定义了重启行为
+KillMode字段:定义了Systemd如何停止sshd服务
+上面的例子中,将KillMode设为process,表示只停止主进程,不停止
+任何子sshd子进程,即子进程打开的SSH session仍然会
+保持链接,这个设置不太常见,但对sshd很重要,否则你
+停止服务的时候,会连自己打开的SSH session一起杀掉
+
+KillMode字段可以设置的值如下:
+control-group(默认值):当前控制组里面的所欲哦子进程
+都会被杀掉
+process:只杀主进程
+mixed:主进程将收到SIGTERM信号,子进程收到SIGKILL信号
+none:没有进程会被杀掉,只是执行服务的stop命令
+
+接下来是Restart字段:定义了sshd推出后,systemd的重启模式
+上面的例子中,设为on-failure,表示任何意外的失败,
+就将重启sshd,如果sshd正常停止(比如执行systemctl stop命令),它就
+不会重启
+
+restart字段可以设置的值如下:
+no(默认值):退出后不会重启
+on-success:只有正常退出(退出状态码为0),才会重启
+on-failure:非正常推出时(退出状态码为非0),包括信号
+终止和超时,才会重启
+on-abnormal:只有信号终止和超时，才会重启
+on-abort:只有在收到没有捕捉到的信号终止时,才会重启
+on-watchdong:超时退出,才会重启
+always:不管什么推出原因,总是重启
+
+对于守护进程，推出设置为on-failure,对于那些允许
+发生错误退出的服务,可以设置为on-abnormal
+
+最后是RestartSec字段:表示Systemd重启服务之前,需要
+等待的秒数
+
+
+[Install]区块:定义如何安装这个配置文件,即怎么做到开机启动
+WantedBy字段:表示该服务所在的Target
+Target的含义是服务组,表示一组服务
+WantedBy=multi-user.target指的是,sshd所在的Target
+是multi-user.target
+这个设置非常重要,因为执行systemctl enable sshd.service命令
+时,shhd.service的一个符号链接就会放在/etc/systemd/system目录
+下面的multi-user.target.wants子目录中
+systemd有默认的启动Target
+获取默认Target命令
+systemctl get-default
+使用Target的时候,systemctl list-dependencies命令和
+systemctl isolate命令也很有用
+systemctl list-dependencies multi-user-target(列出此服务组所包含的所有服务)
+systemctl isolate shutdown.target(切换到另一个服务组)
+multi-user.target,表示多用户命令行行状态,
+graphical.target表示图形用户状态,它依赖于multi-user.target
+
+
+五.Target的配置文件
+$ systemctl cat multi-user.target
+
+[Unit]
+Description=Multi-User System
+Documentation=man:systemd.special(7)
+Requires=basic.target
+Conflicts=rescue.service rescue.target
+After=basic.target rescue.service rescue.target
+AllowIsolate=yes
+
+注意:Target配置文件里面没有启动命令
+上面的输出结果中,主要字段含义如下
+Requires字段:要求basic.target一起运行
+Conflicts字段:冲突字段,如果rescue.service或
+rescue.target正在运行,multi-user.target就不能运行,反之亦然
+
+After:表示multi-user.target在basic.target,rescue.service,
+rescue.target之后启动,如果它们有启动的话
+AllowIsolate:允许使用sytemctl isolate命令切换到multi-user.target
+
+六，修改配置文件后重启
+修改配置文件后,需要重新加载配置文件,然后重新
+启动相关的服务
+systemctl daemon-reload(重新加载配置文件)
+systemctl restart foobar(重新启动相关服务)
+
+
+

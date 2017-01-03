@@ -1,0 +1,86 @@
+rsync 实现数据同步
+
+#####
+服务器192.168.1.102
+服务器配置文件:/etc/rsyncd.conf
+chmod 600 /etc/rsyncd.conf
+#指定使用rsync的用户
+uid = root
+#制定使用rsync的用户组
+gid = root
+#最大连接数0为不限制
+max connections = 0
+#设置超时时间
+timeout = 600
+#是否使用chroot
+use chroot = no
+#是否为只读权限
+read only = no
+#设置使用的端口，873为默认
+port = 873
+#log文件位置
+#log file=/data/log/rsyncd.log
+#pid文件位置
+pid file=/var/run/rsyncd.pid
+#lock文件位置
+lock file=/var/run/rsyncd.lock
+#要同步的模块名称，客户端连接时需要
+[data]
+#指定要同步的具体文件夹，此处为实际同步的文件夹
+path=/data/ 
+#备注信息,主要是一些说明信息，用来帮助记忆等  
+comment=daka_back
+#忽略一些无关的错误信息防止因为资源不足或其他的通信出错导致严重问题
+ignore errors
+#允许同步的客户机IP,多个用","隔开
+hosts allow=192.168.1.104
+#验证用户,为服务器的系统用户
+auth users=system1
+#权限必须为600
+secrets file=/etc/rsyncd.passwd
+#rsyncd.passwd服务端格式用户名：密码；客户端格式：密码
+
+服务端密码文件/etc/rsyncd.passwd
+内容为: system1:system1
+chmod 600 /etc/rsyncd.passwd
+
+
+######
+客户端192.168.1.104
+客户端不需要配置/etc/rsyncd.conf
+只需要/etc/rsyncd.passwd就可以了
+里面为system1(密码)
+
+
+服务端 rsync --daemon config=/etc/rsyncd.conf或rsync --daemon
+
+客户端:
+1)rsync -avz -P ~/a system1@192.168.1.192::data/ 
+接下来输入密码system1就ok了
+2)rsync -avz -P ~/a system1@192.168.1.192::data/  --password-file=/etc/rsyncd.passwd
+3)rsync -avz -P --delete ~/test/ system1@192.168.1.102::data/
+--delete作用是将远端data/下的数据保持和本地端test/下的数据一致
+相反拉取的话,本地端数据和远端数据保持一致
+4)rsync -avz -P ~/a rsync://system1@192.168.1.192:/data/  --password-file=/etc/rsyncd.passwd
+想对于2的另一种写法
+
+客户端可能出现的错误:
+rsync:failed to wonnect to 192.168.1.102:No route to host(113)
+rsync error:error in socket IO(code 10) at clientserver.c(124)[sender=3.0.6]
+等错误一般是防火墙,或selinux的问题
+systemctl disable selinux
+systemctl disable firewalld
+重启就好了
+
+
+
+resrync=rsync + inotify 远程时时同步
+查看是否支持inotify如果有下面三个文件,表示支持
+[linwei@lw ~]$ ll /proc/sys/fs/inotify
+total 0
+-rw-r--r-- 1 root root 0 Sep  3 18:48 max_queued_events
+-rw-r--r-- 1 root root 0 Sep  3 18:48 max_user_instances
+-rw-r--r-- 1 root root 0 Sep  3 18:10 max_user_watches
+
+fedora24下载inotify-tools
+dnf install inotify-tools

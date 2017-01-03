@@ -1,0 +1,93 @@
+linux 中 date命令的用法
+1970年1月1日0时0分0秒
+date(选项)(参数)
+
+选项 
+-d<字符串>:显示字符串所指的日期与时间,字符串前后必须加上双引号
+-s<字符串>:根据字符串来设置日期与时间,字符串前后必须加上双引号
+-u:显示GMT
+
+参数
+<+时间日期格式>:指定显示时使用的日期时间格式
+日期格式字符串列表
+%H 小时,24小时(00-23)
+%I 小时,12小时(01-12)
+%K 小时,24小时(0-23)
+%l 小时,12小时(1-12)
+%M 分钟(00-59)
+%p 显示出AM或PM
+%r 显示时间,12小时制(hh:mm:ss %p)
+%T 显示时间,24小时制(hh:mm:ss)
+%s 从1970年1月1日00:00:00到目前经历的秒数
+%S 显示秒(00-59)
+%T 显示时间,24小时制(hh:mm:ss)
+%X 显示时间格式(%H:%M:$S)
+%Z 显示时区,日期域(CST)
+%a 星期的简称(Sun-sat)
+%A 星期的全称(Sunday-Saturday)
+%h,%b 月的简称(Jan-Dec)
+%B 月的全称(January-December)
+%c 日期和时间(Tue Nov 20 14:12:58 2012)
+%d 一个月的第几天(01-31)
+%x,%D 日期(mm/dd/yy)
+%j 一年的第几天(001-366)
+%m 月份(01-12)
+%w 一个星期的第几天(0代表星期天)
+%W 一年的第几个星期(00-53)
+%y 年的最后两个数字(1999则是99)
+%Y 年的全称
+
+实例
+1.date +"%Y-%m-%d"
+2016-12-07
+
+2.输出昨天日期
+date -d "1 day ago" +"%Y-%m-%d"
+2012-11-19
+2秒后输出
+date -d "2 second" +"%Y-%m-%d %H:%M:%S"
+2012-11-20 14:21:31
+
+传说中的1234567890
+date -d "1970-01-01 1234567890 seconds" +"%Y-%m-%d %H:%m:%S"
+2009-02-13 23:02:30
+
+根据天数查看日期
+date -d "1970-01-01 14126 days" +"%Y-%m-%d %H:%m:%S"
+
+普通转换格式
+date -d "2009-12-12" +"%Y-%m-%d %H:%M:%S"
+2009-12-05 00:00:00
+
+appache格式转化
+date -d "Dec 5, 2009 12:00:37 AM" +"%Y-%m-%d %H:%M.%S"
+2009-12-05 00:00:37
+
+格式转化后时间游走
+date -d "Dec 5, 2009 12:00:37 AM 2 years ago" +"%Y-%m-%d %H:%M.%S"
+2007-12-05 00:00:37
+
+加减操作:
+date -d "+1 day" +"%Y:%m:%d" 明天
+date -d "-1 day" +"%Y:%m:%d" 昨天
+date -d "+1 month" +"%Y:%m:%d" 
+date -d "-1 month" +"%Y:%m:%d" 
+date -d "+1 year" +"%Y:%m:%d" 
+date -d "-1 year" +"%Y:%m:%d" 
+
+设定时间
+date -s
+
+
+The --date=STRING is a mostly free format human readable date string such as
+"Sun, 29 Feb 2004 16:21:42 -0800"
+or "2004-02-29 16:21:42" or even "next Thursday".  A date string may
+contain items indicating  calendar  date, time of day, time zone, day of week,
+relative time, relative date, and numbers.  An empty string indicates the
+beginning of the day.  The date string format is more complex than is easily 
+documented  here  but  is  fully described in the info documentation.
+
+
+
+[root@www command]# echo $(($(date --date="2008/09/04" +%s)/86400+1))
+14126

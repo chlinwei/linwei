@@ -1,0 +1,171 @@
+字符串长度
+
+echom strlen("foo") //3
+echom len("foo") //3
+
+切割
+echo split("one","two","three")
+['one','two','three'],split返回一个列表;
+
+连接
+echo join(["foo","bar"],"...")
+foo...bar
+
+大小写转换
+echom tolower("FOO")=>foo
+echom toupper("foo")=>FOO
+
+normal 命令简单的接受一串键值并当作是在normal模式下输入的;
+normal ggdd
+
+nnoremap G dd
+normal G //将删除一行,normal会考虑到当前的映射
+normap! G就ok了
+
+
+normal! /foo<cr>
+Vim认为你想要搜索字符串序列"foo"，
+没有意识到你甚至按下了回车来进行搜索
+
+execuate "normal! gg/foo\<cr>dd"
+查找foo首次出现的地方,并删掉那一行
+execute允许你创建命令,因而你能够使用vim普通的转义字符串
+来生成你需要打不出的字符
+
+execuate "normal! maA;\<esc>`q"
+在当前行的末尾加上";"
+
+
+<------------------------------
+例子:
+max = 10
+print "Starting"
+for i in range(max):
+	print "Counter:" i
+print "Done"
+
+execute "normal! /print .\\+\<cr>" 在调用normal!命令时,双反斜杆将转换为单反斜杆 vim有四种不同的解析正则表达时的"模式"
+匹配print所在的行
+
+直接输入/print .\+  单斜杆就可以了
+
+execute 'normal! gg/for .\+ in .\+:\<cr>'
+\<cr>被当作普通的\<cr>了,不再是回车了,所以
+光标指挥移动到最上面,不会执行搜索
+
+execute "normal! gg" . '/for .\+ in .\+:' . "\<cr>",这样可以
+------------------------------>
+
+
+***********grep*****************
+
+nnoremap <leader>g :execute "grep -R " . shellescape("<cWORD>") . " ."<cr>
+
+
+**********列表***************
+ehco [0,[1,2]][1]
+[1,2]
+echo [0,[1,2]][-2] 像python一样-1代表最后一个元素
+0
+
+echo [1,2,3,4][0:2]//这个地方和python有点区别,python结果为1,2
+1,2,3
+
+echo [1,2,3,4][:1]
+[1,2]
+echo [1,2,3,4][-2,-1]
+[1,2]
+
+echo "abcd"[0:2]
+abc
+
+echo "abcd"[-1] 什么都没有,不能用负数来索引字符串
+但是可以"abcd"[-2:]用负数来切割字符串cd
+
+连接
+echo [1,2] + [3] =>[1,2,3]
+
+let foo = ['a']
+call add(foo,'b') //内置函数
+echo foo ['a','b'] 
+
+echo get(foo,0,'default') //a
+echo get(foo,100,'default')//default
+get函数会返回给定索引对应的给定列表的项，如果索引超过
+列表范围,返回给定的默认值。
+echo index(foo,'b'),foo要为list
+
+for循环
+let c =0;
+for i in [1,2,3,4]
+	let c+=i
+enfor
+echom c
+
+
+while循环
+let c=1
+let total=0
+while c<=4
+	let total+=c
+	let c+=1
+endwhile
+echom total
+
+
+
+字典
+echo {'a':1,100:'foo',} //末尾可以有逗号
+echo {'a':1,100:'foo',}['a'] //1
+echo {'a':1,100:'foo',}.a //1支持点查找
+
+let foo = {'a':1}
+let foo.a = 100 //修改值,前面必须加let
+let foo.b = 200
+echo foo
+
+let test = remove(foo,'a') //移除foo,的'a'的键值对,
+返回'a'对应的值
+unlet foo.b//移除foo里'b'的键值对,不返回值
+unlet foo["afdsafsd"]//你不能移除字典中不存在的项
+
+字典函数
+:echom get({'a': 100}, 'a', 'default')
+:echom get({'a': 100}, 'b', 'default')
+Vim显示100和default，如同列表版本的get函数.
+ 
+
+你也可以检查给定字典里是否有给定的键。执行这个命令：
+echom has_key({'a': 100}, 'a')
+echom has_key({'a': 100}, 'b')
+
+
+
+
+切换
+nnoremap <leader>N :setlocal number!<cr>
+
+
+function! Append(l,val)
+	let new_list = deepcopy(a:l)
+	call add(new_list,a:val)
+	return new_list 
+endfunction
+
+//作为变量的函数,Myfunc首字母必须大写
+let Myfunc = function("Append")
+echo Myfunc([1,2],3)
+
+
+路径
+echom expand('%') //%表示"当前文件",即相对路径
+echom expand('%:p') //绝对路径
+echo fnamemodity('foo.txt','p')//显示当前文件
+第三个命令显示了当前文件夹下的文件foo.txt的绝对路径，
+无论文件是否存在
+
+列出文件
+echo globpath('.','*'),返会一字符串,没一项都用\n分割
+echo globpath('.','**'),递归返会一字符串,没一项都用\n分割
+
+

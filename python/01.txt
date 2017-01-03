@@ -1,0 +1,280 @@
+迭代器:是一个可以记住遍历的位置的的对象
+       迭代器从地一个元素开始访问,知道所有的元素被访问完结束,迭代器只能往前,不会退后
+	   迭代器有两个基本的方法:iter(),next()
+	   字符串,列表或元组对象都可以用于创建迭代器
+
+list[1,2,3,4]
+it = iter(list) #创建迭器代对象
+print(next(it)) #输出迭代器的下一个元素,1
+print(next(it)) #2
+
+迭代器可以使用for语句遍历
+list =[1,2,3,4]
+it = iter(list)
+for x in it:
+	print(x)
+
+
+
+生成器
+生成器是一种用普通的函数语法定义的迭代器,任何包含yield语句的函数称作生成器
+每次函数返回一个值函数就会被冻结,函数停在那点等待重新被唤醒
+def func(list):
+	for i in list:
+		yield i
+list = ['hello',3434,[3,3,2,3],'linwei']
+it = func(list):这里func返回的是一个迭代器
+print(next(it))
+print(next(it))
+print(next(it))
+
+
+import sys
+list=[1,2,3,4]
+it =iter(list)
+while True:
+	try:
+		print(next(it))
+	except StopIteration:
+	    sys.exit()
+
+
+生成器:使用了yield的函数被称为生成器(generator)
+跟普通函数不同的是,生产器是一个返回迭代器的函数,
+只能用于迭代操作,更简单理解生成器就是一个迭代器
+在调用生成器运行的过程中,每次遇到yield时函数会
+暂停并保存当前所有的运行信息,返回yield的值,并在
+下一次执行next()方法时从当前位置继续运行
+
+import sys
+def fibonacci(n):
+  a,b,counter=0,1,0
+  while True:
+    if(counter>n):
+      return 
+    yield a
+    a,b = b,a + b
+    counter +=1
+f = fibonacci(10)
+while True:
+  try:
+    print(next(f))
+  except StopIteration:
+      sys.exit()
+
+
+
+zfill()函数在数字左边添加0
+'12'.zfill(5)
+'00012'
+'-3.14'.zfill(7)
+'-003.14'
+
+print('{}网址:"{}!"'.format('菜鸟教程','www.runoob.com'))
+str.format()函数的用法：
+字符串中的{}会被右边的参数'菜鸟教程','www.runoob.com'等
+参数替换掉
+
+print('{0}和{1}'.format('google','Runoob'))
+print('{1}和{0}'.format('google','Runoob'))
+print('{name}网址:{site}'.format(name='菜鸟',site="www"))
+print('站点列表{0},{1},和{other}'.format('google','runoob',other='Taobao'))
+print('常量Pi的值为:{0:.3f}'.format(math.pi)):保留3位小数
+
+
+
+读写文件
+open(filename,mode)
+mode:
+r:只读,文件指针在文件的开头,默认模式
+rb:以二进制格式打开一个文件,只读,文件指针在开头,默认模式
+r+:打开一个文件用于读写,文件指针在开头
+rb+:二进制打开一个文件同同上,用于读写,文件指针在开头
+w:打开一个文件用于写入,如果在文件有内容,将被覆盖,如果该文件不存在,则创建
+wb:以二进制，同上
+w+:打开一个文件用于读写,如果该文件已存在,则覆盖,不存在,则创建
+wb+:
+a:打开一个文件用于追加,如果该文件存在,文件指针将在文件结尾,文件不存在,创建文件
+ab:
+a+:打开一个文件用于读写,如果文件已经存在,文件指针将在文结尾,文件以追加方式写入,不存在，创建
+ab+:
+
+
+f.read():读取文件的内容,f.read(size),这将读取一定数目的文件,然后作为字符串或
+字节对象返回,size是一个可选的数字类型参数,当size被忽略或者为负,文件
+的所有内容将被读取并且返回
+
+f.readline()会从文件读取单独一行,换行符为"\n",f.readline()如果返回
+一个空字符串,说明已经读取到了最后一行
+
+f.readlines():返回该文件中包含的所有行,如果设置
+可选参数,sizehint,则读取指定长度的字节,并且将这些字节
+按行分割
+f.readlines()
+['linweihaha\n', 'sdfsdf\n', 'sdf\n', 'sdf\n', 's\n', 'fsd\n', 'fsd\n', '\n',
+'sfsddssdsdfsdfds\n', 'fsd\n', 'sfsdfds\n']
+
+
+f.write(string):将string写入到文件中,然后返回写入的字符数,如果要写的
+不是字符串,如value=('sdfsdf',1234),则先转换成字符串,str(value)
+
+
+f.tell():返回文件对象当前所处的位置,它是从文件开头算起的子结数,文件的起始位置
+是从0开始的
+
+f.seek()如果要改变文件当前的位置,可以使用f.seek(offset,from_what)函数
+from_what的值,如果是0表示开头,如果是1表示当前位置,2表示文件的结尾
+seek(x,0):从起始位置即文件首行首字符开始移动x个字符
+seek(x,1):表示从当前位置往后移动x个字符
+seek(-x,2):表示从文件按的结尾往前移动x个字符
+from_what默认值为0,即文件的开头
+
+
+f.close()在文本文件中(那些打开文件的模式下没有b的),只会相对于文件
+起始位置进行定位,当你处理完一个文件后,调用f.close()来关闭
+文件并释放系统的资源,如果,关闭后f.read()则抛出异常
+
+
+
+pickle模块
+python的pickle模块实现了基本数据序列和反序列化
+通过pickle模块的序列化操作我们能将程序中运行的对象信息保存
+到文件中,永久存储,通过pickle模块的反序列化操作，能够将
+文件中创建上一次程序保存的对象
+
+
+import pickle
+data1 = {
+        'a':[1,2.0,3,4+5j],
+        'b':('string',u'Unicode string'),
+        'c':None}
+selfref_list = [1,2,3]
+selfref_list.append(selfref_list) #[1,2,3,[...]]
+output = open('data.pk1','wb')
+pickle.dump(data1,output)
+pickle.dump(selfref_list,output,-1)
+output.close()
+
+
+import pprint,pickle
+pk1_file = open('data.pk1','rb')
+data1 = pickle.load(pk1_file)
+pprint.pprint(data1)
+data2 = pickle.load(pk1_file)
+pprint.pprint(data2)
+pk1_file.close()
+
+
+
+
+File(文件)方法
+file.close():关闭文件,关闭后不能再进行读写操作
+
+file.flush():刷新文件内部缓冲,直接吧内部缓冲区的数据立刻写入文件,而不是
+被动的等待输入缓冲区写入
+
+file.fileno():返回一个整型的文件描述符
+
+file.isatty():如果文件连接到一个终端设备返回True,否则返回False
+
+file.next():返回文件的下一行
+
+file.read([size]):从文件读取指定的字节数,如果未给定或为负则读取所有
+
+read.readline([size]):读取整行,包括"\n"字符
+
+file.readlines([size]):读取所有行并返回列表,若给定sizeint>0,返回
+综合大约为sizeint字节的行,实际读取值可能比sizeint较大,因为需要填充缓冲区
+
+file.seek(offset,whencel)
+
+file.tell():返回文件当前位置
+
+file.truncate([size]):截取文件,截取的字节通过size指定,默认为当前文件位置
+
+file.write(str):将字符串写入文件,没有返回值
+
+file.writelines(sequence):向文件写入一个序列字符串列表,如果需要换行
+则要自己加入换行符号
+
+
+类的类变量与成员变量的区别
+
+class A:
+    name = 1
+    #这两个都是类变量，只是一个是私有的一个是共有的,类变量既能被对象调用,也能被类调用
+    __name1 = 1
+    def print_private(self):
+        print(self.__name1) #这里不能写print(__name1)
+
+class B:
+    def __init__(self):
+        self.var = 1
+        #这两个都是类成员变量,只是一个是私有的一个是共有的,成员变量只能被对象调用
+        #不能被类调用
+        self.__var = 100 #
+
+
+
+a1 = A()
+a1.print_private()
+a1.name = 2
+print(a1.name) #2
+print(A.name)#1
+A.name = 56
+print(a1.name) #2
+print(A.name)#56
+a2=A()
+print(A.name) #56
+print(a2.name)#56
+
+#注意:python的类变量和C++静态变量不同,并不是由类的所有
+#对象共享.
+#类本身拥有自己的类变量(保存在内存中),当一个A类被
+#构造时,会将当前类变量name拷贝一份给这个a1对象,当前
+#类变量的值是多少,这个对象拷贝得到的类变量的值就是
+#多少.
+
+
+类的专有方法
+__init__:构造函数,在生产对象时调用
+__del__:系够函数,释放对象时调用
+__repr__:打印,转换
+__setitem__:按照索引赋值
+__getitem__:按照索引获取值
+__len__:获得长度
+__cmp__:比较运算
+__call__:函数调用
+__add__:加运算
+__sub__:减运算
+__mul__:乘运算
+__div__:除运算
+__mod__:求余运算
+__pow__:称方
+__str__:print()打印的时候调用
+
+class vector:
+    def __init__(self,a,b):
+        self.a = a
+        self.b = b
+    def __str__(self):
+        return 'vector (%d,%d)' %(self.a,self.b)
+    def __add__(self,other):
+        return vector(self.a + other.a,self.b + other.b)
+
+v1 = vector(2,10)
+v2 = vector(5,-2)
+print(v1+v2)
+
+注释:转有方法同样支持重载
+
+
+
+Python的列表推导式:
+书写形式:[表达式 for 变量 in 列表]或者[表达式 for 变量 in 列表 if 条件]
+
+import copy
+print([n for n in dir(copy) if not n.startswith('_')])
+
+看到了Python3标准库概述
+

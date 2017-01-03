@@ -1,0 +1,731 @@
+序列:元组,字符串,列表
+1.分片
+numbers=[1,2,3,4,5,6,7,8,9]
+numbers[2:8:2]  #[3,5,7]
+step为正数由小到大排序
+起始值:numbers[2]=3
+最大值小于numbers[8]=9(即最大值小于9)
+
+numbers[8:3:-2]  #[9,7,5]
+step为负数由大到小排序
+起始指(也为最大值):numbers[8]=9
+最小值大于numbers[3]=4(即最小值大于4)
+
+numbers[-3:-1] #[7,8]
+step为正数由小到大排序
+最后一二元素的编号为-1
+起始值:numbers[-3]=7
+最大值小于numbers[-1]=9(即最大值小于9)
+ 
+numbers[-3:0] #[]
+step为正数由小到大排序
+numbers[-3]=7
+numbers[0]=1
+由于是由小到大可以7并不是小于1的所以没有值
+
+numbers[-3:] #[7,8,9]
+step为正数由小到大排序
+起始值:numbers[-3]=7
+不过右边最大值为空,则能包含结尾的最大元素
+
+numbers[:]  #[1,2,3,4,5,6,7,8,9]
+step为正由小到大
+起始值为空就是最小元素numbers[0]=1
+最大指为空:表示可以取到最大值numbers[8]=9
+
+
+
+2.序列相加
+[1,2,3,4] + ['hello',34] = > [1,2,3,4,'hello',34]
+
+[1,2,3,4] + 'hello' #错误,序列无法与字符串想加,尽管
+字符串也是序列
+两中同类型的序列才能进行连接操作
+
+
+str.caplitalize():将字符串的首个字母大写,然后返回一个修改后的副本
+3.序列乘以数字
+
+'pyhone' * 3
+pyhonepyhonepyhone
+
+[1,2,3,'hello'] * 3
+[1, 2, 3, 'hello', 1, 2, 3, 'hello', 1, 2, 3, 'hello']
+
+[42] * 4
+[42,42,42]
+
+[None] * 10 #None为python内建值
+[None,None,None,None,None,None,None,None,None,None]
+
+
+4.成员资格:为了检查一个值是否在序列中
+可以使用in运算符,这个运算符返回布尔值True或者False
+p='hello'
+'h' in p 
+True
+
+
+5.内建函数len,min,max
+len:返回序列中包含元素的个数
+min:返回序列中最小元素
+max:返回序列中最大元素
+num=[1,2,3]
+len(num) #3
+min(num) #1
+max(num) #3
+
+num=[1,2,3,'hello']
+len(num) #4
+min(num) #会报错,字符串无法和int作比较
+max(num) #会报错,字符串无法和int作比较
+
+6.list函数:返回列表(其实list是一个对象,并不是函数)
+list():返回[](空列表)
+list(iterable):参数为可迭代的
+print(list('hello'))  #['h','e','l','l','o']
+
+
+7.基本操作
+注意事项:
+1)赋值
+a=[1,2,3]
+可以对a[0],a[1],a[2]赋值,会改变列表a
+但是不能对a[3],a[4]等超出最大索引赋值,会报错
+
+2)删除
+a=[1,2,3]
+del a[0],del a[0],del a[0]
+print(a):结果为[]
+del a :整个a就没有了,而不是为空列表[],即垃圾被被回收了
+
+3)分片赋值(实际上是替换)
+
+numbers=[1,2,3,4]
+num[1:3]=['hello',34,43]
+num为:[1,'hello',34,43,4]  :这里其实不是赋值,而是从num[1]开始包括num[1]替换
+为['hello',34,43]
+
+即
+1 2 3 4    num
+  2 3     num[1:3]被替换为了['hello',34,43],再加上原来的最后一个元素4
+  
+  
+numbers=[1,2,3,4]
+num[1:3]=['hello']
+num为:[1,'hello',4]:这里元素2,3被替换成了'hello',再加上最后一个元素4
+
+
+name = list('perl')
+print(name):['p','e','r','l']
+name[2:] = list('ar')
+print(name):['p','e','a','r']
+
+
+8.列表方法
+1)append
+append(object):给列表追加一个新对象
+n=[1,2,3]
+n.append('x') #此时:n 为[1,2,3,'x']
+
+
+2)count
+count(value):返回一个列表中value值的个数
+n=[1,2,3,1,1,1]
+n.count(1) #结果为4
+
+3)extend函数
+extend(iterable):在调用此函数的列表末尾追加一个,无返回值
+可迭代的序列
+a = [1,2,3]
+b = ['hello',3,'world']
+a.extend(b) #结果为:[1,2,3,'hello',3,'world']
+看似和a+b没撒区别,但是a+b,本身a不会变化
+a.extend(b),a变化了
+
+4)index函数
+原型index(value,[start,[stop]]):返回从列表中
+第一个匹配value值的索引
+a = [1,2,3,'hello'] 
+a.index('hello'):结果为3
+
+a = [1,2,3,'hello'] 
+a.index('helloddsff'):抛出ValueError的异常
+
+list=[1,2,3,4,'hello']:从start开始,但不包括stop,
+list.index('hello',1,4):抛出valueError
+改为list.index('hello',1,5):这个可以
+改为list.index('hello',1,:):抛出ValueError
+
+
+5)insert函数
+L.insert(index,object) --insert object before index
+在index之前插入,无返回值
+a = [1,2,3,4,5]
+a.insert(3,'four')
+a为:[1,2,3,'four',4,5]
+
+
+6)pop函数
+a[1,2,3,4,5]
+a.pop() #a为[1,2,3,4],不写参数,默认移除最后一个元素
+
+a=[1,2,3,'hello']
+a.pop(2) #a[1,2,'hello']
+
+
+7)remove函数:移除列表中第一个匹配项
+L.remove(value)
+a = [1,2,3,'hello']
+a.remove('hello') #结果a为[1,2,3]
+如果没有value则抛出ValueError异常
+
+8)reverse:内建函数,将列表中的元素方向存放
+x=[1,2,3]
+x.reverse()
+x为[3,2,1]
+
+9)reversed:内建的函数,返回一个列表的反向迭代器
+arr=[1,2,3,4]
+a=reversed(a)
+for i in a:
+	print(i)
+或者
+print(next(a))
+
+10)sort:内建函数,在原位置对列表进行排序,无返回值
+L.sort(cmp=None,key=None,reverse=False)
+
+x=[4,6,2,1,7,9]
+x.sort()
+print(x) #[1,2,4,6,7,9]
+
+x=[4,6,2,1,7,9]
+y=x[:]
+y.sort() #这样就能获得经过排序后的x的副本了
+
+11)sorted:内建函数,返回一个列表经过排序后的迭代器
+适用于任何可以迭代的对象
+list = [1,2,3]
+it = sorted(list)
+for i in it:
+	print(i)
+
+9元组
+定义方法:
+1)a=1,2,(单独的逗号分割一些值)
+a=1, #正确(必须加逗号)
+a=1 #错误(代表int类型)
+2)a=(1,2,)(通过圆括号括起来)
+3)3*(40+2,)
+(42,42,42)
+
+tuple函数和list函数基本一样(对象,并不是函数) a='hello'
+print(tuple(a))  #('h','e','l','l','o')
+
+a=1,2,3
+a[0:3] #(1,2,3)
+a[0:2] #(1,2)
+a[0:1] #(1,)
+
+元组分片后是元组
+列表分片后是列表
+
+
+字符串
+1)格式化
+import math
+print("%10.3f" %math.pi) #     3.142
+注释:f转换说明符(针对浮点数的)
+10.3f小数点左边10表示字段宽度为10且右对齐
+小数点右边表示保留三位小数
+
+print("%010.3f" %math.pi) #000003.142 字段宽度前还可以放置一些"标志":可以为,0,+,-,空格 若标志为0:表示用0填充空位
+若标志为-:表示左对齐
+若为空格:举例
+若为+号:则会标出数值的符号位
+print("% .3f" %math.pi) # 3.142(前面有个空格)
+print("%     .3f" %math.pi) # 3.142(尽管放了很多空格,但是前面只有一个空格)
+
+print("%.*s" %(4,"hello,world")) #hell
+注释:%.*s这里*代表字段宽度,此数值会从元组参数中读入(4,"hello,world"),这个4
+
+x=3.134343
+print("%.*f" %(4,x)) #保留4位小数
+
+x=3.3234343
+print("%0*.*f" %(10,3,x)) #000003.323
+注释:这里*即表示宽度,又表示精度
+
+2)字符串方法
+find方法(只有字符串才能调用):返回字串所在的位置的最左端的索引
+S.find(sub [,start [,end]]) -> int
+a='123456 hello'
+print(a.find('6',4,6)) #5
+print(a.find('6',4,5))
+#这里抛异常,是从下标为4开始到下标为5结束(不包括下标为5)
+
+join函数:用来链接序列中的元素(元素必须为字符串),返回字符串(即str类型的)
+a = [1,2,3,4]
+'+'.join(a) #报错
+a = ['1','2','3','4']
+print('+'.join(a)) #1+2+3+4
+
+
+split函数:为join函数的逆方法,将字符串转换为序列
+'1+2+3'.split('+') #['1','2','3']
+
+lower函数:返回字符串的小写版
+a='HELLO,WORLD'
+print(a.lower()) #hello,world
+
+upper函数:返回字符串的大写版
+
+replace函数:返回值是替换后的字符串
+S.replace(old, new[, count]) -> string
+a='hello,world,hello'
+print(a.replace('hello','hah',1)) #'hah,world,hello'
+print(a.replace('hello','hah')) #'hah,world,hah'
+
+
+strip函数:返回去除两侧空格的字符串
+a='  hello,world    '
+print(a.strip()) #hello,world
+
+a=' !!! hello,world ###   '
+print(a.strip(' !#')) #可以指定多个要删除的字符
+
+字典
+dict函数,
+
+1)dict 1
+items = [('name','Gumby'),('age',23)]
+d = dict(items) 
+print(d) #{'name':'Gumby','age':23}
+
+2)dict 2
+d = dict(name = 'Gumby',age = 42) #d={'name':'Gumby','age':42}
+
+3)dict 3
+d = dict()
+print(d) #返回一个空字典
+
+
+字典基本操作
+1)len(d):返回d中项 键-值对的数量
+d={'name':'linwei','age':23}
+len(d) #2
+2)d[k]返回value
+3)d[k] = value
+4)del d[k]
+5)k in d 检查d是否含有键为k的值
+d = {'name':'liwnei','age':34}
+print('name' in d) #True
+
+字典的格式化字符串
+phone = {'name':'linwei','age':34}
+print("%(age)s" %phone) #34
+
+clear函数:清除字典中的所有的项(键-值对称为项),原地操作无返回值
+x={} x引用到了一个空字典上
+y=x  y引用x,即x,y同时引用到了{}上
+x['key'] = 'value'
+此时 
+x为{'key':'value'}
+y为{'key':'value'}
+清空x,此时有两种方案:
+1)
+x = {}
+这时
+y为{'key':'value'}
+
+2)
+x.clear()
+x,y都为{}
+
+注释:这说明clear会清除x引用到的对象,由于x,y同时引用到同一个对象,所以y也为{}
+
+
+D.copy函数:为浅拷贝(shallow copy):值本身是相同的
+x={'name':'linwei','age':34}
+1)y=x# 拷贝赋值,这里x与y同时引用的对象都是{'name':'linwei','age':34}
+y['name'] = 'haha' #由于这里x,y引用相同的对象,随意x也变成了x['name'] = 'haha'
+
+2)y=x.copy():浅拷贝:x和y不同,但是x和y的值相同,即x['name'],像这样的
+键对应的值相同
+这里:
+y['name'] = 'haha' #由于x为不同的对象,所以x['name']还是'linwei'
+
+
+再举个例子
+x={'username':'admin','machines':['foo','bar','baz']}
+y = x.copy()
+y['machines'].remove('foo')
+#x,y都为,因为x['machines']和y['machines']对应的值是同一个,所以修改了
+其中一个的值,另一个也会改变
+{'username': 'admin', 'machines': ['bar', 'baz']}
+{'username': 'admin', 'machines': ['bar', 'baz']}
+
+y['username'] = 'haha'
+#此时y['username']对应的值为'haha',但是x['username']对应的值为'admin',因为
+x,y为不同的对象,虽然他们的值相同,但是y['username']只是替换了值为'haha',
+y['username']以前的值还是'admin'并没有改变,只是被替换了
+
+D.fromkeys:给定的键建立新的字典,调用者是字典
+dict.fromkeys(seq[,value])
+参数
+seq --字典键的列表
+value--可选参数,设置键序列(seq)的值
+返回值:返回列表
+seq = {'name','age','sex'}
+
+dict = dict.fromkeys(seq)
+print(dict) #{'name':None,'age':None,'sex':None}
+或者
+
+dict = dict.fromkeys(seq,10)
+print(dict) #{'name':10,'age':10,'sex':10}
+
+
+
+dict.get方法:更宽松的访问字典项的方法,返回的是右值
+d = {}
+print(d['name']) #报错,试图访问字典中不存在的值会报错
+print(d.get('name')) #这就不会
+
+
+
+D.items()函数:将字典所有的项以列表方式返回,列表中的每个元素为
+一个元组(包含了键和值)
+D.items() -> list of D's (key, value) pairs, as 2-tuples
+d = {'name':'linwei','age':34}
+print(d.items())
+dict_items([('name', 'linwei'), ('age', 34)])
+
+
+keys()函数:将字典中的键以列表的形式返回
+D.keys() -> list of D's keys
+
+d = {'name':'linwei','age':34}
+print(d.keys())
+
+D.pop()函数:将给定键的项移除,返回给定键对应的值
+
+d = {'name':'linwei','age':34}
+d.pop('name')
+print(d) #d为{'age':34},返回linwei
+
+D.popitem():随机移除一项,返回被移除的那一项,用元组表示
+d = {'name':'linwei','age':34}
+print(d.popitem()):返回('name','linwei')
+print(d):{'age':34}
+
+
+D.setDefault():判断字典中是否存在这个键,如果存在,
+就返回这个键对应的值,如果字典中没有这个键,就增加一项,
+返回的是刚增加的项对应的值
+d = {'name':'linwei','age':34}
+print(d.setdefault('ip','haha')) #haha
+print(d) {'name':'linwei','age':34,'ip':'haha'}
+
+d = {'name':None}
+print(d.setdefault('name':'linwei')) #None
+print(d) #{'name':None}
+
+D.update():以参数字典,更新调用者,无返回值
+d1 = {'name':'linwei','age':34,'sex':'boy'}
+d2 = {'name':'xiaofan','like':'book'}
+print(d1.update(d2)) #None
+print(d1) #{'sex': 'boy', 'age': 34, 'name': 'xiaofan', 'like': 'book'}
+
+
+
+序列解包
+
+x,y,z = 1,2,3 #结果x=1,y=2,z=3
+注释:这里1,2,3就是个元组,所以下面的也是正确的,这叫序列解包,解包中的序列中的
+元素数量必须和=号左边的变量数量完全一致
+x,y,z = (1,2,3)
+
+
+x,y,z =1,2,3,4 #是错的,
+x,y,z = 1,2    #也是错的
+
+
+链式赋值(chained assignment):将同一个值赋给多个变量
+x=y=somfunction()
+增量赋值(augmented assignment):x+=1这样的
+
+
+真与假
+False,0,None,"",(), [], {},''这些值为假:
+也就是说标准值False和None,所有类型的0(浮点型,
+整型和其他类型),空序列(比如空字符串,元组,列表)以及空的字典都为假
+其他的为真
+
+if True == 1:
+    print("haha") #条件为真,True为1,False为0
+
+if True == "hello,world": #条件为假
+	print("hahha")
+
+
+python中比较运算符
+x is y           x和y是同一个对象(is同一性运算符)
+x is not y		 x和y不是同一个对象
+x in y           x是y容器(例如，序列)成员(in 资格运算符)
+x not in y       x不是y容器的成员
+
+所有的表达式都返回布尔值
+and(与) not(非) or(或):这三个都是布尔元算符
+n=4
+if 1<<n<<10: #连接比较,
+	print("haha")
+
+a = 0
+if not a: #not,前面什么都没有则为非元算符
+	print("hah")
+
+
+断言
+a=10
+assert  a>=100 #如果不成立直接让程序崩溃
+Traceback (most recent call last):
+  File "01.py", line 2, in <module>
+      assert a > 100
+	  AssertionError
+
+引发异常
+try:
+    raise Exception("linwei") #自己引发异常
+except Exception as e:
+#except(Exception) as e: py3中的方法
+    print(e) #linwei
+
+
+for 循环
+for i in seq:(seq为可迭代的对象,或者in后面为迭代器)
+
+
+Python的列表推导式(轻量级循环):是用其他列表创建新的表
+书写形式:[表达式 for 变量 in 列表]或者[表达式 for 变量 in 列表 if 条件]
+print(x*x for x in range(10))#{0,1,4,16,25,36,49,64,81}
+
+exec:执行一条字符串语句,不会返回什么
+exec("print('%.3f' % math.pi)"):注意:print()里只能用单引号
+
+eval:求一个字符串表达式的值,返回求的值
+print(eval('1+1')) #2
+print(eval('hah')) #错的
+
+
+函数 
+def square():
+    'linwsdfsdfsdsd' #对函数添加文档,三引号,双引号也可以
+	return  x*x #return 结束函数
+
+print(square.__doc__) #linwsdfsdfsdsd
+
+关键字参数
+def print_hello(greeting,name):
+    print("%s,%s" %(greeting,name))
+
+print_hello(name="world",greeting="hello")
+注释:函数在调用的时候,根据函数的参数名,进行传递值,前提是要知道函数的参数,
+这这使用参数名提供的参数叫做关键字参数.主要作用是明确每个参数的作用
+
+默认值
+def print_hello(greeting="hello",name="world"):
+    print("%s,%s" %(greeting,name))
+
+print_hello()
+
+
+收集参数
+def print_params(*params):
+    print(params)
+
+print_params(2342,234234,'hello') #(2342,234234,'hello')
+注释:函数参数前面有*代表是收集参数,并且参数是一个元组,如果不提供任何参数,
+收集参数就是个空元组
+
+
+def print_params(**params):
+    print(params)
+
+print_params(name='linwei',age=34,bar='haha') #{'bar': 'haha', 'age': 34,
+'name': 'linwei'}
+注释:收集参数前面有两个*,代表收集参数是个字典,没有参数时是个空字典
+
+
+参数收集的逆过程
+def add(x,y):
+    return x+y
+
+params = (1,2)
+print(add(*params)) #在调用函数时在参数前面加*代表,参数收集的逆过程,加
+一个*,代表params为元组,x,y = params相当于解包
+
+
+def print_hello(greeting='hello',name='world'):
+    print("%s,%s" %(greeting,name))
+
+d = {'name':'linwei','greeting':32424} #d = {'name':'liwnei'}少个参数对应的键也可以
+print_hello(**d)
+注释:当函数有默认值的时候,调用函数时可以在参数前加两个*,用来传递字典,字典中的键要和函数中的参数名相同
+
+
+
+
+作用域
+在Python中,并不是任何代码块都能引入新的作用域
+#include <stdio.h>
+int main(void){
+	if(2>0){
+		int i = 0; #在if子句中引入了一个局部作用域,变量i在这个作用域中
+					#对外不可见,在print()中自然会报错
+	}
+	print("%d",i);
+	return 0;
+}
+
+
+if True: 
+	i = 0 
+print(i) #正确
+注释:python中if子句没并有引入一个局部作用域,变量i仍然在
+全局作用域中.
+
+在python中，只有模块,类,函数才会引入新的作用域,其他的代码是不会
+引入新的作用域的,在python中,使用一个变量之前不必预先申明它,
+但是在真正使用它之前,它必须已经绑定到某个对象
+而名字绑定将在当前作用域中引入新的变量,
+同时屏蔽外层作用域中的同名变量,不论这个变量绑定在这个当前作用域中
+的哪个位置
+
+def f():
+	print(i)
+f() #抛出NameError的异常
+分析:当调用f()函数的时候,Python首先会在函数f的本地查找变量i,
+查找失败,接着在全局作用域中查找变量i,仍然失败,最后抛出异常
+
+i = 0
+def f():
+	print(i)
+	i = 0
+f()
+分析:会报错UnboundLocalError: local variable 'i' referenced before assignment
+当调用f函数的时候,函数f中的变量i是局部变量,在print语句使用它的时候
+i还没有绑定到某个对象上,所以抛出异常
+
+print(i)
+i = 0
+分析:输出结果显示:NameError:name 'i' is not defined.
+这里的输出结果又与上一个例子不同,这是因为它在顶级
+作用域(模块作用域)的缘故,对于模块代码而言,代码在执行
+之前,没有经过什么预处理,但是对于函数体而言,代码在运行
+之前已经经过了一个预处理,因此不论名字绑定发生在作用域的
+哪个位置,它都能感知出来,Python虽然是一个静态作用域语言,但是
+名字查找确实动态发生的,因此直到运行的时候,才会发现名字方面的问题
+
+在Python中,名字绑定在所属作用域中引入新的变量,同时
+绑定到一个对象,名字绑定发生在一下几种情况下:
+1)参数声明:参数声明在函数的局部作用域中引入新的变量
+2)赋值操作:对于一个变量进行初次赋值会在当前作用域中引入新的变量,后续赋值则会重新绑定该变量
+3)类和函数定义:类和函数定义将类名,和函数名作为变量引入当前作用域,类体和函数体将形成另外一个作用域 
+4)import语句:import语句在当前作用域中引入新的变量,一般是在全局作用域
+5)for语句:for语句在当前作用域中引入新的变量(循环变量)
+6)except语句:except语句在当前作用域中引入新的变量(异常对象)
+Python中类定义所引入的作用域对于成员函数是不可见的,这与C++
+和java是不同的,因此在Python中,成员函数想要引用类体
+定义的变量,必须通过self或者类名来引用它
+嵌套作用域的加入,会导致一些代码编译不过或者得到
+不同的运行结果,这里Python解释器会帮助你识别这些
+可能引发问题的地方,给出警告
+locals函数返回所有的局部变量,但是不会返回嵌套作用
+域中的变量,实际上没有函数会返回嵌套作用域中的变量
+
+x = 1
+def chang_global():
+    global x #global将告诉变量x为全局变量,
+	          #如果x = 1这行不存在,在调用时就报错
+    x = x+x 
+
+chang_global()
+print(x)
+
+
+
+
+parameter=100
+def func(parameter):
+    return parameter + globals()['parameter']
+	#globals()[''] #能返回全局中的变量的值
+
+print(func(200)) #300
+
+
+
+异常
+
+try:
+    x = input("please input the first number:")
+    y = input("please input the second number:")
+	print(int(x)/int(y))
+except(ZeroDivisionError,TypeError) as e:  #python3的写法
+    print(e)
+
+print("haha") #异常捕捉完后还可以,执行后面的语句
+
+
+真正的全捕捉
+try:
+    x = input("please input the first number:")
+    y = input("please input the second number:")
+	print(int(x)/int(y))
+except: #空except语句会捕捉所有的异常(也会捕捉所有子类异常)
+print("wrong!")
+
+
+try/except里加上else
+
+try:
+    x = input("please input the first number:")
+    y = input("please input the second number:")
+    print(int(x)/int(y))
+except:
+    print("something wrong!")
+else:
+    print("good")
+
+
+finally语句
+
+try:
+    x=1/0
+except:
+    print("Unknown variable!")
+else:
+    print("That went wall!")
+finally:
+    print("cleaning up")#不管有没有抛出异常都能执行到
+print("hahaj;w") #也能执行到
+
+
+异常和函数:如果异常在函数内引发而不被处理,它就会传播到函数调用的地方,
+如果在那里也没有被处理异常,它就会继续传播,一直到达主程序(全局作用域)
+def faulty():
+    raise Exception("Something is wrong")
+def ignore_exception():
+    faulty()
+def hanle_exception():
+    try:
+        faulty()
+    except:
+        print("Exception handled")
+
+ignore_exception() #这里调用faulty函数,在这个函数体内会引发异常,
+				   #但是异常在函数内部并没有处理,所以异常会传播到调用的地方,
+				   也就是这条语句,还没有被处理(也处理不好,因为函数内的异常
+				    语句没有被try包围,而且后面没有紧接着except),然后就报错
+

@@ -1,0 +1,4 @@
+codec :编码器
+QString::fromUtf8(const char* str,int size=-1)
+返回从utf8的前size个字符解码得到unicode字符串
+
