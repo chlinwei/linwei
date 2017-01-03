@@ -34,5 +34,3 @@ V 面向行的可视模式
 gV 重复上次的高亮选区
 dG
 <C-v> jj$A;
-hellow
-sfsddsfd
