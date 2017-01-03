@@ -53,3 +53,12 @@ git log --graph --pretty=oneline --abbrev-commit
  git merge --no-ff -m "merge with no-ff" dev
  //--no-ff 参数表示禁止 fast forward
  因为本次合并时要床家新的commit所以加上-m选项
+
+
+ 打标签
+ 先切换到指定的分支上
+git tag v1.0 提交编号 (如果省略提交编号则为最新的编号)
+git tag -a 标签名 -m "version 1.1" 提交编号(比上一条命令多个说明文字)
+git tag 查看所有标签名
+git show v1.0 查看指定标签名的详细信息
+
