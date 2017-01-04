@@ -1,10 +1,8 @@
-git init //创建仓库
 git config --global user.name "chlinwei"
 git config --global user.email"862350707@qq.com"
 git add filename 把文件添加到暂存区(stage)
 git commit -m "wrote a readme file " 把所有文件提交到仓库
 git commit -am "add all file" 把所有修改过的文件提交到仓库,不包括新建的文件
-git status 获取当前仓库的状态
 git diff查看修改前和修改后的区别
 git log 查看日志
 git log --pretty=oneline 
