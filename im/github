@@ -37,7 +37,7 @@ id_rsa id_rsa.pub
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 git remote add origin git@github.com:michaelliao/learngit.git//将本地仓库
-的"内容推送到github仓库,origin是远程仓库名
+关联到远程仓库
 
 git checkout -b dev //-b 表示创建dev分支并切换到dev分支
 相当于以下两条命令
@@ -61,4 +61,13 @@ git tag v1.0 提交编号 (如果省略提交编号则为最新的编号)
 git tag -a 标签名 -m "version 1.1" 提交编号(比上一条命令多个说明文字)
 git tag 查看所有标签名
 git show v1.0 查看指定标签名的详细信息
+
+
+git clone -o test git@github.com:chlinwei/linwei.git haha
+克隆的时候,远程主机会自动与本地库关联,默认的远程主机名为origin
+-o指定主机名,默认的本地库名为linwei 后面指定可以制定haha为本地库名
+
+git branch -r :查看远程分支
+git fetch 远程主机名 远程分支名 :取回远程分支的更新,如果不写远程分支,则
+表示所有分支的更新
 
