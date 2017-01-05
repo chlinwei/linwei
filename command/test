@@ -1,0 +1,47 @@
+test 的测试标志
+
+1.关于文件类型的判断,如test -e filename
+-e:该文件名是否存在
+-f:该文件名是否存在且为文件
+-d:该文件名是否存在且为目录
+-b:该文件名是否存在且为block device设备
+-c:该文件名是否存在且为character device设备
+-S:该文件名是否存在且为一个Socket文件
+-p:该文件名是否存在且为一个FIFO(pipe)文件
+
+2.关于文件的权限检测 test -r filename
+-r:检测文件是否存在且具有"可读"的权限
+-w:检测文件是否存在且具有"可写"的权限
+-x:检测文件是否存在且具有"可执行"的权限
+-u:检测文件是否存在且具有"SUID"的权限
+-g:检测文件是否存在且具有"SGID"的权限
+-k:检测文件是否存在且具有"sticky bit"的权限
+-s:检测文件是否存在且为"非空白文件"
+
+3.两个文件之间的比较 test file1 -nt file2
+-nt:判断file1是否比file2新
+-ot:判断file1是否比file2旧
+-ef:判断file1与file2是否为同一个文件,主要针对硬连接和软连接,硬软都为同一文件
+
+4.两个整数之间的判定, test n1 -eq n2
+-eq:两个值相等(equal)
+-ne:两个值不相等(not equal)
+-gt:n1大于n2(greater than) 
+-lt:n1小于n2(less than)
+-ge:n1大于等于n2(greater than or equal)
+-le:n1小于等于n2(less then or equal)
+
+5.判定字符串数据
+
+-z $str:判断字符串str的长度是否为0,如果为0返回true
+-n $str: 判断字符串str的长度是否非0,如果非0返回true
+$str1 = $str2:判断str1与str2是否相等,如果相等返回true
+$str1 != $str2:判断str1与str2是否不相等,如果不相等返回true
+
+6.多重条件判断 test -r filename -a -x filename
+-a :两个条件同时成立,返回true
+-o:或者
+!:非,test ! -x file,当file不具有x时,返回true
+
+
+
