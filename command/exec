@@ -1,0 +1,24 @@
+文件描述符
+1.exec 3<01.txt 只读方式打开01.txt,文件描述符为3
+2.exec 3>01.txt 只写方式打开01.txt,文件描述符为3
+3.exec 3<>01.txt 读写方式打开01.txt,文件描述符为3
+4.exec 3<&- 关闭文件描述符3
+
+
+
+文件重定向
+
+cmd > file 把标准输出重定向到file中
+cmd 1> file 把标准输出重定向到file中
+cmd >> file 把标准输出重定向到file中(追加)
+
+cmd > file  2>&1 把标准输出和标准错误重定向到file中(把标准输出,重定向到
+file中,把标准错误重定向到标准输出中)等同于 cmd &> file 
+cmd >> file  2>&1 把标准输出和标准错误重定向到file中(追加)
+
+
+cmd < file 把cmd命令以file文件内容作为输入
+cmd << EOF 把cmd命令以file文件内容作为输入(知道遇见EOF)
+
+cmd >&m 把标准输出重定向到文件描述如m中
+cmd &m
