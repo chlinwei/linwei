@@ -27,6 +27,12 @@ b.extend(c) #b变为了['hello','world','h','a','h','a']
 list((1,2,3,4))#result:[1,2,3,4] #list函数(其实是个对象)的参数是可迭代对象,返回对应的列表
 
 
+#iter(可迭代对象)函数内置,返回这个对象的迭代器
+l = [1,2,3,4]
+it = iter(l)
+for i in it:
+    print i #i的类型int即列表中对应项的类型
+
 #判断一个对象是否是可迭代对象.
 from collections import Iterable  
 isinstance('abc',Iterable) #True
