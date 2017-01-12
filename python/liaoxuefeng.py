@@ -12,10 +12,35 @@ classmates.append(1,'linwei') #再下表为1元素后面插入
 classmates.pop()#删除最后一个元素,返回元素的值
 classmates.pop(1)#删除下标为1的元素,不能指定不存在的下标(报错)
 
+#join函数:用于连接列表中的元素(元素必须为字符串),返回连接后的字符串
+#原字符串不变
+a = [1,2,3,4]
+'+'.join(a) #error
+a = ['1','2','3','4']
+print '+'.join(a) #1+2+3+4
+
+#split函数和join函数相反,将字符串通过指定符号分割,返回分割后的字符串,
+#原字符串不变
+a = '1+2+3'
+print a.split('+')  =>['1','2','3','4']
 #count(value) 参数:序列中某个元素的值,返回值:这个值在序列中出现的次数
 [1,1,1,2,3].count(1) #3
 '11123'.count('1') #3
 
+#S.replace(old,new[,count])->string:替换指定个数的字符串
+a='hello,world,hello,world,hello'
+print(a.replace('hello','haha',1)) #第一个hello被替换
+print(a.replace('hello','haha',2))#前两个hello被替换
+print(a.replace('hello','haha')) #所有hello被替换
+
+
+#strip函数:返回去除两侧指定的字符串
+#lstrip:去掉左边的指定字符串
+#rstrip:去掉右边的指定的字符串
+a = '    hello,world    '
+print a.strip() #hello,world
+a = ' !!! hello,world ###   '
+print a.strip(' !#') #可以指定多个要删除的字符
 #extend(iterable)参数:一个可迭代对象,返回值:None,调用者改变了
 a = [1,2,3,4]
 b = ['hello','world']
@@ -62,7 +87,7 @@ a.insert(3,'four')#在a[3]前插入'four' #result: [1,2,3,'four',4,5]
 
 #l.reverse:将列表中的元素顺序反转
 x = [1,2,3]
-x.reverse() #[3,2,1]
+x.reverse() #x变为了[3,2,1]
 
 
 #reversed(object): object是序列,返回一个可迭代的对象
@@ -181,6 +206,11 @@ print(d.get('Thomas')) #返回None
 print(d.get('Thomas',89))#返回89,但是d并不会增加元素
 d.pop('Bob')#删除一个key,返回对应的value,对应的value也会删除
 
+#dict函数
+items = [('name','Gumby'),('age',23)]
+d = dict(items)
+d = dict(name='Gumy',age=42)
+d =dict() #空字典
 
 #iteritems()返回一个字典的可迭代对象
 d = {'x':'A','y':'B','z':'C'} 
@@ -529,4 +559,92 @@ t2.start()
 t1.join()
 t2.join()
 print balance
+
+#ThreadLocal
+import threading
+local_school = threading.local()
+#local_school是个全局变量,但是每个属性local_school.student都是局部变量,
+#可以任意读写,不需要用锁.
+
+def process_student():
+    print 'Hello, %s (in %s)' % (local_school.student, threading.current_thread().name)
+
+def process_thread(name):
+    local_school.student = name
+    process_student()
+
+t1 = threading.Thread(target= process_thread, args=('Alice',), name='Thread-A')
+t2 = threading.Thread(target= process_thread, args=('Bob',), name='Thread-B')
+t1.start()
+t2.start()
+t1.join()
+t2.join()
 #<------------------------------------------
+
+
+#----------------------------------------->
+#分布式进程
+
+#Manager,产生两个队列,一个用于发送数据,一个用于接受从worker返回的数据
+import random,time,Queue
+from multiprocessing.managers import BaseManager
+
+task_queue = Queue.Queue() #队列1
+result_queue = Queue.Queue() #队列2
+
+class QueueManager(BaseManager):
+    pass
+
+QueueManager.register('get_task_queue',callable=lambda:task_queue) 
+#注册get_task_queue这个函数,返回task_queue队列
+QueueManager.register('get_result_queue',callable=lambda:result_queue)
+
+managers = QueueManager(address=('',5000),authkey='abc')
+managers.start() #管理开始了,则可以进行调用get_task_queue()函数
+
+task = managers.get_task_queue()
+result = managers.get_result_queue()
+for i in range(10):
+    n = random.randint(0,10000)
+    print 'Put task %d' %n
+    task.put(n) #把初始化的数据传到队列中
+
+print 'Try get results...'
+
+for i in range(10):
+    r = result.get(timeout=10) #等待从result队列获取数据
+    print 'Result:%s' %r
+managers.shutdown() #关闭管理,有开始就有关闭嘛.
+
+
+
+#worker,接受来自manager管理的的task队列,然后经过计算,把结果放进result队列
+import time,sys,Queue
+from multiprocessing.managers import BaseManager 
+
+class QueueManager(BaseManager): #和managerh中的管理一样
+    pass
+
+QueueManager.register('get_task_queue')
+#注册函数,调用这个函数就能返回task_queue队列
+QueueManager.register('get_result_queue')
+
+server_add = '127.0.0.1'
+print 'Connect to server %s...' % server_add
+m = QueueManager(address=(server_add,5000),authkey='abc')
+m.connect()
+task = m.get_task_queue()
+result = m.get_result_queue()
+
+for i in range(10):
+    try:
+        n = task.get(timeout=1)
+        print 'run task %d*%d...'  %(n,n)
+        r = '%d*%d = %d' %(n,n,n*n)
+        time.sleep(1)
+        result.put(r)
+    except Queue.Empty:
+        print 'task queue is empty.'
+
+print 'worker exit.'
+#<-------------------------------------------
