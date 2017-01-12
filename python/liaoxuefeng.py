@@ -27,6 +27,12 @@ b.extend(c) #b变为了['hello','world','h','a','h','a']
 list((1,2,3,4))#result:[1,2,3,4] #list函数(其实是个对象)的参数是可迭代对象,返回对应的列表
 
 
+#iter(可迭代对象)函数内置,返回这个对象的迭代器
+l = [1,2,3,4]
+it = iter(l)
+for i in it:
+    print i #i的类型int即列表中对应项的类型
+
 #判断一个对象是否是可迭代对象.
 from collections import Iterable  
 isinstance('abc',Iterable) #True
@@ -394,3 +400,133 @@ print(now.__name__) #now
 import functools
 int2 = functools.partial(int,base=2)
 print(int2('10010001'))
+
+
+#----------------------------------->
+
+#fork linux版本
+import os
+
+print 'Process (%s) start...' % os.getpid()
+pid = os.fork()
+if pid==0:
+    print 'I am child process (%s) and my parent is %s.' % (os.getpid(), os.getppid())
+else:
+    print 'I (%s) just created a child process (%s).' % (os.getpid(), pid)
+
+
+
+#跨平台版本
+from multiprocessing import Process
+import os
+
+def run_proc(name):
+    print 'Run child process %s (%s)...' % (name, os.getpid())
+
+if __name__=='__main__':
+    print 'Parent process %s.' % os.getpid()
+    p = Process(target=run_proc, args=('test',))
+    print 'Process will start.'
+    p.start()
+    p.join() #谁调用就等待谁
+    print 'Process end.'
+
+#进程池
+from multiprocessing import Pool
+import os, time, random
+
+def long_time_task(name):
+    print 'Run task %s (%s)...' % (name, os.getpid())
+    start = time.time()
+    time.sleep(random.random() * 3)
+    end = time.time()
+    print 'Task %s runs %0.2f seconds.' % (name, (end - start))
+
+if __name__=='__main__':
+    print 'Parent process %s.' % os.getpid()
+    p = Pool()
+    for i in range(5):
+        p.apply_async(long_time_task, args=(i,)) 
+        #这里直接产生并开始运行子进程不需要start()函数
+    print 'Waiting for all subprocesses done...'
+    p.close()
+    p.join() #等待所有子进程结束
+    print 'All subprocesses done.'
+
+#进程间通信方式:队列
+from multiprocessing import Process,Queue
+import os,time,random
+
+def write(q):
+    for value in ['A','B','C']:
+        print 'Puts %s to queue...' % value
+        q.put(value)
+        time.sleep(random.random())
+
+def read(q):
+    while True:
+        value = q.get(True) #这里为True
+        print 'Get %s from queue.' %value
+
+if __name__=='__main__':
+    q=Queue()
+    pw = Process(target=write,args=(q,))
+    pr = Process(target=read,args=(q,))
+    pw.start()
+    pr.start()
+    pw.join() #等待pw进程结束
+    pr.terminate()#pr进程是死循环,强行终止
+#<------------------------------------------
+
+
+
+
+
+
+#------------------------------------------>
+#多线程
+import time,threading
+
+def loop():
+    print 'thread %s is running...' % threading.current_thread().name
+    n = 0
+    while n < 5:
+        n = n + 1
+        print 'thread %s >>> %s' %(threading.currentThread().name,n)
+        time.sleep(1)
+    print 'thread %s ended.' % threading.current_thread().name
+
+print 'thread %s is running...' % threading.current_thread().name
+t = threading.Thread(target=loop,name='child thread')
+t.start()
+t.join()
+print 'thread %s ended' % threading.current_thread().name
+
+
+#加锁
+import time,threading
+
+balance = 0
+lock = threading.Lock()
+def chang_it(n):
+    global balance
+    balance = balance + n
+    balance = balance -n    
+
+def run_thread(n):
+    for i in range(10000):
+        lock.acquire()
+        try:
+            chang_it(n)
+        finally:
+            lock.release()
+
+
+t1 = threading.Thread(target=run_thread,args=(5,))
+t2 = threading.Thread(target=run_thread,args=(9,))
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+print balance
+#<------------------------------------------
