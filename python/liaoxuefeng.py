@@ -327,8 +327,23 @@ def odd(): #注意odd是个函数,odd()是生成器(迭代器),即返回的是�
 for i in odd():
     pass
 #理解:一般函数遇到return或者执行到最后一行语句就返回
-#而生成器函数,在每次调用后,遇到yield语句返回,再次执行时从上次返回的yield语句继续执行
+#而生成器函数,在每次调用后,遇到yield语句返回一个可迭代对象,再次执行时从上次返回的yield语句继续执行
 
+def func():
+    for i in range(2,5):
+        yield i #返回一个可迭代对象,这个可迭代对象的值为i,
+                #yield后面接上要返回的可迭代的对象
+        print 'haha'  #每次执行到这里暂停
+
+for i in func():
+    print i
+
+#2
+#haha
+#3
+#haha
+#4
+#haha
 
 #map函数map(函数,序列) 
 #作用:将传入的函数一次作用到序列的每个元素
