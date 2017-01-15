@@ -430,7 +430,9 @@ def log(func):
     def wrapper(*args,**kw):
         print 'call %s:' % func.__name__
         return func(*args,**kw)
-    return wrapper
+    return wrapper  #闭包
+    #return 'haha' now = log(now)这里返回什么now就是什么,如果
+    #是return 'haha' 则now为'haha'不再是函数了.
 
 @log
 def now():             # => now = log(now)
