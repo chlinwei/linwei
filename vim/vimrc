@@ -1,0 +1,153 @@
+set nu
+set t_Co=256 "在字符界面下要去掉
+set tw=79
+set noswapfile
+
+
+set hlsearch "表示高亮搜索单词
+set incsearch "表示边输入便匹配
+"大小写忽略
+set ignorecase
+set smartcase
+"shift+insert可以把系统剪切版的内容拷贝高vim
+"set expandtab "输入tab时自动转换为空格
+
+set encoding=utf-8
+set fileformat=unix
+let mapleader=";"
+
+
+nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
+nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel nnoremap - _ set nowrap "设置不自动折行
+set title
+inoremap jk <esc>
+set wildmenu "自身命令模式下补全
+
+set laststatus=2
+set cursorline
+set tabstop=4
+set shiftwidth=4 "自动缩进插入的空格数
+set softtabstop=4 "使用或自动插入或删除相应的空格数
+
+
+
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <leader>w :wq<enter>
+nnoremap <leader>q :q!<enter>
+nnoremap - _
+nnoremap a A
+"noremap <tab> :bn<cr>
+
+
+set nocompatible "打开不兼容模式
+syntax on
+filetype indent on "根据文件类型进行自动缩进
+filetype on "开启文件类型侦测 filetype plugin on "根据侦测到的不同类型加载对应的插件
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+execute pathogen#infect()
+
+
+"数字
+hi Number ctermfg=red
+"所有项的颜色
+hi Pemnu ctermfg=white ctermbg=black
+"选中项的颜色
+hi PmenuSel ctermfg=black ctermbg=lightblue
+
+
+
+"-------delimate.vim 0----
+"选择补全的括号
+let delimiMate_autoclose = 1
+let delimiMate_matchpairs = "(:),[:],{:}"  
+"按enter键
+let delimitMate_expand_cr = 1
+"let delimitMate_expand_space = 1
+let delimitMate_quotes = "\" ' `"
+
+
+
+"ctrlP.vim 2-------------
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
+"nerdcommenter 3----------
+"在注释// 后面添加一个空格
+let g:NERDSpaceDelims = 1
+"将行注释符左对齐
+let g:NERDDefaultAlign = 'left'
+"修正注释后面尾随的空格
+let g:NERDTrimTrailingWhitespace = 1
+"visual模式下<leader>ci能选择复制
+
+
+"python单独设置的
+set smartindent " python必须设置不然缩进出现问题,下面那条会覆盖默认设置的
+"autocmd FileType python setlocal  shiftwidth=2  
+
+
+"indentLine.vim
+let g:indentLine_char='┆'
+let g:indentLine_enabled = 0
+"指定线条的颜色
+let g:indentLine_color_term = "green"
+
+
+
+"YCM
+"python解释器路径
+ let g:ycm_python_binary_path = 'python'
+"是否开启语义补全
+ "let g:ycm_seed_identifiers_with_syntax=1
+"是否注释中也开启补全
+ let g:ycm_comlete_in_comments=1
+ let g:ycm_collect_indentifiers_from_comments_and_strings=0
+"开启补全字符数
+let g:ycm_min_num_of_chars_for_completion=2
+"补全后,当切换到normal模式时,关闭窗口
+ let g:ycm_autoclose_preview_window_after_insertion=1
+"字符串中也开启补全
+ let g:ycm_complete_in_strings =1
+ "跳转到定义处
+ "nnoremap <leader>g :YcmCompleter GoToDefinition<CR>
+ "跳转到文档处
+ nnoremap <leader>f :YcmCompleter GetDoc<CR>
+ nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" "关闭加载.ycm_extra_conf.py的提示
+" let g:ycm_confirm_extra_conf=0
+" "printf补全
+" let g:ycm_key_invoke_completion = '<C-a>'
+" let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+
+" nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+" "let g:airline#extensions#tabline#enabled = 1
+" function s:CustomizeYcmQuickFixWindow()
+"     " Move the window at the top of the screen.
+"     execute "wincmd K"
+"     " Set the window height to 5.
+"     execute "5wincmd _"
+" endfunction
+
+
+map <leader><space> :noh<cr> "关闭高亮
+map <leader>bd :bd<cr> "删除一个buffer
+map <leader>tn :tabnew<cr> "新建一个tab
+" let g:ycm_key_list_select_completion=['<tab>','<Down>']
+" let g:ycm_key_list_previous_completion=['<Up>']
+" let g:UltiSnipsExpandTrigger="<c-j>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+inoremap <leader>x <C-x><C-o>
+set completeopt-=preview
+let g:ycm_cache_omnifunc=1
