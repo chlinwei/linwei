@@ -35,6 +35,7 @@ id_rsa id_rsa.pub
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 git remote add origin git@github.com:michaelliao/learngit.git//将本地仓库
+git remote remove origin:讲远程服务器名删除
 关联到远程仓库
 
 git checkout -b dev //-b 表示创建dev分支并切换到dev分支
