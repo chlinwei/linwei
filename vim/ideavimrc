@@ -6,11 +6,13 @@ set ignorecase
 set smartcase
 set encoding=utf-8
 set fileformat=unix
+set showmode
 let mapleader=";"
 
 nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
-nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel nnoremap - _
+nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel 
+nnoremap - _
 set nowrap "设置不自动折行
 set title
 inoremap jk <esc>
@@ -31,10 +33,19 @@ vnoremap <leader>w <C-c>:wq<enter>
 nnoremap - _
 nnoremap a A
 nnoremap <leader><space> :noh<cr>
+nnoremap <A--> gT
+map <A-=> gt
+
 syntax on
 filetype indent on "根据文件类型进行自动缩进
 filetype on "开启文件类型侦测 filetype plugin on 
 
 "运行当前文件
 nnoremap <leader>r :action RunClass<cr>  
-set showmode
+nnoremap <leader>g :action GotoDeclaration<CR>
+nnoremap <leader>e :action GoToErrorGroup<CR>
+nnoremap <leader>t :action GotoTypeDeclaration<CR>
+nnoremap <leader>c :action GotoClass<CR>
+nnoremap <leader>f :action GotoFile<CR>
+nnoremap <leader>s :action GotoSuperMethod<CR>
+nnoremap <leader>a :action GotoAction<CR>
