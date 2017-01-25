@@ -1,8 +1,14 @@
 A.最简单的用法
-mysqldump -uroot -p123 test >01.dump
+mysqldump -uroot -p123 test >01.dump(文件后缀随便取)
 将数据库test备份到01.dump文件01.dump文件
 中包含建表语句和插入数据的insert语句
 从库mysql test < 01.dump就和主库一样的了
+
+只备份一个表
+mysqldump test t2 > t2.sql 
+恢复一个表
+从库mysql test < t2.sql
+
 B.--opt
 如果加上--opt参数则生成的dump文件稍微有不同
 建表语句包含drop table if exits tableName
@@ -15,10 +21,4 @@ c.跨机备份
 d.全部备份
 mysqldump --all-databases > db.dump
 在从机上执行 mysql < db.dump 就和主库一样的了
-
-
-
-
-
-
 
