@@ -1,0 +1,26 @@
+md5sum主要用来检查文件是否被修改过了
+
+md5sum 01.c 输出如下:
+d41d8cd98f00b204e9800998ecf8427e  01.c
+
+md5sum 01.c 02.c > a 输出如下:
+d41d8cd98f00b204e9800998ecf8427e  01.c
+d41d8cd98f00b204e9800998ecf8427e  02.c
+
+
+echo "hello,world" > 01.c 
+
+md5sum -c a 输出如下:
+01.c: FAILED
+02.c: OK
+md5sum: WARNING: 1 computed checksum did NOT match
+
+
+如果删除01.c
+md5sum -c a 输出如下:
+md5sum: 01.c: No such file or directory
+01.c: FAILED open or read
+02.c: OK
+md5sum: WARNING: 1 listed file could not be read
+
+
