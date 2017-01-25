@@ -54,24 +54,30 @@ chmod 600 /etc/rsyncd.passwd
 
 服务端 rsync --daemon config=/etc/rsyncd.conf或rsync --daemon
 
-客户端:
-1)rsync -avz -P ~/a system1@192.168.1.192::data/ 
-接下来输入密码system1就ok了
-2)rsync -avz -P ~/a system1@192.168.1.192::data/  --password-file=/etc/rsyncd.passwd
-3)rsync -avz -P --delete ~/test/ system1@192.168.1.102::data/
---delete作用是将远端data/下的数据保持和本地端test/下的数据一致(以src为主,dst跟随src变化)
-例如: a 目录中有a b文件,b目录有a b c文件
-rsync -avz --delete a b //则b目录变为 a b 文件了
-4)rsync -avz -P ~/a rsync://system1@192.168.1.192:/data/  --password-file=/etc/rsyncd.passwd
-想对于2的另一种写法
 
-resrync=rsync + inotify 远程时时同步
-查看是否支持inotify如果有下面三个文件,表示支持
-[linwei@lw ~]$ ll /proc/sys/fs/inotify
-total 0
--rw-r--r-- 1 root root 0 Sep  3 18:48 max_queued_events
--rw-r--r-- 1 root root 0 Sep  3 18:48 max_user_instances
--rw-r--r-- 1 root root 0 Sep  3 18:10 max_user_watches
+1)将dirA的所有文件同步到dirB内，并保留文件的属主，属组，文件权限等信息。
+rsync -avz dirA/ dirB/
 
-fedora24下载inotify-tools
-dnf install inotify-tools
+2)将dirA的所有文件同步到dirB内，并删除dirB内多余的文件
+rsync -avz --delete dirA/ dirB/ #源目录和目标目录结构一定要一致！！不能是dirA/* dirB/  或者dirA/ dirB/*  或者 dirA/* dirB/*
+
+
+3)将dirA的所有文件同步到dirB，但是在dirB内除了fileB3.txt这个文件
+不删之外，其他的都删除。
+rsync -avz --delete --exclude "fileB3.txt" dirA/ dirB/
+
+4) 将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内，
+并且在dirB目录内删除多余的文件。
+rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" --delete dirA/ dirB/
+
+5）将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内。
+rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" dirA/ dirB/
+
+
+6)将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内，并且在dirB目录内
+删除多余的文件，同时，如果dirB内有fileA2.txt和fileA1.txt这两个被排除同步的
+文件，仍然将其删除。
+rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" --delete-excluded 
+dirA/ dirB/
+
+
