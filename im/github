@@ -69,4 +69,4 @@ git clone -o test git@github.com:chlinwei/linwei.git haha
 git branch -r :查看远程分支
 git fetch 远程主机名 远程分支名 :取回远程分支的更新,如果不写远程分支,则
 表示所有分支的更新
-
+git config --global color.ui true 显示颜色

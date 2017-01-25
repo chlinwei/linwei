@@ -1,0 +1,24 @@
+A.最简单的用法
+mysqldump -uroot -p123 test >01.dump
+将数据库test备份到01.dump文件01.dump文件
+中包含建表语句和插入数据的insert语句
+从库mysql test < 01.dump就和主库一样的了
+B.--opt
+如果加上--opt参数则生成的dump文件稍微有不同
+建表语句包含drop table if exits tableName
+insert 之前包含一个锁表语句lock tables tableName write
+insert 之后包含unlock tables
+
+c.跨机备份
+#有问题mysqldump --host=host1 --opt sourceDb1 |mysql --host=host2 -C targetDb
+
+d.全部备份
+mysqldump --all-databases > db.dump
+在从机上执行 mysql < db.dump 就和主库一样的了
+
+
+
+
+
+
+
