@@ -70,3 +70,8 @@ git branch -r :查看远程分支
 git fetch 远程主机名 远程分支名 :取回远程分支的更新,如果不写远程分支,则
 表示所有分支的更新
 git config --global color.ui true 显示颜色
+
+解决.gitignore对有些文件不起作用的方法
+git rm -r --cached .
+git add .
+git  commit -m "update .gitignore"
