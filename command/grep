@@ -34,3 +34,7 @@ file1
 
 grep -i忽略匹配大小写
 grep -i "*.TXT"
+
+
+grep -q 不显示任何输出信息(用来判断是否含有某个内容)
+cat 01.txt |grep -q rsync)
