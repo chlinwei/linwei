@@ -45,6 +45,7 @@ filetype on "开启文件类型侦测 filetype plugin on
 nnoremap <leader>r :action RunClass<cr>  
 nnoremap <leader>gg :action GotoDeclaration<CR>
 nnoremap <leader>gb :action Back<CR>
+nnoremap <leader>go :action Quick Documentation<CR>
 nnoremap <leader>ge :action GoToErrorGroup<CR>
 nnoremap <leader>gt :action GotoTypeDeclaration<CR>
 nnoremap <leader>gc :action GotoClass<CR>
