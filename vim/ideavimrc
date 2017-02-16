@@ -30,6 +30,7 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <leader>w <C-c>:wq<enter>
 vnoremap <leader>w <C-c>:wq<enter>
+nnoremap <leader>q <esc>:q!<enter>
 nnoremap - _
 nnoremap a A
 nnoremap <leader><space> :noh<cr>
@@ -42,10 +43,11 @@ filetype on "开启文件类型侦测 filetype plugin on
 
 "运行当前文件
 nnoremap <leader>r :action RunClass<cr>  
-nnoremap <leader>g :action GotoDeclaration<CR>
-nnoremap <leader>e :action GoToErrorGroup<CR>
-nnoremap <leader>t :action GotoTypeDeclaration<CR>
-nnoremap <leader>c :action GotoClass<CR>
-nnoremap <leader>f :action GotoFile<CR>
-nnoremap <leader>s :action GotoSuperMethod<CR>
-nnoremap <leader>a :action GotoAction<CR>
+nnoremap <leader>gg :action GotoDeclaration<CR>
+nnoremap <leader>gb :action Back<CR>
+nnoremap <leader>ge :action GoToErrorGroup<CR>
+nnoremap <leader>gt :action GotoTypeDeclaration<CR>
+nnoremap <leader>gc :action GotoClass<CR>
+nnoremap <leader>ff :action GotoFile<CR>
+nnoremap <leader>gs :action GotoSuperMethod<CR>
+nnoremap <leader>ga :action GotoAction<CR>
