@@ -38,3 +38,14 @@ grep -i "*.TXT"
 
 grep -q 不显示任何输出信息(用来判断是否含有某个内容)
 cat 01.txt |grep -q rsync)
+
+grep -w 对单词进行匹配
+01.c如下:
+483 aa
+48
+484
+48 haha
+grep -w '48' 结果为
+48
+48 haha
+

@@ -15,6 +15,34 @@ wget非常稳定,它在宽带很窄的情况下和不稳定的网络中有很强
 wget [参数] [url地址]
 
 
+-O 指定文件名保存下载的东西
+wget -O haha.html www.baidu.com 将百度主页index.html保存为haha.html
+如果-O 指定的文件名为-则将下载的内容打印到标准输出
+wget -O - www.baidu.com
+
+--limit-rate=速度 限速下载
+wget --limit-rate=300k http://sw.bos.baidu.com/sw-search-sp/software/89179b0b248b1/QQ_8.9.20026.0_setup.exe 
 
 
+-b 使wget后台下载,会自动生成一个wget-log文件
 
+-q 安静的下载
+wget -q 
+wget -q www.baidu.com 不会有任何提示信息
+
+wget -bq www.baidu.com 后台下载,有一行提示信息
+Continuing in background, pid 3319. 
+
+-o 保存下载的日志文件到指定的文件
+wget -o log www.baiud.com 会下载index.html,同时将下载的日志保存到log中
+
+
+-i 文件  =>下载多个文件
+wget -i file.txt
+cat file.txt
+url1
+url2
+url3
+
+wget ftp-url  url使用匿名ftp下载 
+wget --ftp-user=USERNAME --ftp-password=PASSWORD url 使用wget用户名和密码认证的ftp下载
