@@ -1,0 +1,58 @@
+数组:
+shell里只有一维数组,下标从0开始
+定义
+var[0]="hello"
+var[1]="world"
+或者
+var=("hello" "world")
+
+打印值
+echo ${var[0]} ${var[1]}
+echo ${var[*]} 或者 echo ${var[@]} 全部打印
+
+数组长度
+echo ${#var[*]} 或者 echo ${#var[@]}
+
+删除
+unset var 删除整个数组
+unset var[0] 删除下标为0的元素
+
+
+分片
+a=(1 2 3 4)
+echo ${a[@]:0:2} =>1 2
+
+替换
+a=(1 2 3 4)
+echo ${a[@]/3/100} =>1 2 100 4)
+echo ${a[@]} =>1 2 3 4
+
+
+
+变量设置方式
+
+${变量/旧字符串/新字符串} :第一个旧的字符串将被替换为新的字符串
+x="abca"
+echo ${x/a/o} =>obca
+
+${变量//旧字符串/新字符串}:全部的就字符串会被替换为新的字符串
+echo ${x//a/o} =>obco
+
+
+${变量#关键字} 从左开始,删除符合的最短的数据 
+echo $PATH  =>
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/lw/.local/bin:/home/lw/bin
+echo ${PATH#*bin} =>
+:/usr/bin:/usr/local/sbin:/usr/sbin:/home/lw/.local/bin:/home/lw/bin
+注意echo ${PATH#bin}是错的前面要加个*
+
+${变量##关键字} 从左开始,删除符合最长的数据
+echo ${PATH##*home} =>
+/lw/bin
+
+
+{变量%关键子} 从右开始,最短
+echo ${PATH%\/home*}
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:
+{变量%%关键字} 从右开始,最长
+

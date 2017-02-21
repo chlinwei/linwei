@@ -1,0 +1,10 @@
+
+declare  [-aixr] variable
+
+-a:将variable定义为数组类型
+-i:将variable定义为整数类型
+-x:和export variable一样将variable定义为环境变量
+-r:将变量设置为readonly类型,如declare -r i=100,之后i就不能改变了,也无法unset,同时
+   还会造成tab 补全出现异常
+
+
