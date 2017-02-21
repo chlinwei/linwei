@@ -22,3 +22,9 @@ d.全部备份
 mysqldump --all-databases > db.dump
 在从机上执行 mysql < db.dump 就和主库一样的了
 
+e.逻辑备份
+mysqldump -uroot -plinwei -h localhost --tab=/test test
+在/test目录下回生成两个文件,一个用来保存sql语句,另一个用于保存数据的
+恢复:
+mysql -uroot -plinwei -h localhost test < /test/student.sql (恢复表的结构)
+mysqlimport -uroot -plinwei -h localhost test  /test/student.txt (回复表的数据)
