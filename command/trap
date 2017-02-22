@@ -1,0 +1,22 @@
+trap 类似c语言中的signal,设定对信号的处理
+trap "command" signal,command为处理信号的命令,signal为信号,kill -l和trap -l可查看所有信号
+
+
+trap "echo hello" INT或SIGINT:设置对INT信号的处理方式为"echo hello"
+[lw@localhost command]$ ^Chello 
+
+trap "" INT :对INT信号的处理方式为忽略,按C-c没反应
+
+trap INT:回复INT信号为默认处理方式
+
+trap -p
+[lw@localhost command]$ trap "echo haha" INT
+[lw@localhost command]$ trap -p #将当前的trap设置打印出来
+trap -- 'echo haha' SIGINT
+trap -- '' SIGTSTP
+trap -- '' SIGTTIN
+trap -- '' SIGTTOU
+
+
+trap "echo linwei > a.txt " EXIT #脚本退出时,会执行echo linwei > a.txt
+
