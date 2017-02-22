@@ -43,12 +43,16 @@ filetype on "开启文件类型侦测 filetype plugin on
 
 "运行当前文件
 nnoremap <leader>r :action RunClass<cr>  
-nnoremap <leader>gg :action GotoDeclaration<CR>
-nnoremap <leader>gb :action Back<CR>
-nnoremap <leader>go :action Quick Documentation<CR>
+nnoremap <leader>gg :action GotoDeclaration<CR> "查找定义
+nnoremap <leader>gb :action Back<CR> "返回
+nnoremap <leader>go :action QuickDocumentation<CR>
 nnoremap <leader>ge :action GoToErrorGroup<CR>
 nnoremap <leader>gt :action GotoTypeDeclaration<CR>
 nnoremap <leader>gc :action GotoClass<CR>
-nnoremap <leader>ff :action GotoFile<CR>
+nnoremap <leader>ff :action GotoFile<CR> "查找文件全局的
 nnoremap <leader>gs :action GotoSuperMethod<CR>
 nnoremap <leader>ga :action GotoAction<CR>
+nnoremap <leader>ne :action NewElement<CR> "新建文件目录等
+nnoremap <leader>nn :action NewFile<CR> "新建文件
+nnoremap <leader>np :action NewDirectoryProject<CR> "新建工程
+nnoremap <leader>nd :action NewDir<CR>新建目录
