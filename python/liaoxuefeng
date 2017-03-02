@@ -19,6 +19,11 @@ a = [1,2,3,4]
 a = ['1','2','3','4']
 print '+'.join(a) #1+2+3+4
 
+#eval() 将字符串当成python表达式来处理
+s = "abc"
+print eval('s')
+abc
+
 #split函数和join函数相反,将字符串通过指定符号分割,返回分割后的字符串,
 #原字符串不变
 a = '1+2+3'
@@ -47,6 +52,14 @@ b = ['hello','world']
 a.extend() #a变为了[1,2,3,4,'hello','world]
 c = 'haha'
 b.extend(c) #b变为了['hello','world','h','a','h','a']
+
+#2)字符串方法
+#find方法(只有字符串才能调用):返回字串所在的位置的最左端的索引
+S.find(sub [,start [,end]]) -> int
+a='123456 hello' 
+print(a.find('6',4,6)) #5
+print(a.find('6',4,5))
+#这里抛异常,是从下标为4开始到下标为5结束(不包括下标为5)
 
 #迭代
 list((1,2,3,4))#result:[1,2,3,4] #list函数(其实是个对象)的参数是可迭代对象,返回对应的列表
@@ -345,6 +358,7 @@ for i in func():
 #4
 #haha
 
+#lambda f = lambda x : x * x  默认就是返回的 print f(2) =>4
 #map函数map(函数,序列) 
 #作用:将传入的函数一次作用到序列的每个元素
 #并把结果作为新的list返回
@@ -665,3 +679,24 @@ for i in range(10):
 
 print 'worker exit.'
 #<-------------------------------------------
+#
+#
+
+#super函数,使用super函数父类必须继承object
+class Parent(object):
+      def __init__(self):
+          self.name_a = "xiaoming"
+      def funcA(self):
+          return "function A: %s" % self.name_a
+  class Child(Parent):
+      def __init__(self):
+          super(Child, self).__init__()
+          self.name_b = "zhangsan"
+      def funcB(self):
+          return "function B: %s" % self.name_b
+  mc = Child()
+  print mc.name_b
+  print mc.funcB()
+  print mc.funcA()
+   
+
