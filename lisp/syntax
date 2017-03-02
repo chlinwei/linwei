@@ -1,0 +1,14 @@
+lisp中symbol指的是符号,'x 代表的是引用x
+
+(setq x1 123)
+(symbolp x1)判断x1是否为符号,结果nil,因为这里x1被替换成了123是值
+(symbol 'x1') 这里的x1是个symbol,返回t
+(symbol-function 'sin) 返回sin函数的函数体
+(symbol-plist 'sin) 返回sin函数的属性列表
+(boundp 'h)判断h是否被定义,如果被定义返回t,否则返回nil
+(fboundp 'f');nil
+(defun f() 3) 判断函数是否定义,定义返回t,否则返回nil
+(fboundp 'f);t
+
+
+
