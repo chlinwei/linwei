@@ -1,10 +1,6 @@
-def func():
-    x = 2
-    def func2():
-        x=5
-    func2()
-    return x
+#_*_coding:utf-8 _*_
 
-print func()
-
+import subprocess
+retcode = subprocess.call(['ls','-l'])
+print retcode
 

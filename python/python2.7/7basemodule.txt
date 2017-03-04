@@ -1,0 +1,162 @@
+os模块主要对目录或文件操作
+
+方法        说明
+os.name :返回操作系统类型
+os.extsep :返回一个"."标识符
+os.environ :以字典的形式返回系统变量名
+os.devnull :返回/dev/null 
+os.linesep :返回换行符"\n"
+os.sep     :返回路径分割符'/'
+os.listdir(path) :列表形式列出目录下的文件或目录
+os.getcwd  :获取当前路径      
+os.chdir(path) :切换到path指定的路径,cd
+os.mkdir(path,[mode=0777]) :创建目录
+os.makedirs(path,[mode=0777]) :递归创建目录mkdir -p
+os.rmdir(path) :移除空目录
+os.remove(path) :移除文件
+os.rename(old,new) :重命名文件或目录
+os.stat(path) :获取文件或目录属性
+os.chown(path,uid,gid) :改变文件或目录的所有者，所属组
+os.chmod(path,mode) :改变文件或目录的权限
+os.symlink(src,dst) :创建软链接
+os.unlink(path) :移除软链接
+urandom(n) :返回所及字节,合适加密使用
+os.getuid() :返回当前进程的UID
+os.getlogin() :返回登陆用户名
+os.getpid() :返回当前进程ID
+os.kill(pid,sig):发送一个信号给进程
+os.walk(path) 目录生成器,返回格式(dirpath,[dirname],[filename])
+os.statvfs(path)
+os.system(cmd) :执行shell命令,不能存储cmd返回的结果
+popen(command,[mode='r'],[bufsize]) :打开管道来自shell命令,并返回一个管道对象,result=os.open('ls') ; result.read()
+os.path
+
+
+
+os.path类用于获取文件属性
+os.path.basename(path) :通过路径path返回文件名或目录名 os.path.basename('home/lw'):lw
+os.path.dirname(path) :通过路径path回返一个文件名前面的部分,于上一行相反
+os.path.abspath(path) :返回一个绝对路径 os.path.abspath('01.py') '/home/lw/01.py'
+os.path.exists(path) :判断路径path是否存在
+os.path.isdir(path) :判断是否为目录
+os.path.islink(path) :判断是否为链接
+os.path.isfile(path) :判断是否为文件
+os.path.ismount(path) :判断是否挂载
+os.path.getatime(filename) :返回文件访问时间戳
+os.path.getctime(filename) :返回文件变化时间戳
+os.path.getmtime(filename) :返回文件修改时间戳
+os.path.getsize(filename) :返回文件大小,单位字节
+os.path.join(a.*p) :拼接路径 os.path('/home/user','test.py','a.py') =>'/home/user/test.py/a.py'
+os.path.split() :分隔路径 os.path.split('/home/user/test.py') =>('/home/user','test.py')
+os.path.splitext :分隔扩展名 os.path.splitext('/home/user/test.py','.py') 
+
+
+glob 模块:支持通配符*?[]
+import glob
+print glob.glob('./*.py')  #查找以.py结尾的文件
+#['./02.py', './01.py']
+
+
+
+
+math模块
+方法			描述               例子
+math.pi     
+math.ceil(x)  返回x浮动的上限   math.ceil(5.8) =>6.0
+math.floor(x) 返回x浮动的下限   math.floor(5.2) =>5.0
+math.trunc(x) 将数字结尾取整    math.trunc(5.2) =>5
+math.fabs(x)  返回x的绝对值     math.fabs(-5.2) =>5.2
+math.fmod(x,y) 返回x%y(取余)    math.fmod(5,2)=>1.0
+math.mod(x)  返回x的小数和整数  math.mod(5.2)=>(0.200000000000018,5.0)
+math.factorial(x) 返回x的阶乘   math.factorial(5) =>120
+math.pow(x,y)  返回x的y次方     math.pow(2,3)=>8.0
+math.sqrt(x)   开方				math.sqrt(x) math.sqrt(5) =>2.2360679774997898
+
+
+
+ 
+random模块
+
+方法				     描述                例子		
+random.randint(a,b)	 返回整数a和b范围的数字,包括a和b  random.randint(1,10)=>6
+random.randrange(start,stop,step) 返回整数范围的随机数 random.randrange(1,10,2) =>5
+random.random()      返回随机数,在0和1之间     random.random() =>0.7373251914304791
+random.sample(array,x) 从列表中返回随机x个元素 random.sample([1,2,3,4,5],2)=>[2,4]
+
+
+
+
+platform模块             描述                      例子
+platform.platform()    返回操作系统平台详细信息
+platform.system()      返回操作系统平台
+platform.uname()       返回操作系统信息
+platform.version()     返回操作系统版本
+platform.processor()   返回计算机处理器类型      x86_64
+platform.node()        返回计算机网络名        www.a.com
+platform.python_version()  返回pyton版本号    2.7.13
+
+
+pickle模块:创建可移植的python序列化对象
+持久化存储到文件中
+dump(object,file,protocol=None),把对象保存在文件中
+load(file)从文件中读取数据,返回对应的对象(即存入时的对象)
+
+import  pickle
+dict = {'a':1,'b':2,'c':3}
+f = open('a.txt','wb') #二进制模式
+pickle.dump(dict,f)
+f.close() 
+运行后cat a.txt
+(dp0
+S'a'
+p1
+I1
+sS'c'
+p2
+I3
+sS'b'
+p3
+I2
+s.)
+
+
+
+f = open('a.txt')
+data = pickle.load(f)
+print type(data)
+print data
+
+<type 'dict'>
+{'a': 1, 'c': 3, 'b': 2}
+
+
+dumps(object,protocol=None)返回一个pickle格式化的字符串
+dump(object,file,protocol=None),把对象保存在文件中
+
+s = "abc"
+pk1 = pickle.dumps(s)
+print pk1
+#"S'abc'\np0\n."
+pickle.loads(pk1) 
+'abc'
+
+
+
+cPickle模块是c语言写,对pickle进行了优化,提升了性能,建议在写代码中使用
+
+
+
+
+
+subprocess模块会fork一个子进程去执行任务,连接到子进程的标准
+输入,输出，错误,并获得它们的返回的返回代码,这个模块将
+取代os.system os.spawn* os.popen* popen2.* commands.*
+
+提供了一下常用的方法帮助我们执行bash命令
+
+import subprocess 
+retcode = subprocess.call(["ls","-1"])  返回回传码
+还可以这样写
+retcode = subprocess.call(['ls -l',shell=True])如果回传码非0则引发异常
+
+
