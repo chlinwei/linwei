@@ -147,7 +147,6 @@ cPickle模块是c语言写,对pickle进行了优化,提升了性能,建议在写
 
 
 
-
 subprocess模块会fork一个子进程去执行任务,连接到子进程的标准
 输入,输出，错误,并获得它们的返回的返回代码,这个模块将
 取代os.system os.spawn* os.popen* popen2.* commands.*
@@ -158,5 +157,169 @@ import subprocess
 retcode = subprocess.call(["ls","-1"])  返回回传码
 还可以这样写
 retcode = subprocess.call(['ls -l',shell=True])如果回传码非0则引发异常
+
+
+
+subprocess.Popen():这个类的参数如下:
+参数                     描述
+args			命令,字符串或列表	
+bufsize 		0代表无缓冲,1代表行缓冲,其他正值代表缓冲区大小,负值采用默认缓冲
+executable        
+stdin
+stdout                  默认没有任何重定向,可以指定重定向到管道,文件对象,文件描述符,
+stderr            	,stderr还可以设置为STDOUT
+
+preexec_fn               钩子函数,在fork和exec之间执行
+close_fds
+shell                    True,宝石当前默认解释器执行,相当于args前面添加/bin/sh -c或winx下cmd.exe/c
+cwd 			 指定工作目录
+env			 设置环境变量
+universal_newlines   	 换行符统一处理成"\n"
+startupinfo          	 在windows下的Win32 API发送CreateProcess()创建进程
+creationflags  		 在windows下的Win32 发送CREATE——NEW——CONSOLE()创建控制台窗口
+
+
+
+subprocess.Popen()类又提供了以下方法:
+
+方法				    描述
+Popen.communicate(input=None)      与子进程交互,读取从stdout和stderr缓冲内容,阻塞父进程,等待子进程结束
+Popen.kill()			   杀死子进程,在Posix系统上发送SIGKILL信号
+Popen.pid()			   获取子进程PID
+Popen.poll() 			   如果子进程终止返回状态码
+Popen.returncode		   返回子进程状态码
+Popen.send_signal(signal)	   发送信号到子进程
+Popen.stderr			   如果参数值是PIPE那么这个属性是一个文件对象,提供子进程错误输出,否则为None
+Popen.stdin                        如果参数值是PIPE那么这个属性是一个文件对象,提供子进程输入,否则为None
+Popen.stdout                        如果参数值是PIPE那么这个属性是一个文件对象,提供子进程输出,否则为None
+Popen.terminate() 		    终止子进程，在Posix系统上发送SIGTERM信号，在windows下的Win32 API发送TerminateProcess()到子进程
+Popen.wait() 			    等待子进程终止,返回状态码
+
+
+import subprocess
+p = subprocess.Popen('dmesg |grep eth0', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+print p.communicate()
+print p.pid
+p.wait() #等待子进程结束
+print p.returncode
+
+subprocess.PIPE提供了一个缓冲区,将stdout,stderr放到这个缓冲区
+p.communicate()方法将缓冲区数据读取数来
+
+
+
+
+import subprocess
+p1 = subprocess.Popen('ls',stdout=subprocess.PIPE,shell=True)
+p2 = subprocess.Popen('grep data',stdin=p1.stdout,stdout=subprocess.PIPE,shell=True)
+p1.stdout.close()
+output=p2.communicate()[0]
+print output
+
+p1的标准输出作为p2的标准输入,这个p2的stdin,stdout也可以是个可读,可写的文件
+
+
+
+
+
+Queue模块
+类				描述
+
+Queue.Empty			当非阻塞get()或get_nowait()对象队列上为空引发异常
+Queue.Full			当非阻塞put()或put_nowait()对象队列是一个满的队列引发异常
+Queue.LifoQueue(maxsize=0)  	构造函数为后进先出队列。maxsize设置队列最大上限项目数量。小于或等于0代表无限。
+Queue.PriorityQueue(maxsize=0)	构造函数为一个优先队列。级别越高越先出。
+Queue.Queue(maxsize=0)		构造函数为一个FIFO(先进先出)队列。maxsize设置队列最大上限项目数量。小于或等于0代表无限。
+Queue.deque			双端队列。实现快速append()和popleft()，无需锁。
+Queue.heapq			堆排序队列。
+
+
+用到比较多的是Queue.Queue类,
+它提供了写操作队列的方法:
+
+方法					描述	
+Queue.empty()				如果队列为空返回True，否则返回False
+Queue.full()				如果队列是满的返回True，否则返回False
+Queue.get(block=True, timeout=None)	从队列中删除并返回一个项目。没有指定项目，因为是FIFO队列，如果队列为空会一直阻塞。timeout超时时间
+Queue.get_nowait()  	 		从队列中删除并返回一个项目，不阻塞。会抛出异常。
+Queue.join()				等待队列为空，再执行别的操作
+Queue.put(item, block=True, timeout=None)	写入项目到队列
+Queue.put_nowait()	    		写入项目到队列，不阻塞。与get同理
+Queue.qsize()				返回队列大小
+Queue.task_done()			表示原队列的任务完成
+
+示例:
+from Queue import Queue
+q = Queue()
+q.put('test') #将'test'放到队列q中
+print q.qsize() #1
+print q.empty() #False
+
+
+
+StringIO模块
+将字符串存储在内存中,像操作文件一样操作,主要提供了一个StringIO类
+			
+	方法		描述
+	
+StringIO.close()	关闭
+StringIO.flush()	刷新缓冲区
+StringIO.getvalue()	获取写入的数据
+StringIO.isatty()	
+StringIO.next()	读取下一行，没有数据抛出异常
+StringIO.read(n=-1) 	默认读取所有内容。n指定读取多少字节
+StringIO.readline(length=None)	默认读取下一行。length指定读取多少个字符
+StringIO.readlines(sizehint=0)	默认读取所有内容，以列表返回。sizehint指定读取多少字节
+StringIO.seek(pos, mode=0)	在文件中移动文件指针，从mode（0代表文件起始位置，默认。1代表当前位置。2代表文件末尾）偏移pos个字节
+StringIO.tell()	返回当前在文件中的位置
+StringIO.truncate()	截断文件大小
+StringIO.write(str)	写字符串到文件
+StringIO.writelines(iterable)	写入序列，必须是一个可迭代对象，一般是一个字符串列表
+
+import StringIO
+f = StringIO.StringIO()
+f.write('hello')
+print f.getvalue() #hello
+
+
+
+logging模块
+有几个主要的类:
+
+logging.Logger		应用程序记录日志的接口
+logging.Filter		过滤哪条日志不记录
+logging.FileHandler	日志写到磁盘文件
+logging.Formatter	定义最终日志格式
+
+日志级别:
+
+级别		数字值	描述
+critical	50	危险
+error		40	错误
+warning		30	警告
+info		20	普通信息
+debug		10	调试
+noset		0	不设置
+
+
+Formatter类可以自定义日志格式,默认时间格式是:%Y-%m-%d %H:%M:%S
+有一些这些属性:
+%(name)s	日志的名称
+%(levelno)s	数字日志级别
+%(levelname)s	文本日志级别
+%(pathname)s	调用logging的完整路径（如果可用）
+%(filename)s	文件名的路径名
+%(module)s	模块名
+%(lineno)d	调用logging的源行号
+%(funcName)s	函数名
+%(created)f	创建时间，返回time.time()值
+%(asctime)s	字符串表示创建时间
+%(msecs)d	毫秒表示创建时间
+%(relativeCreated)d	毫秒为单位表示创建时间，相对于logging模块被加载，通常应用程序启动。
+%(thread)d	线程ID（如果可用）
+%(threadName)s	线程名字（如果可用）
+%(process)d	进程ID（如果可用）
+%(message)s	输出的消息
 
 

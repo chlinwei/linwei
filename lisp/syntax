@@ -12,3 +12,25 @@ lisp中symbol指的是符号,'x 代表的是引用x
 
 
 
+(kill-region 1 3) 字符从1开始删除第和第2个字符
+(kill-ring-save 1 3) 和上面一样只是保存而不是删除
+(kill-new "cute new") 复制"cute new"
+(yank) 粘贴
+
+(interactive "sEnter your name:") s表示从minibuffer读取字符串
+(interactive "nEnter your age:") n表示从minibuffer读取数字
+
+
+(defun ask-name-and-age (x y) ;;先出现Enter your name:出入linwei,再出现Enter
+your age:
+  (interactive "sEnter you name:
+nEnter your age: ")
+  (message "Name is: %s, Age is: %d" x y))
+
+
+(defun do-something (x y) ;;interactive节后面跟list
+  "Ask name and age"
+  (interactive
+   ;; complex code here that returns a list
+   (list "Mary" 22))
+  (message "Name is: %s, Age is: %d" x y))
