@@ -322,4 +322,55 @@ Formatter类可以自定义日志格式,默认时间格式是:%Y-%m-%d %H:%M:%S
 %(process)d	进程ID（如果可用）
 %(message)s	输出的消息
 
+import logging
+format = logging.Formatter('%(asctime)s - %(levelname)s %(filename)s [line:%(lineno)d] %(message)s')
+# 创建日志记录器
+info_logger = logging.getLogger('info')
+# 设置日志级别,小于INFO的日志忽略
+info_logger.setLevel(logging.INFO)
+# 日志记录到磁盘文件
+info_file = logging.FileHandler("info.log")
+# info_file.setLevel(logging.INFO)
+# 设置日志格式
+info_file.setFormatter(format)
+info_logger.addHandler(info_file)
+error_logger = logging.getLogger('error')
+error_logger.setLevel(logging.ERROR)
+error_file = logging.FileHandler("error.log")
+error_file.setFormatter(format)
+error_logger.addHandler(error_file)
+# 输出控制台（stdout）
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+console.setFormatter(format)
+info_logger.addHandler(console)
+error_logger.addHandler(console)
+if __name__ == "__main__":
+    # 写日志
+    info_logger.warning("info message.")
+    error_logger.error("error message!")
 
+
+
+ConfigParser模块
+主要用到ConfigParser.ConfigParser()类，对ini格式文件增删该查
+ini文件固定结构,有多个部分块组成,每个部分有一个标识
+并且有多个key,对各key对应每个值,以"="分隔,值的类型有
+三种:字符串，整数，布尔值,其中字符串可以不用双引号,
+布尔值用真用1表示注释以:":"开头
+		方法									 描述
+ConfigParser.add_section(section)	创建一个新的部分配置
+ConfigParser.get(section, option, raw=False, vars=None)	获取部分中的选项值，返回字符串
+ConfigParser.getboolean(section, option)	获取部分中的选项值，返回布尔值
+ConfigParser.getfloat(section, option)	获取部分中的选项值，返回浮点数
+ConfigParser.getint(section, option)	获取部分中的选项值，返回整数
+ConfigParser.has_option(section, option)	检查部分中是否存在这个选项
+ConfigParser.has_section(section)	检查部分是否在配置文件中
+ConfigParser.items(section, raw=False, vars=None)	列表元组形式返回部分中的每一个选项
+ConfigParser.options(section)	列表形式返回指定部分选项名称
+ConfigParser.read(filenames)	读取ini格式的文件
+ConfigParser.remove_option( section, option)	移除部分中的选项
+ConfigParser.remove_section(section, option)	移除部分
+ConfigParser.sections()	列表形式返回所有部分名称
+ConfigParser.set(section, option, value)	设置选项值，存在则更新，否则添加
+ConfigParser.write(fp)	写一个ini格式的配置文件
