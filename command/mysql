@@ -1,10 +1,13 @@
-grant all privileges on *.* to shenge1@'192.168.200.%' identified by 'linwei'
+create user shenge1@'192.168.200.%' identified by 'linwei'//创建一个用户
+grant all privileges on *.* to shenge1@'192.168.200.%' identified by 'linwei'//给此用户赋权限.
 flush privileges;
 grant 权限 on 数据库对象.表 to 用户@ip identified by 密码
 权限:REPLICATION SLACE,REPLICATION CLIENT
 数据库对象:*.*(*.*说明数据库.表名)
-用户:shenge1
-那个%号是通配符,表示用户relp能在192.168.200.1~192.168.200.254所在的服务登录密码:linwei
+用户:shenge1 那个%号是通配符,表示用户relp能在192.168.200.1~192.168.200.254所在的服务登录密码:linwei
+
+
+mysql -ub -hwww.a.com -pb;可以直接登陆,用户名为b,密码为b,www.a.com为mysql服务器地址
 mysql -u shenge1 -h 192.168.200.157 --password=linwei  登陆或者-p手动输入密码
 mysql < 01.sql  =>在01.sql中写好mysql语句,可以这样执行.
 mysql -u shenge1 -h 192.168.200.157 --password=linwei < 01.sql
@@ -18,5 +21,5 @@ drop table test.student;删除test数据库中的student表格
 show columns from 表名或者describe 表名 查看表的结构
 insert into test.student(name,math)values('xiaoming',87);插入数据
 alter table test.student drop name;删除name这个字段.
-alter table test.student add name(20);增加name这个字段
+alter table test.student add name  char(20);增加name这个字段
 update test.student set name="xiaoming" where math=78;更新某个数据的值

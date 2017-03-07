@@ -437,3 +437,139 @@ fp = open("config.ini", "w")
 conf.remove_section('host4')  # 删除[host4]
 conf.remove_option('host3', 'pass')  # 删除[host3]的pass选项
 conf.write(fp)
+
+
+
+urllib和urllib2模块
+urllib2是urllib的增强版
+
+		类															描述
+
+urllib.urlopen(url, data=None, proxies=None)	读取指定URL，创建类文件对象。data是随着URL提交的数据（POST）
+urllib/urllib2.quote(s, safe='/')	将字符串中的特殊符号转十六进制表示。如： quote('abc def') -> 'abc%20def'
+
+urllib/urllib2.unquote(s)	与quote相反
+urllib.urlencode(query, doseq=0)	将序列中的两个元素（元组或字典）转换为URL查询字符串
+urllib.urlretrieve(url, filename=None, reporthook=None, data=None)	将返回结果保存到文件，filename是文件名
+urllib2.Request(url, data=None, headers={}, origin_req_host=None, unverifiable=False)	
+
+一般访问URL用urllib.urlopen()，如果要修改header信息就会用到这个。
+
+data是随着URL提交的数据，将会把HTTP请求GET改为POST。headers是一个字典，包含提交头的键值对应内容。
+urllib2.urlopen(url, data=None, timeout=<object object>)	timeout 超时时间，单位秒
+urllib2.build_opener(*handlers)	构造opener
+urllib2.install_opener(opener)	把新构造的opener安装到默认的opener中，以后urlopen()会自动调用
+urllib2.HTTPCookieProcessor(cookiejar=None)	Cookie处理器
+urllib2.HTTPBasicAuthHandler	认证处理器
+urllib2.ProxyHandler	代理处理器
+
+urllib.urlopen()有几个常用的方法:
+方法	描述
+getcode()	获取HTTP状态码
+geturl()	返回真实URL。有可能URL3xx跳转，那么这个将获得跳转后的URL
+info()	返回服务器返回的header信息。可以通过它的方法获取相关值
+next()	获取下一行，没有数据抛出异常
+read(size=-1)	默认读取所有内容。size正整数指定读取多少字节
+readline(size=-1)	默认读取下一行。size正整数指定读取多少字节
+readlines(sizehint=0)	默认读取所有内容，以列表形式返回。sizehint正整数指定读取多少字节
+
+1)请求url
+import urllib,urllib2
+response = urllib.urlopen('http://www.baidu.com')
+print response.geturl() #http://www.baidu.com
+print result.getcode() #200
+print response.readline() #<!DOCTYPE html>
+
+
+2)伪装为浏览器访问百度,防止被服务器当作网络爬虫被屏蔽
+import  urllib,urllib2
+user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0"
+header = {"User-Agent":user_agent}
+request = urllib2.Request("http://www.baidu.com",headers=header)
+response = urllib2.urlopen(request) #url可以为网址也可以为Request对象
+print response.geturl() #获取网址
+print response.info() #查看服务器的header信息
+
+3)保存cookie到变量中
+import urllib2,urllib
+import cookielib
+#实例化Cookielib对象来保存cookie,CookieJar类来捕获cookie
+cookie = cookielib.CookieJar()
+#创建cookie处理器
+handler = urllib2.HTTPCookieProcessor(cookie)
+opener = urllib2.build_opener(handler) #参数为cookie处理器,返回opener
+response = opener.open('http://www.baidu.com')
+for item in cookie:
+    print item.name,item.value
+
+BAIDUID EB4BF619C95630EFD619B99C596744B0:FG=1
+BIDUPSID EB4BF619C95630EFD619B99C596744B0
+H_PS_PSSID 1437_20795_21099_21455_21408_21395_21377_21526_21190_21306
+PSTM 1478936429
+BDSVRTM 0
+BD_HOME 0
+urlpoen本身就是一个opener无法满足对cookie处理,所以要构造一个额外的opener
+cookie存储在客户端,用来跟踪浏览器用户身份的会话技术
+
+
+
+4)保存cookie到文件中
+import urllib2,urllib
+import cookielib
+
+cookie_file = 'cookie.txt'
+#实例化一个cookie,传入文件名
+cookie = cookielib.MozillaCookieJar(cookie_file)
+#创建cookie处理器
+handler = urllib2.HTTPCookieProcessor(cookie)
+#通过hander构造opener
+opener = urllib2.build_opener(handler)
+response = opener.open('http://www.baidu.com')
+cookie.save(ignore_discard=True,ignore_expires=True)
+
+5)利用cookie访问url
+import urllib2
+import cookielib
+#实例化cookie对象
+cookie = cookielib.MozillaCookieJar()
+#从文件读取cookie
+cookie.load("cookie.txt",ignore_discard=True,ignore_expires=True)
+#通过cookie对象创建cookie处理器
+handler = urllib2.HTTPCookieProcessor(cookie)
+#通过cookie处理器创建opener
+opener = urllib2.build_opener(handler)
+response = opener.open('http://www.baidu.com')
+print response.read()
+
+6)使用代理服务器访问url
+import urllib2
+proxy_address = {'http':'http://218.17.252.34:3128'}
+handler = urllib2.ProxyHandler(proxy_address)
+opener = urllib2.build_opener(handler)
+response = opener.open("http://www.baidu.com")
+print response.read()
+
+7)url访问认证
+import urllib2
+auth = urllib2.HTTPBasicAuthHander()
+auth.add_passwrod(None,'http://www.example.com','user','123456')
+opener = urllib2.build_opener(auth)
+response = opener.open('http://www.example.com/test.html')
+
+
+
+json模块
+
+json与Python解码后数据类型
+JSON   Python
+
+object	dict
+array	list
+string	unicode
+number（int）	init，long
+number（real）	float
+true	Ture
+false	False
+null	None
+
+

@@ -1,0 +1,17 @@
+mysqladmin主要是在客户端来远程管理mysql服务器的工具
+
+
+mysql server端上创建一个用户
+mysql server的域名为www.a.com(192.168.200.157)
+
+
+mysqladmin -ub -hwww.a.com -pb ping :检查mysql服务端是否还活着
+下面的命令,mysqladmin -ub -hwww.a.com -pb省略
+create ab:创建一个数据库名为ab的数据库
+drop ab:删除一个数据库名为ab的数据库
+shutdown:关闭服务器
+status:打印出服务器一些状态信息
+variables:打印出可用变量
+version:打印出服务器的版本信息
+processlist:显示服务器端活跃的线程列表
+mysqladmin -ub -pb -hwww.a.com password 123：将原来的密码b改为123

@@ -1,0 +1,253 @@
+open函数格式
+open(name[, mode[, buffering[,encoding]]]) -> file object
+
+name:文件名
+mode:模式
+buffering:缓冲区
+encoding:返回数据采用什么编码
+
+mode:
+Mode Description
+r	只读，默认
+w	只写，打开前清空文件内容
+a	追加
+a+	读写，写到文件末尾
+w+	可读写，清空文件内容
+r+	可读写，能写到文件任何位置
+rb	二进制模式读
+wb	二进制模式写，清空文件内容
+
+
+文件对象的方法:
+f.read([size])	读取size字节，当未指定或给负值时，读取剩余所有的字节，作为字符串返回
+f.readline([size])	从文件中读取下一行，作为字符串返回。如果指定size则返回size字节
+f.readlines([size])	读取size字节，当未指定或给负值时，读取剩余所有的字节，作为列表返回
+f.write(str)	写字符串到文件
+f.writelines(seq)	写序列到文件，seq必须是一个可迭代对象，而且要是一个字符串序列
+f.seek(offset[, whence=0])	在文件中移动文件指针，从whence（0代表文件起始位置，默认。1代表当前位置。2代表文件末尾）偏移offset个字节
+f.tell()	返回当前在文件中的位置
+f.close() 关闭文件
+f.flush	刷新缓冲区到磁盘
+
+
+1)read()读取所有内容
+f = open('test.txt','r')
+f.read()
+
+2)读取指定多少字节
+f = open('test.txt','r')
+f.read(10) #读取10个字节
+
+3)readline()读取一行内容
+f= open('test.txt','r')
+f.readline()
+
+4)readlines()读取所有内容返回一个列表
+f = open('test.txt','r')
+f.readlines()
+#['1.Python\n', '2.Java\n', '3.C++\n', '4.Ruby\n']
+
+5)write()写入字符串到文件
+f = open('test.txt','a') #以追加方式打开文件
+f.write("5.shell\n") #这一步没有真正写入,写入到了缓冲区中
+f.flush() #刷新到磁盘才写到文件
+
+6)writelines()写入一个序列字符串到文件
+f = open('test.txt','a')
+f.writelines(['a','b','c'])
+
+7)seek()从指定位置读取
+f = open('test.txt','r')
+f.tell() #0
+f.seek(9)
+f.tell()  #9
+f.seek(5,1) #1表示从当前位置开始
+f.tell() #14
+
+
+
+
+
+
+文件对象增删改查
+
+1)在开头添加一个test字符串
+f = open('test.txt','r')
+data = f.read()
+data = "test\n" + data
+f = open('test.txt','w')
+f.write(data)
+f.flush()
+f.close()
+
+
+
+2)在指定行添加一行
+f = open('test.txt','r')
+data_list = f.readlines()
+data_list.insert(1,'test\n')
+f = open('test.txt','w')
+f.writeliness(data_list)
+f.flush()
+f.close()
+
+
+3)删除指定行
+f = open('test.txt','r')
+data_list = f.readlines()
+data_list.pop(2)
+f = open('test.txt','w')
+f.writelines(data_list)
+f.flush()
+f.close()
+
+4)只保留第一行至第三行
+f = open('test.txt','r')
+data_list = f.readlines()[0:2] #列表切片
+f = open('test.txt','w')
+f.write(data_list)
+f.flush()
+f.close()
+
+5)删除匹配行
+f = open('test.txt','r')
+data = f.readlines()
+data_list = [line for line in data if line.find('py' == -1)]
+f = open('test.txt','lw')
+f.writelines(data_list)
+f.flush()
+f.close()
+
+6)全局替换字符串
+f = open('test.txt','r')
+data = f.read()
+data.replace('old string','new string')
+f = open('test.txt','w')
+f.write(data)
+f.flush()
+f.close()
+
+7)在指定行替换字符串
+f = open('test.txt','r')
+data = f.readlines()
+data_list = []
+for line in data:
+	if data.index(line)==2:
+		data_list.append(line.replace('++','#'))
+	else:
+		data_list.append(line)
+f = open('test.txt','w')
+f.writelines(data_list)
+f.flush()
+f.close()
+
+
+处理大文件时
+在读取上G文件时,直接读取所有内容会导致内存占用过多,有两种
+方式解决:
+1)open()打开文件返回对象本身就是可迭代的
+f = open('test.txt')
+for line in f:
+	print line.strip('\n')
+
+2)每次读取固定字节
+f = open('test.txt')
+while True:
+	data = f.read(1024)
+	if not data:break
+
+
+下载文件
+1)import urllib
+url = "http://nginx.org/download/nginx-1.10.1.tar.gz"
+urllib.urlretrieve(url,"nginx-1.10.1.tar.gz")
+
+2)import urllib2 
+url = "http://nginx.org/download/nginx-1.10.1.tar.gz"
+f = urllib2.urlopen(url).read()
+with open('nginx-1.10.1.tar.gz','wb') as data:
+	data.write(f)
+
+
+
+fileinput模块(内建)
+用于遍历文件,可对多文件操作
+
+fileinput.input([files[, inplace[, backup[, mode[, openhook]]]]])	files：文件路径，多文件这样写['1.txt,'2.txt''] inplace：是否将标准输出写到原文件，默认是0，不写 backup：备份文件扩展名，比如.bak mode：读写模式，默认r，只读 openhook：
+fileinput.isfirstline()	检查当前行是否是文件的第一行
+fileinput.lineno()	返回当前已经读取行的数量
+fileinput.fileno()	返回当前文件数量
+fileinput.filelineno()	返回当前读取行的行号
+fileinput.filename()	返回当前文件名
+
+
+
+1)遍历文件内容
+import fileinput
+for line in fileinput.input('test.txt'):
+	print line
+2)返回当前读取的行号
+import fileinput
+for line in fileinput.input('test.txt'):
+	print  fileinput.filelineno()
+	print line,
+
+3)全局替换字符,修改原文件,inplace=1表示将标准输出写到原文件
+import fileinput
+for line in fileinput.input('test.txt',backup='.bak',inplace=1):
+	line = line.replace('++','#')
+	print line,
+
+
+4)对多文件操作
+import fileinput
+for line in fileinput.input(['text.txt','test2.txt']):
+	print line,
+
+5)实时读取文件增加内容,tail -f 
+with open('access.log') as f:
+	f.seek(0,2) #每次打开文件都移动到文件结尾
+	while True:
+		line = f.readline()
+		if line:
+			print line,
+		else:
+			time.sleep(1) #加个休眠,每秒读取一次,因为循环很耗性能
+
+
+shutil(内建)
+用于对文件或目录拷贝,归档
+
+方法
+	
+
+描述
+shutil.copyfile(src, dst)	复制文件
+shutil.copytree(src, dst)	复制文件或目录
+shutil.move(src, dst)	移动文件或目录
+shutil.rmtree(path,ignore_errors=False, onerror=None)	递归删除目录。os.rmdir()不能删除有文件的目录，就可以用这个了
+
+shutil.make_archive(base_name, format, root_dir=None, base_dir=None, verbose=0, dry_run=0, owner=None, group=None, logger=None)	
+	Python2.7以后才有这个方法。
+	功能是创建zip或tar归档文件。
+	base_name：要创建归档文件名
+	format：归档文件格式，有zip、tar、bztar、gztar
+	root_dir：要压缩的目录
+	base_dir：？
+	用法：shutil.make_archive('wp','zip','/root/wordpress')   
+
+
+
+with语句
+在处理一些事物时,可能出现异常和后续的清理工作,比如读取失败,关闭文件
+等,这就用到了异常处理 
+f = open('test.txt')
+try:
+	data = f.read()
+finally:
+	f.close()
+
+Python对于这种情况提供了一种更简单的处理方式，with语句。处理一个文件时，先获取一个文件句柄，再从文件中读取数据，最后关闭文件句柄。如下：
+
+with open('test.txt') as f:
+	data = f.read()
