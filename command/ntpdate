@@ -1,0 +1,2 @@
+ntpdate cn.ntp.org.cn  #从ntp服务器获取当前时间
+hwclock -w  #写入到Bios里

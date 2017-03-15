@@ -10,5 +10,89 @@ connect_timeout	连接超时时间，秒为单位
 use_unicode	结果以unicode字符串返回
 charset	插入数据库编码
 
+在test中创建一张user表,并添加一条记录
+import MySQLdb
+conn = MySQLdb.Connect(host='192.168.200.157',user='xiaoming',passwd='xiaoming',db='test',charset='utf8')
+cursor = conn.cursor()
+sql = "create table user(id int,name varchar(30),password varchar(30))"
+print cursor.execute(sql) #返回的数字是影响的行数,0
+sql = "insert into user(id,name,password) values(1,'xiaoming','123456')"
+print cursor.execute(sql) #1
+
+conn.commit() #提交事务,写入到数据库
+cursor.execute('show tables ') #查看创建的表
+print  cursor.fetchall() #取出上一个游标执行的所有结果,默认是以元祖返回
+# ((u'Orders',), (u'Persons',), (u'student',), (u'user',))
 
 
+插入多条数据
+import MySQLdb
+conn = MySQLdb.Connect(host='192.168.200.157',user='xiaoming',passwd='xiaoming',db='test',charset='utf8')
+cursor = conn.cursor()
+sql = "insert into user(id,name,password)values(%s,%s,%s)"
+args = [(2,'zhangsan','123456'),(3,'lisi','123456'),(4,'wangwu','123456')]
+print cursor.executemany(sql,args) #3
+conn.commit()
+sql = 'select * from user'
+print cursor.execute(sql) #4
+print cursor.fetchall()
+#((1L, u'xiaoming', u'123456'), (2L, u'zhangsan', u'123456'), (3L, u'lisi', u'123456'), (4L, u'wangwu', u'123456'))
+
+删除用户名xiaoming的记录
+#_*_coding:utf-8_*_
+import MySQLdb
+conn = MySQLdb.Connect(host='192.168.200.157',user='xiaoming',passwd='xiaoming',db='test',charset='utf8')
+cursor = conn.cursor()
+
+sql = "delete from user where name='xiaoming'"
+cursor.execute(sql)
+conn.commit()
+sql = 'select * from user'
+cursor.execute(sql)
+print cursor.fetchall()  
+#((2L, u'zhangsan', u'123456'), (3L, u'lisi', u'123456'), (4L, u'wangwu', u'123456'))
+
+
+查询记录
+sql = "select * from user"
+print cursor.execute(sql) #3
+print cursor.fetchone() #取出上个游标的所有记录中的第一条记录
+#(2L, u'zhangsan', u'123456')
+print cursor.fetchone() #
+#(3L, u'lisi', u'123456')
+print cursor.fetchone()
+#(4L, u'wangwu', u'123456')
+print cursor.fetchone()
+#None
+
+cursor.execute(sql)
+print cursor.fetchmany(2)
+#((2L, u'zhangsan', u'123456'), (3L, u'lisi', u'123456'))  #取出上个游标的所有记录中的前两条记录
+
+
+
+#以字典形式返回结果
+conn = MySQLdb.Connect(host='192.168.200.157',user='xiaoming',passwd='xiaoming',db='test',charset='utf8')
+cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+sql = "select * from user"
+cursor.execute(sql)
+print cursor.fetchall()
+#({'password': u'123456', 'id': 2L, 'name': u'zhangsan'}, {'password': u'123456', 'id': 3L,
+# 'name': u'lisi'}, {'password': u'123456', 'id': 4L, 'name': u'wangwu'})
+
+
+遍历所有结果
+import MySQLdb
+try:
+    conn = MySQLdb.Connect(host='192.168.200.157',user='xiaoming',passwd='xiaoming',db='test',charset='utf8')
+    cursor = conn.cursor()
+    sql = "select * from user"
+    cursor.execute(sql)
+    for i in cursor.fetchall():
+        print i
+finally:
+    conn.close()
+
+#(2L, u'zhangsan', u'123456')
+#(3L, u'lisi', u'123456')
+#(4L, u'wangwu', u'123456')

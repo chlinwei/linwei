@@ -1,0 +1,95 @@
+dig linux.vbird.org
+
+; <<>> DiG 9.10.4-P3-RedHat-9.10.4-2.P3.fc25 <<>> linux.vbird.org
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 6576
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 3
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:	<==提出问题的部分
+;linux.vbird.org.		IN	A
+
+;; ANSWER SECTION:      <==主要的回答阶段
+linux.vbird.org.	454	IN	A	140.116.44.180
+
+;; AUTHORITY SECTION:   <==域名对应的dns主机名
+vbird.org.		51	IN	NS	dns2.vbird.org.
+vbird.org.		51	IN	NS	dns.vbird.org.
+
+;; ADDITIONAL SECTION:   <==dns主机名对象的ip地址
+dns.vbird.org.		454	IN	A	140.116.44.180
+dns2.vbird.org.		454	IN	A	140.116.44.179
+
+;; Query time: 2 msec
+;; SERVER: 202.101.172.35#53(202.101.172.35) <==自己本机的DNS地址
+;; WHEN: Wed Mar 08 16:52:48 CST 2017
+;; MSG SIZE  rcvd: 129
+
+
+
+dig -x  120.114.100.20 =>:查询反解信息
+
+; <<>> DiG 9.7.0-P2-RedHat-9.7.0-5.P2.el6_0.1 <<>> -x 120.114.100.20
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60337
+;; flags: qr rd ra; QUERY: 1, ANSWER: 3, AUTHORITY: 3, ADDITIONAL: 3
+
+;; QUESTION SECTION:
+;20.100.114.120.in-addr.arpa.   IN      PTR
+
+;; ANSWER SECTION:
+20.100.114.120.in-addr.arpa. 3600 IN    PTR     mail-out-r2.ksu.edu.tw.
+20.100.114.120.in-addr.arpa. 3600 IN    PTR     mail-smtp-proxy.ksu.edu.tw.
+20.100.114.120.in-addr.arpa. 3600 IN    PTR     mail.ksu.edu.tw.
+
+;; AUTHORITY SECTION:
+100.114.120.in-addr.arpa. 3600  IN      NS      dns1.ksu.edu.tw.
+100.114.120.in-addr.arpa. 3600  IN      NS      dns3.twaren.net.
+100.114.120.in-addr.arpa. 3600  IN      NS      dns2.ksu.edu.tw.
+
+;; ADDITIONAL SECTION:
+dns1.ksu.edu.tw.        3036    IN      A       120.114.50.1
+dns2.ksu.edu.tw.        2658    IN      A       120.114.150.1
+dns3.twaren.net.        449     IN      A       211.79.61.47
+
+;; Query time: 29 msec
+;; SERVER: 168.95.1.1#53(168.95.1.1)
+;; WHEN: Thu Aug  4 14:17:58 2011
+;; MSG SIZE  rcvd: 245
+
+
+
+[root@www ~]# dig +trace www.ksu.edu.tw =>+trace 开始追踪
+; <<>> DiG 9.3.6-P1-RedHat-9.3.6-16.P1.el5 <<>>+trace www.ksu.edu.tw
+;; global options:  printcmd
+.                       486278  IN      NS      a.root-servers.net.
+.                       486278  IN      NS      b.root-servers.net.
+....(底下省略)....
+# 上面的部分在追踪 . 的服务器，可从 a ~ m.root-servers.net.
+;; Received 500 bytes from 168.95.1.1#53(168.95.1.1) in 22 ms
+
+tw.                     172800  IN      NS      ns.twnic.net.
+tw.                     172800  IN      NS      a.dns.tw.
+tw.                     172800  IN      NS      b.dns.tw.
+....(底下省略)....
+# 上面的部分在追踪 .tw. 的服务器，可从 a ~ h.dns.tw. 包括 ns.twnic.net.
+;; Received 474 bytes from 192.33.4.12#53(c.root-servers.net) in 168 ms
+
+edu.tw.                 86400   IN      NS      a.twnic.net.tw.
+edu.tw.                 86400   IN      NS      b.twnic.net.tw.
+# 追踪 .edu.tw. 的则有 7 部服务器
+;; Received 395 bytes from 192.83.166.11#53(ns.twnic.net) in 22 ms
+
+ksu.edu.tw.             86400   IN      NS      dns2.ksu.edu.tw.
+ksu.edu.tw.             86400   IN      NS      dns3.twaren.net.
+ksu.edu.tw.             86400   IN      NS      dns1.ksu.edu.tw.
+;; Received 131 bytes from 192.83.166.9#53(a.twnic.net.tw) in 22 ms
+
+www.ksu.edu.tw.         3600    IN      A       120.114.100.101
+ksu.edu.tw.             3600    IN      NS      dns2.ksu.edu.tw.
+ksu.edu.tw.             3600    IN      NS      dns1.ksu.edu.tw.
+ksu.edu.tw.             3600    IN      NS      dns3.twaren.net.
+;; Received 147 bytes from 120.114.150.1#53(dns2.ksu.edu.tw) in 14 ms

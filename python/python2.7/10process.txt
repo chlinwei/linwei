@@ -1,0 +1,42 @@
+multiprocessing:是多进程模块,多进程提供了任务并发性,能充分
+利用多核处理器,避免了GIL(全局解释锁)对资源的影响
+
+常用类:
+
+类 																	描述
+
+Process(group=None, target=None, name=None, args=(), kwargs={})	派生一个进程对象，然后调用start()方法启动
+
+Pool(processes=None, initializer=None, initargs=()) 返回一个进程池对象，processes进程池进程数量
+Pipe(duplex=True)	返回两个连接对象由管道连接
+Queue(maxsize=0)	返回队列对象，操作方法跟Queue.Queue一样
+multiprocessing.dummy	这个库是用于实现多线程
+
+Process()类有以下些方法：
+run()	
+start()	启动进程对象
+join([timeout])	等待子进程终止，才返回结果。可选超时。
+name	进程名字
+is_alive()	返回进程是否存活
+daemon	进程的守护标记，一个布尔值
+pid	返回进程ID
+exitcode	子进程退出状态码
+terminate()	终止进程。在unix上使用SIGTERM信号，在windows上使用TerminateProcess()。
+
+Pool()类有以下些方法：
+apply(func, args=(), kwds={})	等效内建函数apply()
+apply_async(func, args=(), kwds={}, callback=None)	异步，等效内建函数apply()
+map(func, iterable, chunksize=None)	等效内建函数map()
+map_async(func, iterable, chunksize=None, callback=None)	异步，等效内建函数map()
+imap(func, iterable, chunksize=1)	等效内建函数itertools.imap()
+imap_unordered(func, iterable, chunksize=1)	像imap()方法，但结果顺序是任意的
+close()	关闭进程池
+terminate()	终止工作进程，垃圾收集连接池对象
+join()	等待工作进程退出。必须先调用close()或terminate()
+
+Pool.apply_async()和Pool.map_aysnc()又提供了以下几个方法：
+get([timeout])	获取结果对象里的结果。如果超时没有，则抛出TimeoutError异常
+wait([timeout])	等待可用的结果或超时
+ready()	返回调用是否已经完成
+successful()	
+
