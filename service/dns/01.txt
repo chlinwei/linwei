@@ -1,0 +1,218 @@
+[root@www ~]# rpm -qa | grep '^bind'
+bind-libs-9.7.0-5.P2.el6_0.1.x86_64   <==给 bind 与相关指令使用的函式库
+bind-utils-9.7.0-5.P2.el6_0.1.x86_64  <==这个是客户端搜寻主机名的相关指令
+bind-9.7.0-5.P2.el6_0.1.x86_64        <==就是 bind 主程序所需软件
+bind-chroot-9.7.0-5.P2.el6_0.1.x86_64 <==将 bind 主程序关在家里面！
+
+
+
+主机:192.168.100.254  主机名:master.centos.vbird
+从机:192.168.100.10   主机名:slave.centos.vbird
+子域:192.168.100.200  主机名:
+
+
+
+1.主机:
+vi /etc/named.conf
+
+options {
+	...
+	listen-on port 53 {any;}; #监听在这部主机上面的哪个网络接口	
+	allow-query     { any; }; #谁可以对我的DNS服务提出查询请求
+	forward only; #让你的DNS服务器仅进行forward,即使有.这个zone file设定，也    #不会使用.的资料,只会将查询交给上层DNS服务器而已
+    forwarders {
+    202.101.172.35; #当作上层,杭州电信DNS的ip
+	};
+	...
+};
+
+#增加正解和反解的zone
+zone "centos.vbird" IN {
+    type master;
+    file "named.centos.vbird";
+    allow-transfer { 192.168.100.10;}; #从机的ip地址
+};
+
+zone "100.168.192.in-addr.arpa" IN {
+        type master;
+        file "named.192.168.100";
+        allow-transfer { 192.168.100.10;}; #从机的ip地址
+};
+
+
+cd /var/named 
+cp -a named.localhost  named.centos.vbird && > named.centos.vbird 
+vi named.centos.vbird
+要保证named.centos.vbird 的权限为
+-rw-r----- 1 root named 680 Mar 16 10:38 named.centos.vbird
+
+$TTL 1D
+@	IN SOA	master.centos.vbird. 862350707.qq.com. (
+					0	; serial
+					1D	; refresh
+					1H	; retry
+					1W	; expire
+					3H )	; minimum
+
+@  IN  NS master.centos.vbird.
+@  IN  NS slave.centos.vbird.
+master.centos.vbird. IN A 192.168.100.254
+slave.centos.vbird.  IN A 192.168.100.10
+
+www.centos.vbird. IN A 192.168.100.254
+linux.centos.vbird. IN CNAME www.centos.vbird.
+ftp.centos.vbird. IN CNAME www.centos.vbird.
+fornum.centos.vbird. IN CNAME www.centos.vbird.
+
+
+slave.centos.vbird. IN A 192.168.100.10
+clientlinux.centos.vbird. IN A 192.168.100.10
+
+workstation.centos.vbird. IN A 192.168.1.101
+winxp.centos.vbird.      IN A 192.168.100.20
+win7	IN    A   192.168.200.30
+
+
+cp -a named.loopback named.192.168.100 && > named.192.168.100
+要保证named.192.168.100 的权限为
+-rw-r----- 1 root named 651 Mar 16 10:31 named.192.168.100
+vi named.192.168.100
+
+$TTL    600
+@       IN SOA  master.centos.vbird. 862350707.qq.com. (
+                2011080401 3H 15M 1W 1D )
+
+@       IN NS   master.centos.vbird.
+@       IN NS   slave.centos.vbird.
+
+254     IN PTR  master.centos.vbird.  ; 将原本的 A 改成 PTR 的标志而已
+10     IN PTR  slave.centos.vbird.  ; 将原本的 A 改成 PTR 的标志而已
+
+254     IN PTR  www.centos.vbird.     ; 这些是特定的 IP 对应
+10      IN PTR  slave.centos.vbird.
+20      IN PTR  winxp.centos.vbird.
+30      IN PTR  win7.centos.vbird.
+
+101     IN PTR  dhcp101.centos.vbird.  ; 可能针对 DHCP (第十二章) 的 IP 设定
+102     IN PTR  dhcp102.centos.vbird.
+
+
+
+
+
+2.从机:
+vi /etc/named.conf
+options {
+	...
+	listen-on port 53 {any;}; #监听在这部主机上面的哪个网络接口	
+	allow-query     { any; }; #谁可以对我的DNS服务提出查询请求
+	...
+};
+
+zone "centos.vbird" IN {
+        type slave;
+        masters { 192.168.100.254; }; #主机的ip地址
+        file "slaves/named.centos.vbird";
+};
+zone "100.168.192.in-addr.arpa" IN { #注意 in-addr.arpa别写错了
+        type slave;
+        file "slaves/named.192.168.100";
+        masters { 192.168.100.254; }; #主机的ip地址
+};
+
+cd /var/named
+mkdir slaves && chown named.named slaves && chmod 770 slaves
+
+要保证slaves目录的权限为:
+drwxrwx--- 2 named named 57 Mar 16 10:41 slaves/
+
+systemctl restart named
+
+
+
+
+
+
+
+
+
+根据不同的接口给予不同的dns解析出来的ip
+
+acl lan-100 { 192.168.100.0/24; };
+acl lan-200 { 192.168.200.0/24; };
+view  "lan100" {
+	match-clients {"lan-100";};
+	zone "." IN {
+		type hint;
+		file "named.ca";
+	};
+
+	zone "centos.vbird" IN {
+		type master;
+		file "named.centos.vbird";
+		allow-transfer { 192.168.100.10;};
+	};
+
+	zone "100.168.192.in-addr.arpa" IN {
+		type master;
+		file "named.192.168.100";
+		allow-transfer { 192.168.100.10;};
+	};
+include "/etc/named.rfc1912.zones";
+};
+
+view "lan200"{
+	match-clients {"lan-200";};
+	zone "." IN {
+		type hint;
+		file "named.ca";
+	};
+	zone "centos.vbird" IN {
+		type master;
+		file "named.centos.vbird.inter";
+	};
+}
+
+
+
+主从加密
+在主dns上:
+dnssec-keygen -a HMAC-MD5 -b 128 -n HOST master-slave
+-a:加密算法,-b:密钥长度,-n 密钥的类型 ,master-salve是密钥名称
+
+cat ~/Kmaster-slave.+157+56069.private 
+Private-key-format: v1.3
+Algorithm: 157 (HMAC_MD5)
+Key: QMCf0rKVp7FN0jdHkhKDYg==
+Bits: AAA=
+Created: 20170313031511
+Publish: 20170313031511
+Activate: 20170313031511
+
+vi /var/named/chroot/etc/transfer.key
+key "master-slave"{
+algorithm hmac-md5;
+secret "QMCf0rKVp7FN0jdHkhKDYg==";
+};
+
+chwon root.named /var/named/chroot/etc/transfer.key
+chmod 640  /var/named/chroot/etc/transfer.key
+ln  /var/named/chroot/etc/transfer.key /etc/transfer.key
+
+/etc/named.conf中
+
+最上面
+include "/etc/transfer.key";
+在 options {
+	...
+	allow-transfer {key master-slave;};
+};
+
+
+将这个文件传到从机
+从机:
+
+include "/etc/transfer.key";
+server 192.168.100.254 {
+	key {master-slave;};
+};

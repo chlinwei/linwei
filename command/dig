@@ -18,7 +18,7 @@ linux.vbird.org.	454	IN	A	140.116.44.180
 vbird.org.		51	IN	NS	dns2.vbird.org.
 vbird.org.		51	IN	NS	dns.vbird.org.
 
-;; ADDITIONAL SECTION:   <==dns主机名对象的ip地址
+;; ADDITIONAL SECTION:   <==dns主机名对应的ip地址
 dns.vbird.org.		454	IN	A	140.116.44.180
 dns2.vbird.org.		454	IN	A	140.116.44.179
 
