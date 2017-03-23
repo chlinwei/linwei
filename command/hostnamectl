@@ -1,0 +1,18 @@
+1.hostnamectl status
+   Static hostname: mail.lw.com #静态的,从/etc/hostname读取的
+Transient hostname: www.lw.com #瞬态的,/etc/hosts读取的
+         Icon name: computer-vm 
+           Chassis: vm
+        Machine ID: 0778f704ac744f039080e73a834177bf
+           Boot ID: 8bdad4f3f87243678b253150f20b2d48
+    Virtualization: vmware
+  Operating System: Fedora 25 (Workstation Edition)
+       CPE OS Name: cpe:/o:fedoraproject:fedora:25
+            Kernel: Linux 4.8.6-300.fc25.x86_64
+      Architecture: x86-64
+
+
+
+2.修改/etc/hostname 
+hostnamectl --static set-hostname main.lw.com
+

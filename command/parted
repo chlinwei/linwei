@@ -1,0 +1,15 @@
+parted:
+select /dev/sdb 选择某个磁盘
+mkpart 开始分区
+Partition name? 直接按enter
+File system type? ext4
+Start ? 1 
+End ? -1 整块磁盘用完
+quit 退出
+partprobe 重新挂载磁盘
+
+
+
+
+
+
