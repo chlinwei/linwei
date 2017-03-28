@@ -49,3 +49,17 @@ grep -w '48' 结果为
 48
 48 haha
 
+
+grep -v 将不匹配的行输出来
+cat 01.txt 
+hello,world
+hello,world
+1
+1
+
+grep -v "hello" 01.txt
+1
+1
+
+
+

@@ -1,0 +1,14 @@
+netstat:查看网络状态,service可以用来立即启动某个服务
+-a(all)显示所有选项,默认不显示LISTEN相关
+-t(tcp)仅显示tcp相关选项
+-u(udp)仅显示与udp相关选项
+-n拒绝显示别名,能显示数字全部转化为数字
+-l仅列出有在listen的服务状态
+-p显示程序名和对应的pid
+-r显示路由信息
+-e显示扩展信息,例如uid等
+-s按各个协议进行统计
+-c每隔一个固定时间执行该netstat命令
+提示:LISTEN和LISTENING的状态只有-a或-l才能看到
+参数an lnput
+

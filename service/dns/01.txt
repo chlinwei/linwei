@@ -120,6 +120,8 @@ zone "100.168.192.in-addr.arpa" IN { #注意 in-addr.arpa别写错了
         masters { 192.168.100.254; }; #主机的ip地址
 };
 
+第一次从机会自动生成slaves这个目录,并且里面有文件,如果你删除了这个目录
+则重启named服务也不会出现这个目录,需要自己手动建立
 cd /var/named
 mkdir slaves && chown named.named slaves && chmod 770 slaves
 
