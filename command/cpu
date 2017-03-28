@@ -1,0 +1,13 @@
+1.物理cpu个数:
+实际cpu插槽的个数,linux中/proc/cpuinfo中,cpu物理核心由physical id这一项表示,值为0-n
+查看物理cpu个数:cat /proc/cpuinfo | grep "physical id"|uniq |wc -l
+
+2.每个物理cpu核心数:
+即每个物理cpu包含的核心数(core 个数)，/proc/cpuinfo中core id这一项值:0-n
+查看每个物理cpu核心数:cat /proc/cpuinfo | grep "core id" |wc -l
+
+3.逻辑cpu个数:
+逻辑cpu即:processor
+查看逻辑cpu个数:cat /proc/cpuinfo|grep "processor"|wc -l
+如果没有启动超线程技术:则逻辑cpu个数=物理cpu个数 X 每个物理cpu核心数
+如果启动了超线程技术:则上述等式不成立.
