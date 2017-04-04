@@ -1,0 +1,80 @@
+创建基于文件夹的存储池 
+mkdir -p /data/kvm/vmfs  
+
+定义存储池名字与其对应的目录,目录要写绝对路径
+pool-define-as vmdisk --type dir --target /data/kvm/vmfs  
+###与pool-undefine vmdisk 相反
+ Name                 State      Autostart 
+-------------------------------------------
+ vmdisk               inactive   no        
+
+
+
+创建已经定义的存储池,pool-list --all 没有变化,
+pool-build vmdisk  
+###与pool-delete 相反,删除时,要保证State为inactive,并且不存在任何卷
+
+
+查看存储池的信息
+pool-info vmdisk
+Name:           vmdisk
+UUID:           1a8a76dd-c3b7-4253-86a8-1531f52cd17e
+State:          running
+Persistent:     yes
+Autostart:      yes
+Capacity:       196.74 GiB
+Allocation:     59.27 MiB
+Available:      196.68 GiB
+
+
+启动存储池,State 由inactive ==> active
+pool-start vmdisk  
+###与 pool-destory 相反
+ Name                 State      Autostart 
+-------------------------------------------
+ vmdisk               active     no        
+
+
+
+存储池自动运行,Autostart 有no ==> yes
+pool-autostart vmdisk 
+ Name                 State      Autostart 
+-------------------------------------------
+ vmdisk               active   yes       
+
+
+创建虚拟存储卷
+vol-create-as vmdisk test01.qcow2 20G --format qcow2
+###与vol-delete --pool vmdisk test01.qcow2
+
+
+
+列出存储池所包含的存储卷
+vol-list vmdisk
+ Name                 Path                                    
+--------------------------------------------------------------------------
+ test01.qcow2         /data/kvm/vmfs/test01.qcow2             
+
+
+查看存储卷的信息
+vol-info test01.qcow2 vmdisk
+Name:           test01.qcow2
+Type:           file
+Capacity:       20.00 GiB
+Allocation:     196.00 KiB
+
+
+
+以xml的方式显示存储卷的信息
+vol-dumpxml test01.qcow2 vmdisk
+<volume type='file'>
+	...
+  <capacity unit='bytes'>21474836480</capacity>
+  <target>
+    <format type='qcow2'/>
+	...
+</volume>
+
+
+删除虚拟机
+undefine  虚拟机名 

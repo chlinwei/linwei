@@ -1,0 +1,14 @@
+virt-install  \
+--virt-type kvm  \
+--name cen7_1 --ram 512 \
+--cdrom=/data/CentOS-7-x86_64-Minimal-1611.iso  \
+--disk path=/data/kvm/vmfs/cen7_1.qcow2  \
+--network network=default  \
+--graphics vnc,listen=127.0.0.1,port=8888 
+--noautoconsole  \
+--os-type=linux  \
+--os-variant=rhel7  \
+--accelerate  #kvm加速,最好加上
+
+
+注意安装时如果出现权限不够,不要把iso文件放在/home/目录下
