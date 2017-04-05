@@ -12,3 +12,17 @@ virt-install  \
 
 
 注意安装时如果出现权限不够,不要把iso文件放在/home/目录下
+virt-install --name cen7  \
+--ram 512 \
+--os-variant rhel7 \
+--os-type linux \
+--disk path=/data/kvm/cent7_1.qcow2 \
+--accelerate \
+--graphics none \
+--console pty,target_type=serial \
+--location /dev/sr0 \
+-w bridge:br0 \
+--extra-args='console=tty0 console=ttyS0,115200n8 ip=192.168.200.157 netmask=255.255.255.0 '
+
+
+
