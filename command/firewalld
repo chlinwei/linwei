@@ -22,6 +22,30 @@ ed，只有服务器已经建立的连接会被通过。
 内部区域（Internal Zone）：这个区域和工作区域（Work Zone）类似，只有通过被选中的连接。
 
 信任区域（Trusted Zone）：信任区域允许所有网络通信通过。
+
+
+target：目标，这个前面学生也已经给大家介绍过了，可以理解为默认行为，有四个可
+选值：default、ACCEPT、%%REJECT%%、DROP，如果不设置默认为default
+
+service：这个在前面学生已经给大家解释过了，他表示一个服务
+
+port：端口，使用port可以不通过service而直接对端口进行设置
+
+interface：接口，可以理解为网卡
+
+source：源地址，可以是ip地址也可以是ip地址段
+
+icmp-block：icmp报文阻塞，可以按照icmp类型进行设置
+
+masquerade：ip地址伪装，也就是按照源网卡地址进行NAT转发
+
+forward-port：端口转发
+
+rule：自定义规则
+
+
+
+
 获取支持的服务,81种
 firewall-cmd --get-services
 
