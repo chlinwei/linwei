@@ -26,3 +26,22 @@ virt-install --name cen7  \
 
 
 
+--name name 　　　　 虚拟机名称，需全局惟一
+--ram memory 　　　  分配给虚拟机的内存大小
+--vcpus CPU 　　　　   分配给虚拟机的cpu核心数
+--disk 　　　　　　　　 指定存储设备及其属性；格式为--disk /some/storage/path,opt1=val1，opt2=val2等；常用的选项有：
+device 　　　　　　设备类型，如cdrom、disk或floppy等，默认为disk；
+bus 　　　　　　　 磁盘总结类型，其值可以为ide、scsi、usb、virtio或xen；
+perms　　　　　　 访问权限，如rw、ro或sh（共享的可读写），默认为rw；
+size　　　　　　　  新建磁盘映像的大小，单位为GB；
+cache　　　　　　  缓存模型，其值有none、writethrouth（缓存读）及writeback（缓存读写）；
+format　　　　　　磁盘映像格式，如raw、qcow2、vmdk等；
+sparse　　　　  　 磁盘映像使用稀疏格式，即不立即分配指定大小的空间；
+--cdrom　　　　  　　 指定安装方法: 格式为 --cdrom /mnt/iso/CentOS-6.8-x86_64-minimal.iso
+--vnc　　　　　　　　 开启VPN
+--vncport　　　　　　 vnc端口，默认为5900
+--vnclisten 　　 　　   vnc监听地址，建议设为：0.0.0.0 即：监听所有地址
+--network　　 　　　  启用网络
+bridge 　　 　　   桥接到物理桥
+model 　　　　    使用virtio驱动
+--autoconsole 　　     不自动打开终端

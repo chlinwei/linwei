@@ -1,0 +1,68 @@
+获取支持的服务,81种
+firewall-cmd --get-services
+
+#列出zone中启动的服务
+firewall-cmd --zone=work --list-services
+获取支持的zone
+firewall-cmd --get-zones
+
+获取支持的ICMP类型
+firewall-cmd --get-icmptypes
+
+查看当前zone里所包含的服务
+firewall-cmd --list-services
+
+
+列出全部启用的zone的特性
+firewalld-cmd --list-all-zones
+
+获取默认的zone
+firewalld-cmd --get-default-zone
+
+
+获取活动的zone
+firewalld-cmd --get-active-zones
+
+根据网络接口获取zone
+firewall-cmd --get-zone-of-interface=ens33
+
+设置网络接口的zone
+firewall-cmd --zone=public --change-interface=ens33
+
+添加网络接口到指定的zone
+firewalld-cmd --zone=work --add-intereface=ens33
+
+从zone中删除一个接口,ens33会设置为默认的zone
+firewall-cmd --zone=public --remove-interface=ens33
+
+查询zone中是否包含某个接口返回yes,no
+firewall-cmd --zone=public --query-interface=ens33
+设置默认zone, 注意:流入默认区域中配置的接口的新访问请求将被置入新的默认区域,
+当前活动的连接将不受影响
+firewalld-cmd --set-default-zone=work
+
+动态添加一条规则若要保存到当前zone,/etc/firewalld/public.xml,则--permanent
+firewall-cmd --add-port=1234/tcp --permanent
+对应的配置文件public.xml中<port protocol="tcp" port="1234"/>
+
+
+重读防火墙
+firewall-cmd --reload,并不终端用户连接
+firewall-cmd --complete-reload,会中断用户连接,通常在严重时才会用
+
+
+阻断所有的网络连接
+firewall-cmd --panic-on
+关闭阻断模式
+firewall-cmd --panic-off
+查询阻断模式是否存在,返回yes or no
+firewall-cmd --query-panic
+
+#在home zone中添加ipp-client服务,持续时间60秒
+firewall-cmd --zome=home --add-service=ipp-client --timeout=60
+
+#删除home zone里的http service 
+firewall-cmd  --zone=public --remove-service=http [--permanent]
+
+查询zone里是否启动了某个服务,返回yes or no
+firewall-cmd --zone=public --query-services=ssh
