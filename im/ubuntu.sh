@@ -113,6 +113,7 @@ set nu
 set title
 inoremap jk <esc>
 set incsearch
+set hlsearch "表示高亮搜索单词
 set ignorecase
 set ruler
 set wildmenu
