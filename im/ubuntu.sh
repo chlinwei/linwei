@@ -12,6 +12,9 @@ gsettings set org.gnome.desktop.interface cursor-blink false
 grep "EDITOR=/usr/bin/vim" ~/.bashrc  >/dev/null 2>&1
 [ $? != 0 ]&& { echo "export EDITOR=/usr/bin/vim" >> ~/.bashrc; } 
 
+#解决emacs里无法输入中文问题
+grep LC_CTYPE=zh_CN.UTF-8 ~/.bashrc  >/dev/null 2>&1
+[ $? != 0 ]&& { echo "export LC_CTYPE=zh_CN.UTF-8">> ~/.bashrc; } 
 
 #设置man page的颜色
 grep "man()" ~/.bashrc >/dev/null 2>&1 
