@@ -63,7 +63,7 @@ rsync -avz --delete dirA/ dirB/ #源目录和目标目录结构一定要一致�
 
 
 3)将dirA的所有文件同步到dirB，但是在dirB内除了fileB3.txt这个文件
-不删之外，其他的都删除。
+不删之外，其他的都删除,注意加上了--delete选项后不能用dirA/* 不然--delete无效
 rsync -avz --delete --exclude "fileB3.txt" dirA/ dirB/
 
 4) 将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内，
@@ -74,10 +74,14 @@ rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" --delete dirA/ dirB/
 rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" dirA/ dirB/
 
 
-6)将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内，并且在dirB目录内
-删除多余的文件，同时，如果dirB内有fileA2.txt和fileA1.txt这两个被排除同步的
-文件，仍然将其删除。
+6) 将dirA目录内的fileA1.txt 和fileA2.txt同步到dirB目录内,其他文件不同步,
+注意--include和exclude 的顺序
+rsync -avz --include="fileA1.txt" --include="fileA2.txt" --exclude=* dirA/ dirB
+
+7)将dirA目录内的fileA1.txt和fileA2.txt不同步到dirB目录内,其他文件将同步，并且在dirB目录内,删除多余的文件，同时，如果dirB内有fileA2.txt和fileA1.txt这两个文件,则将被删除,如果将--delete-exclude改为--delete则,不会同步file1A1.txt
+和fileA2.txt,同步其他文件,删除dirB中多余的文件,如果dirB中含有fileA1.txt,fileA2.txt,则这两个文件将不被删除
 rsync -avz --exclude="fileA1.txt" --exclude="fileA2.txt" --delete-excluded 
 dirA/ dirB/
+
 
 
