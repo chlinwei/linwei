@@ -10,7 +10,8 @@ setfacl:配置某个目录/文件的acl参数或默认acl参数
 -b :删除所有acl参数,不递归,setfacl -b a ,setfacl -R -b test
 -x :删除指定acl参数,不递归,和-m相反,setfacl -x u:lw a 
 -k :删除默认acl参数,不递归,对目录有效,对文件无效(不报错),setfacl -k test,setfacl -R -k test
--d ：添加默认acl参数,对目录有效,对文件无效(报错),在这个目录建的文件的acl参数会变为父目录的default acl参数,新建的目录的默认acl参数将变为父目录的默认acl参数
-
+-d ：添加默认acl参数,对目录有效,对文件无效(报错),在这个目录建的文件的acl参
+数会变为父目录的default acl参数,新建的目录的默认acl参数将变为父目录的默认ac
+l参数,主要是在目录里新建的文件或者目录进行访问控制,对本目录的访问控制无影响
 
 u,g,o(其他人),g,m(mask) 是等价的
