@@ -1,0 +1,45 @@
+input:元素,表单控件
+语法:<input>或<input/>
+
+属性:
+1.type:根据不同的type属性值,可以创建各种类型的输入控件,type不写或写错默认为文本框
+2.value:控件的值即要提交给服务器的数据
+3.name:空间的名称,服务器要用,命名规范,匈牙利命名法,控件缩写+功能名称
+4.disabled:该属性只要出现在标签中,表示禁用该控件
+
+
+input的具体控件:
+
+
+1.文本框与密码框
+文本框:明文显示用户输入的数据
+		type="text"
+密码框:密文显示用户输入的数据 
+		type="password"
+属性:name,value(控件的值,默认值),maxlength(限制输入的字符数),readonly(只读)
+
+readonly和disabled的区别:
+readonly:只能看，不能改，但是可以被提交
+disabled:只能看，不能改，但是不能提交给服务器
+
+	
+	
+
+2.单选框按钮和复选框
+单选框按钮:type=radio",从多个选项中选以一个
+复选框:tpye="checkbox",从多个选项中选多个
+属性: name (chk+功能名称),一组单选框和复选框的name必须一样
+checked设置默认被选中
+
+3.按钮,分3种
+提交按钮:功能固定化,负责将表中的表单控件提交给服务器,type="submit"
+重置按钮:功能固定化,负责将所有表单控件的值恢复为初始值
+普通按钮:无功能,执行客户端脚本(js) type="button"
+属性:name,value(按钮上的显示文本)
+
+4.隐藏域和文本选择框
+隐藏域:不希望被用户看见,但是要提交给服务器的信息 ,type="hidden",不占空间
+文件选择框:上传文件所用,type="file",
+注意上传文件时,form的method值必须为post,enctype的值必须为multipart/form-data
+
+

@@ -1,0 +1,121 @@
+form:表单
+作用:用于显示,收集信息,并向将信息交给服务器
+组成:表单(form) + 表单控件
+
+
+
+套路:
+<form>
+	允许出现表单控件
+</form>
+
+表单控件:
+1)input组元素
+2)textarea元素
+3)select 和option选项框
+4)其他元素label,fieldset
+
+
+
+属性:
+
+1.action:
+定义表单被提交时发生的动作,提交给服务器程序的地址,通过与服务器人员交流
+得到action地址,默认提交给本页
+
+
+2.method:
+
+get:想服务器获取数据
+特点:
+1)明文提交,所提交的数据是可以显示在地址栏上的安全性较低
+2)提交数据有大小限制-最大为2KB
+
+post:将数据提交到服务器处理时(有保密类型数据时)
+特点:
+1)隐士提交-所提交的内容是不会显示在地址栏上,安全性较高
+2)无大小限制
+
+put
+delete
+...
+
+
+3.enctype:编码类型,允许表单将以社么样的数据提交到服务器
+取值:
+	1)application/x-www-form-urlencoded(默认值):允许将普通字符,特殊字符,都提交给服务器,不允许提交文件
+
+	2)multipart/form-data:允许将文件提交给服务器
+	3)text/plain:只允许提交普通字符,特殊字符,文件等都无法提交
+
+
+4.name:定义表单名
+
+
+
+套路:
+<!-- 创建一个 表单 ：action 默认，method 默认，enctype 默认 -->
+<form method="get">
+    <!-- 创建一个 文本框，表示接受用户名称,最多输入 20 个字符 -->
+    <p>
+        用户名称：<input type="text" name="txtUsername" value="请输入您的用户名称" maxlength="20">
+    </p>
+    <!-- 创建一个 密码框，表示接受用户密码 -->
+    <p>
+        用户密码：<input type="password" name="txtUserpwd">
+    </p>
+    <p>
+        确认密码：<input type="password" name="txtConfirmpwd" disabled>
+    </p>
+    <p>
+        手机号码：<input type="abc">
+    </p>
+    <p>
+        用户性别:
+        <input id="rdoMale" name="rdoGender" type="radio" value="男">
+        <label for="rdoMale">帅哥</label>
+        <input name="rdoGender" type="radio" value="女" checked>美女
+    </p>
+    <p>
+        用户爱好：
+        <input name="chkHobby" type="checkbox" value="eat" checked>吃
+        <input name="chkHobby" type="checkbox" value="drink">喝
+        <input name="chkHobby" type="checkbox" value="play">玩
+        <input name="chkHobby" type="checkbox" value="happy">乐
+    </p>
+    <!-- 隐藏域 -->
+    <p>
+        <input type="hidden" name="txtID" value="sanfeng.zhang@163.com">
+    </p>
+    <!-- 文件选择框 -->
+    <p>
+        用户头像：
+        <input type="file" name="txtImg">
+    </p>
+    <p>
+        <input type="submit" value="起飞">
+        <input type="reset" value="滚回去">
+        <input type="button" value="普通按钮">
+    </p>
+    <p>
+        自我介绍:
+        <textarea name="txtIntro" cols="50" rows="5">写点什么</textarea>
+    </p>
+    <p>
+        <!--下拉选项框-->
+        <select name="selEdu">
+            <option value="0">小本</option>
+            <option value="1">大本</option>
+            <option value="2" selected>硕士以上</option>
+        </select>
+    </p>
+    <p>
+        <!--滚动列表 size=3表示要列出的项数-->
+        <select name="selCity" size="3" multiple>
+            <option value="0">北京</option>
+            <option value="1">上海</option>
+            <option value="2">天津</option>
+            <option value="3">武汉</option>
+        </select>
+    </p>
+</form>

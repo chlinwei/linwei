@@ -1,0 +1,11 @@
+select:选项框,分为两类,下拉选项框和滚动列表
+语法:<select></select>
+属性:
+name,size(取值大于1,则为滚动列表,否则就是下拉选项框)
+multiple:设置多选,该属性出现在<select>中,那么就是允许多选(针对滚动列表)
+
+<option>显示文本</option>
+属性:value(选项的值),selected(预选中,如果不设置selected属性的话,那么选项框中的第一项被默认选中)
+
+
+

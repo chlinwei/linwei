@@ -1,0 +1,40 @@
+a:链接
+href:链接的URL
+target:打开新页面的方式
+取值:
+_blank:在新标签中打开
+_self:默认值,在当前页中打开
+
+
+
+1.邮箱
+<a href="mailto:862350707@qq.com">点我</a>
+
+2.空链接
+<a href="#">点我</a>
+
+3.下载,注意一定要加download在能下载
+<a href="01.txt" download="hah">点我</a>
+
+
+4.锚点
+
+
+定义锚点:
+<body>
+<div>
+	<a href="#NO1">第一章 倚天屠龙记</a><br>
+	<a href="#NO2">第二章 倚天杀猪记</a><br>
+	<a href="#NO3">第三章 倚天打狗记</a><br>
+	<a href="#NO4">第四章 倚天宰驴记</a>
+</div>
+	<!-- 定义一个 锚点 ，内容 为 倚天屠龙记 -->
+	<a name="NO1">第一章 倚天屠龙记</a>
+	<div style="height:5000px;"></div>
+	<!-- 定义 第二章 锚点 -->
+	<div id="NO2" style="height:5000px">第二章 倚天杀猪记</div>
+	<!-- 定义 第三章 锚点 -->
+	<div id="NO3" style="height:5000px">第二章 倚天杀猪记</div>
+	<!-- 定义 第四章 锚点 -->
+	<div id="NO4" style="height:5000px">第二章 倚天杀猪记</div>
+</body>

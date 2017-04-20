@@ -1,0 +1,26 @@
+ul:有序列表
+ul属性:
+
+type:
+取值:
+	disc:实心圆(默认值)
+	circle:空心圆 
+	square:实心矩形
+	none:不显示标识
+
+list-style-position:设置在何处放置列表项标记:
+取值:
+	inside:列表项目标记放置在文本以内，且环绕文本根据标记对齐
+	outside:默认值。保持标记位于文本的左侧。列表项目标记放置在文本以外，且环绕文本不根据标记对齐
+	inherit:规定应该从父元素继承 list-style-position 属性的值
+
+
+套路
+<ul style="style-list-position:inside">
+	<li>内容</li>
+	<li>内容</li>
+	<li>内容</li>
+</ul>
+
+
+

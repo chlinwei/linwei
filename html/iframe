@@ -1,0 +1,5 @@
+iframe:浮动框架
+作用:静态页面的引入
+<body>
+	<iframe src="01.txt" frameborder="0" height="90px"></iframe>
+</body>

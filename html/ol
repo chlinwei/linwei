@@ -1,0 +1,26 @@
+ol:有序列表
+ol属性:
+
+type:
+取值:
+	1:数字(默认值)
+	a:小写字母
+	A:大写字母
+	i:小写罗马字符
+	I:大写罗马字符
+
+
+start:列表标识的起始编号,默认为1
+
+list-style-position:设置在何处放置列表项标记:
+取值:
+	inside:列表项目标记放置在文本以内，且环绕文本根据标记对齐
+	outside:默认值。保持标记位于文本的左侧。列表项目标记放置在文本以外，且环绕文本不根据标记对齐
+	inherit:规定应该从父元素继承 list-style-position 属性的值
+
+套路
+<ol style="list-style-position=inside">
+	<li>内容</li>
+	<li>内容</li>
+	<li>内容</li>
+</ol>

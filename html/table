@@ -1,0 +1,97 @@
+table:按照从左到右从上到下的顺序排列到一起的
+
+caption标签:定义元素标题,必须紧随table标签之后,默认是居中
+caption的属性 align:left ,right,top,bottom 
+
+行分组:
+	thead:定义表格的表头
+	tbody:对表格中的主体内容进行分组
+	tfoot:对表格中的标注(页脚)元素进行分组
+
+注意:如果不对表格进行行分组,默认都属于tbody中
+
+th:表头和td很像
+tr:表格行
+align:水平对齐方式
+valign:垂直对齐方式,可以取top,middle,bottom
+bgcolor:定义背景颜色
+
+td:表格列
+width,height,align,valign,bgcolor,colspan(单元格跨列),rowspan(单元格跨行)
+
+
+表格的嵌套:被嵌套的表格必须出现在td中
+<table>
+	<tr>
+		<td>
+			<table>
+				<tr>
+					td
+
+套路
+<table ...>
+	<caption>...</caption>
+	<thead>
+		<tr>
+			<th>...</th>
+			<th>...</th>
+		</tr>
+	<tbody>
+		<tr>
+			<td>...</td>
+			<td>...</td>
+			<td>...</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td>...</td>
+			<td>...</td>
+		</tr>
+	</tfoot>
+</table>
+
+
+
+<table align="center" border="1" cellspacing="0" width="500">
+    <caption align="bottom">达内员工工资一览表</caption>
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>序号</th>
+        <th>职位</th>
+        <th>月工资</th>
+    </tr>
+    </thead>
+    <tbody bgcolor="red" color="green">
+    <tr>
+        <td>1</td>
+        <td>王春梅</td>
+        <td>总监</td>
+        <td>8000</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>张东</td>
+        <td>讲师</td>
+        <td rowspan="2" align="center">6000</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>李文华</td>
+        <td>讲师</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>金云龙</td>
+        <td>讲师</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td>5</td>
+        <td>张众磊</td>
+        <td>讲师</td>
+    </tr>
+    </tfoot>
+</table>

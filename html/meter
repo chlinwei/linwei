@@ -1,0 +1,13 @@
+属性 	值 	描述
+high 	number 	定义度量的值位于哪个点，被界定为高的值。
+low 	number 	定义度量的值位于哪个点，被界定为低的值。
+max 	number 	定义最大值。默认值是 1。
+min 	number 	定义最小值。默认值是 0。
+optimum number 	定义什么样的度量值是最佳的值。
+					如果该值高于 "high" 属性，则意味着值越高越好。
+					如果该值低于 "low" 属性的值，则意味着值越低越好。
+value 	number 	定义度量的值。
+
+
+
+例子:<meter min="0" max="100" value="50"></meter>
