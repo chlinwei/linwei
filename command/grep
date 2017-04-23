@@ -62,4 +62,6 @@ grep -v "hello" 01.txt
 1
 
 
+grep -R push . (搜索当前目录下所有文件中是否包含push这个字符串)
+
 

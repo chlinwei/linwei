@@ -1102,7 +1102,7 @@
 					font-size:12px;
 				}
 			注意：尽量少用
-		2、元素选择器
+		2、元素选择器 值:1
 			语法：由元素名称作为选择器
 			作用：控制某元素的默认样式
 			ex
@@ -1110,7 +1110,7 @@
 				div{color:red;}
 				/*页面中所有的h1 字体大小为12px*/
 				h1{font-size:12px;}
-		3、类选择器
+		3、类选择器 值:10
 			作用：负责定义 样式，可以由任意一个元素灵活引用。
 			语法：.类选择器名称{}
 				注意：类选择器名称不能以数字开头
@@ -1134,7 +1134,7 @@
 					p.redColor{} : 定义class 为 redColor 的p元素的样式 
 
 					div.bigFont{} : 定义class为bigFont的div的元素样式
-		4、id选择器
+		4、id选择器 值:100
 			作用：与元素id联用，定义指定ID值的元素的样式，专属定制
 
 			语法：#id值{ ... }
@@ -2041,7 +2041,32 @@
 			通过 top/bottom/left/right 移动元素的位置
 
 
+/css中选择器优先级/
 
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			#span{color:red;}/*100*/
+			.s1{color:green;}	/*10*/
+			#d1 #span{color:pink;}/*100+100=200*/
+			#d1>.p1>.s1{color:orange;}/*100+10+10=120*/
+			#d1 p span{color:blue;}/*100+1+1=102*/
+			p.p1 .s1{color:purple;}/*1+10+10=21*/
+		</style>
+	</head>
+	<body>
+		<div id="d1">
+			<p class="p1">
+				<span class="s1" id="span" style="color:yellow;">
+					我是 d1 中的 p1 中的 span
+				</span>
+			</p>
+		</div>
+	</body>
+</html>
 
 
 
