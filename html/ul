@@ -1,7 +1,7 @@
 ul:有序列表
 ul属性:
 
-type:
+list-style-type:
 取值:
 	disc:实心圆(默认值)
 	circle:空心圆 

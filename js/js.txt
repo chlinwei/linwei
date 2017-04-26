@@ -1,6 +1,15 @@
 数据类型7种:
 Number,字符串,布尔值,数组,对象,Null,Undefined
 
+强类型语言与弱类型语言区别:
+强类型语言:一个变量被定义了,如果不经过强制转换,那么
+这个变量永远为这个数据类型,python里1+"1"报错
+弱类型语言:数据类型可以忽略,与强类型语言相反,一个变量
+可以赋不同数据类型的值,a=1,a="hello"
+
+动态类型语言和静态类型语言区别:
+动态类型语言:在运行时去做数据类型检查的语言
+静态类型语言:在编译期间做数据类型检查
 
 比较运算符:==和===
 ==,在比较时,会将左右两边自动转换为相同的数据类型再做比较
@@ -15,9 +24,14 @@ Number
 4)注意:1/3===(1 - 2/3);false
 
 字符串
-'abc',"xyz",''或者""本身只是一种表示方式,不是字符串
+1)'abc',"xyz",''或者""本身只是一种表示方式,不是字符串
 的一部分,因此,'abc',只有a,b,c这三个字符
-
+2)\x##十六进制表示ASCII字符,'\x41' = > 'A',
+\u####表示一个unicode字符
+3)多行字符串,用反引号``括起来
+afsdf`
+hha
+`
 
 布尔值
 与:&&, true && true   =>true
@@ -35,7 +49,7 @@ Undefined:表示缺少值,即这个变量是没有定义
 a=[1,2,3,'hello']
 a = new Array(1,2,3,'hello')
 
-对象:由一组键值对组合而成的无序集合
+对象:由一组键值对组合而成的无序集合,注意:键必须是字符串
 var person={
 	name:'Bob',
 	age:20,
@@ -51,23 +65,412 @@ person = {
 }
 调用person['name']
 
+1)注意:属性必须是有效的变量名
+var xiaohong = {
+name:'小红',
+'middle-school':'No.1 Middle School'
+}
+由于middle-school不是一个有效的变量名,则必须用''括起来
+这个属性也无法用.操作符,必须用xiaohong['middle-school']来
+访问这个属性
+2)可以访问一个不存在的属性,返回undefined
+3)能够动态增加属性和python一样,也能动态删除属性也python一样,delete xiaoming.age, python里 del xiaoming.age
+3)
+4)in用来判断某个某个属性是否存在或者某个数组的索引是否存在,包括继承而来的
+而hasOwnProerty可以判断某个属性是否是自身的(不是继承而来的)
+'name' in xiaoming;true
+var arr = [1,2,3,4]
+3 in arr;true这里3是索引(即下标)
+python里的in是用来判断某个元素是否在某个可迭代的对象中,
+python里用hasattr(obj,'append')来判断某个对象的属性是否存在
+
+5)Map函数,为了解决对象的属性只能为字符串的缺点.
+var m = new Map(); //空的Map
+var m = new Map([[1,'hello'],[2,'world']]) Map的参数为一个数组,数组的元素也是一个含有两个元素的数组
+
+m.get(1) //'hello' 获取
+m.set(1,'haha')  设置,如果没有这个键,就是增加键(属性),多次设置键，后面
+的值会把前面的覆盖
+m.has(1) 是否存在键
+m.delete(1) 删除键
+
+6)Set 
+var s1 = new Set();//空Set
+var s2 = new Set([1,2,3]);
 
 
-变量的组成:由数字,大小写英文字母,$,_组合,不能以数字开头,也不能以
-关键字作为变量名,变量名可以为中文
-
-python是强类型语言,动态类型语言
-js是弱类型语言,动态类型语言
-
-强类型语言与弱类型语言区别:
-强类型语言:一个变量被定义了,如果不经过强制转换,那么
-这个变量永远为这个数据类型,python里1+"1"报错
-弱类型语言:数据类型可以忽略,与强类型语言相反,一个变量
-可以赋不同数据类型的值,a=1,a="hello"
 
 
-动态类型语言和静态类型语言区别:
-动态类型语言:在运行时去做数据类型检查的语言
-静态类型语言:在编译期间做数据类型检查
+条件判断:和c语言里的一样
+var age = 3;
+if (age >= 18) {
+    alert('adult');
+} else if (age >= 6) {
+    alert('teenager');
+} else {
+    alert('kid');
+}
+
+for循环
+var x = 0;
+for(var i=1;i<1000;i++){
+	x = x + i;
+}
+
+for 无限循环,break跳出循环
+var x = 0;
+for(;;){
+	if(x>100){
+		break;
+}
+}
+
+for..in 遍历的是属性或者数组中的索引
+for of遍历的是数组元素的值
+
+while循环:已知初始和结束条件
+var x = 0;
+var n = 90;
+while(n>0){
+	x = x + n;
+	n = n -2
+}
+
+do.. while:循环完成的时候判断条件
+var n = 0;
+do {
+	n = n + 1;
+}while(n<100)
 
 
+
+
+iterable:可迭代对象
+var a = ['A','B','C']
+#element:指向当前元素的值
+#index:指向当前元素的索引
+#array:指向Array对象本身
+
+a.forEach(function (element,index,array) ){ #ES5.1引入
+	console.log(element);
+	console.log(index);
+	console.log(array);
+}
+
+
+函数的定义:
+function func(x){ #参数以逗号隔开,如果没有写return,返回的只undefined,
+python里没有写return返回的是None
+	if(x>=0){
+		return x;
+}
+	else{
+		return -x;
+}
+}
+
+匿名函数
+var x = function (x){
+	return x*x;
+}
+
+注意:函数声明和函数表达式的区别
+函数声明和可以像var 声明变量一样的
+
+foo(); foo函数被提前到最前面ok的
+function foo(){
+	console.log(20)
+}
+
+而函数表达式,在代码执行到当前行的时候才被执行
+foo();  //error
+var foo = function(){
+	console.log(20);
+}
+python里的匿名函数:
+x = lambda x:x*x;
+
+
+定义函数并立即使用:
+1)(function func(x){console.log(x)})(10),函数声明加了个括号就变为了函数
+表达式了,只有函数表达式才能立即使用
+python里(def func(x):print x*x)(10) 是错误的
+2)(function (x){console.log(x)}){10},匿名函数本身就是个函数表达式,可以立即使用,python里(lambda x:x*x)(10)也可以
+
+
+箭头函数:都是函数表达式,在执行到当前行的时候,函数才被声明,
+箭头函数和匿名函数看起来差不多,但是是有区别的,箭头函数内部的this是
+词法作用域,由上下文确定
+例如:
+var obj = {
+    birth: 1990,
+    getAge: function () {
+        var b = this.birth; // 1990
+        var fn = function () {
+            return new Date().getFullYear() - this.birth; // this指向window或undefined
+        };
+        return fn();
+    }
+};
+
+现在，箭头函数完全修复了this的指向，this总是指向词法作用域，也就是外层调用者obj:
+var obj = {
+    birth: 1990,
+    getAge: function () {
+        var b = this.birth; // 1990
+        var fn = () => new Date().getFullYear() - this.birth; // this指向obj对象
+        return fn();
+    }
+};
+obj.getAge(); // 25
+var f = x => x*x
+var f = x => {
+	if(x>0){
+		return x;   
+	}else{
+		return -x;
+	}
+}
+(x,y) => x*x + y*y //两个参数
+() => 3.14 //无参数
+(x,y,...rest) =>{ //可变参数
+	var i,sum = x + y;
+	for(i=0;i<rest.length;i++){
+		sum +=rest[i];
+	}
+}
+arguments:是个关键字,它只在函数内部起作用,指向当前函数的调用者
+传入的所有参数,arguments类似Array但它不是一个Array
+
+function foo(x){
+	for(var x =0;i<arguments.length;i++){
+		console.log(arguments[i]); //遍历所有参数
+	}
+}
+
+rest参数
+function(a,b,...rest){ rest随便取名,是个Array,剩余的参数
+	console.log(rest)
+
+
+
+变量作用域
+1)js函数可以嵌套,内部函数可以访问外部函数,外部函数不能返回内部函数
+外部函数和内部函数的变量重名,则内部屏蔽外部
+func foo(){
+	var x = 1;
+	function bar(){
+		var y = x + 1;
+	}
+	var z = y + 1; //error
+}
+2)变量提升:js函数会先扫描整个函数体的语句,把所申明的变量
+提升到函数的顶部
+
+function foo(){
+	console.log(x)//x为undefined,js引擎自动提升了变量x的声明,但是
+	//不会提升y的赋值
+	var x = 10;
+}
+
+
+js申明全局变量的方式
+方式1:
+var + 变量名 在function外部申明
+
+方式2:
+直接不加var,x = 100像这样申明就是个全局变量,在函数体里这样写,也是全局变量，当这个函数被调用的时候,变量就成了全局变量
+
+方式3:使用window全局对象来申明,全局对象的属性对应也是全局变量
+window.test = 50;console.log(test)
+
+
+
+
+方法:在一个对象中绑定的函数,这个函数被叫做这个对象的方法
+var xiaoming = {
+    name:'xiaoming',
+    age:24,
+    eat:function(){
+        console.log("我喜欢吃东西")}};
+
+
+
+this变量,它始终指向当前对象
+function getAge() {
+    var y = new Date().getFullYear();
+    return y - this.birth;
+}
+
+var xiaoming = {
+    name: '小明',
+    birth: 1990,
+    age: getAge
+};
+xiaoming.age();//27,没问题
+getAge();//NaN,此时this指向的是window对象
+这里apply可以解决这个问题
+getAge.apply(xiaoming,[]);//27,this指向xiaoming,
+getAge参数为有[]指定
+另一个函数call和apply作用一样，只是参数传入的
+方式不一样
+apply()把参数打包成Array传入
+call()把参数按照顺序传入
+
+
+
+注意:
+var xiaoming = {
+    name: '小明',
+    birth: 1990,
+    age: function () {
+        function getAgeFromBirth() {
+            var y = new Date().getFullYear();
+            return y - this.birth;
+        }
+        return getAgeFromBirth();
+    }
+};
+
+xiaoming.age();//undefined
+原因是:在第二个函数getAgeFromBirth里
+非strict模式下,this指向window,strict下
+指向的是undefined,在age方法里即匿名的外层
+函数里,this指向的是xiaoming这个对象.
+
+var xiaoming = {
+    name: '小明',
+    birth: 1990,
+    age: function () {
+        var that = this; // 在方法内部一开始就捕获this
+        function getAgeFromBirth() {
+            var y = new Date().getFullYear();
+            return y - that.birth; // 用that而不是this
+        }
+        return getAgeFromBirth();
+    }
+};
+
+xiaoming.age(); // 25
+
+
+用call()或者apply时调用箭头函数时,无法对this进行绑定,
+即传入的第一个参数无效
+var obj = {
+	birth:1900;
+	getAge:function (year){
+			var b = this.birth;
+			var fn = (y) =>y - this.birth;
+			//return fn.call({birth:2000},year);
+			call传入的第一个参数本应该是obj对象,但是这里无效,因为this已经绑定了obj对象,此时call的第一个参数随便写 return fn.call('haha',year);
+		}
+};
+obj.getAge(2015);
+
+高阶函数:一个函数的参数接受一个函数
+
+map函数:
+console.log([1,2,3,4,5].map(function (x){return x*x}))
+python里
+print map(lambda x:x*x,[1,2,3,4])
+
+
+reduce函数:和python reduce差不多
+[1,2,3,4].reduce(function (x,y){return x + y})
+python里:reduce(lambda x,y:x+y,[1,2,3,4])
+
+
+filter函数
+[1,2,4,5,6,9,10,15].filter(function (x){
+	return x % 2 !== 0;
+})
+
+filter接受的函数还可以有多个参数
+var arr = ['A','B','C']
+#element表示当前元素值,index索引,数组本身
+var r = arr.filter(function (element,index,self){
+	console.log(element);
+	console.log(index);
+	console.log(self);
+})
+
+sort函数
+var arr = ['Google', 'apple', 'Microsoft'];
+arr.sort(function (s1, s2) {
+    x1 = s1.toUpperCase();
+    x2 = s2.toUpperCase();
+    if (x1 < x2) {
+        return -1;
+    }
+    if (x1 > x2) {
+        return 1;
+    }
+    return 0;
+}); // ['apple', 'Google', 'Microsoft']
+
+
+闭包:返回的是个函数
+function lazy_sum(arr) {
+    var sum = function () {
+        return arr.reduce(function (x, y) {
+            return x + y;
+        });
+    }
+    return sum;
+}
+
+生成器(generator),可迭代的
+function* foo(x){
+	yield x+1;
+	yield x+2;
+	yield x+1;
+}
+
+调用生成器有2个方法:
+1)
+foo(10).next()  {value: 11,done: false}
+foo(10).next()  {value: 12,done: false}
+foo(10).next()  {value: 13,done: false}
+foo(10).next()  {value: undefined,done: true}
+
+2)
+for(var x of foo(10)){
+	console.log(x);
+}
+11
+12
+13
+
+
+
+Date
+
+var now = new Date(); //获取当前系统时间
+now; // Wed Jun 24 2015 19:49:22 GMT+0800 (CST)
+now.getFullYear(); // 2015, 年份
+now.getMonth(); // 5, 月份，注意月份范围是0~11，5表示六月
+now.getDate(); // 24, 表示24号
+now.getDay(); // 3, 表示星期三
+now.getHours(); // 19, 24小时制
+now.getMinutes(); // 49, 分钟
+now.getSeconds(); // 22, 秒
+now.getMilliseconds(); // 875, 毫秒数
+now.getTime(); // 1435146562875, 以number形式表示的时间戳
+Date.now();1435146562875, 以number形式表示的时间戳
+
+
+//月份0~11,0表示1月
+//创建一个指定日期和时间的Date对象
+var d = new Date(2015,5,19,20,15,30,123);
+或者
+var d = Date.parse('2015-06-24T19:49:22.875+08:00');
+
+
+
+正则表达式
+两种写法:
+1)re = /^\d{3}\-\d{3,8}/; //用/正则表达式//来写
+2)re = new RegExp('^\\d{3}\\-\\d{3,8}$');//注意\\后表示正则表达式里的\
+
+切分字符串
+'a,b;; c  d'.split(/[\s\,\;]+/); // ['a', 'b', 'c', 'd']

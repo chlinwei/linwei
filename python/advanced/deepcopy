@@ -1,0 +1,28 @@
+jack = ['jack',['age',20]]
+tom = jack[:]
+anny = list(jack)
+
+print id(jack),id(tom),id(anny)  #id值都不一样,三者是不同的对象
+#140106762253808 140106762270264 140106762272496
+
+tom[0] = 'tom'
+anny[0] = 'anny'
+print jack,tom,anny #看起来没什么变化
+#['jack', ['age', 20]] ['tom', ['age', 20]] ['anny', ['age', 20]]
+
+
+anny[1][1] = 18
+print jack,tom,anny #这里可以发现修改了anny的age其他两个的age都变了
+#['jack', ['age', 18]] ['tom', ['age', 18]] ['anny', ['age', 18]]
+
+
+print [id(x) for x in jack]
+print [id(x) for x in tom]
+print [id(x) for x in anny]
+[140193420355888, 140193420304328]
+[140193420403776, 140193420304328]
+[140193420355984, 140193420304328]
+jack,tom,anny的第二个元素的id都是一样,由于python中的第一个元素为字符串
+所以在为tom和anny重命名的时候会重新
+
+
