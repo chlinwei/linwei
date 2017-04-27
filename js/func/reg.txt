@@ -1,0 +1,67 @@
+exec
+
+
+var str = "abc.jpg def.jpg";
+var pattern = /([a-z]+)\.jpg/
+var arr = pattern.exec(str);
+console.log(arr); //[ 'abc.jpg', 'abc', index: 0, input: 'abc.jpg def.jpg' ]
+console.log(arr[0]); //abc.jpg
+console.log(arr[1]); //abc
+console.log(arr[2]); //undefined
+
+arr = pattern.exec(str);
+console.log(arr); //[ 'abc.jpg', 'abc', index: 0, input: 'abc.jpg def.jpg' ]
+console.log(arr[0]); //abc.jpg
+console.log(arr[1]); //abc
+console.log(arr[2]);//undefined
+
+
+总结:
+如果pattern不带g
+exec:总会返回第一个匹配到的信息,包括 第一项匹配信息+当前第一项位置 + 输入的字符串
+arr[0]:返回第一个匹配到的信息(全部)
+arr[1]:返回第一个匹配到的信息的字串(字串)
+
+
+var str = "abc.jpg def.jpg";
+var pattern = /([a-z]+)\.jpg/g
+var arr = pattern.exec(str);
+console.log(arr);//[ 'abc.jpg', 'abc', index: 0, input: 'abc.jpg def.jpg' ]
+console.log(arr[0]);//abc.jpg
+console.log(arr[1]);//abc
+console.log(arr[2]);//undefined
+
+arr = pattern.exec(str);
+console.log(arr);//[ 'def.jpg', 'def', index: 8, input: 'abc.jpg def.jpg' ]
+console.log(arr[0]);//def.jpg
+console.log(arr[1]);//def
+console.log(arr[2]);//undefined
+
+
+总结:加了g标志后,第二次执行pattern.exec(str)时,会从
+上一次的结束位置开始匹配
+
+
+
+
+match函数:
+
+var str = "abc.jpg def.jpg";
+var pattern = /([a-z]+)\.jpg/g
+var arr = str.match(pattern);
+console.log(arr); //[ 'abc.jpg', 'def.jpg' ]
+console.log(arr[0]);// abc.jpg
+console.log(arr[1]);// def.jpg
+console.log(arr[2]);// undefined
+
+arr = str.match(pattern);
+console.log(arr);//[ 'abc.jpg', 'def.jpg' ]
+console.log(arr[0]);//abc.jpg
+console.log(arr[1]);// def.jpg
+console.log(arr[2]);//undefined
+
+
+总结:当pattern没有g标志的时候,和exec函数一样,当有g标志的时候
+arr返回匹配所有的项(注意不是子串),而且match不能像exec可以在g的标志下
+多次执行
+

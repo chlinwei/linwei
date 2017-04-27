@@ -36,6 +36,7 @@ print b.func1 #<bound method A.func1 of <__main__.A instance at 0x7fda2d479320>>
 
 ####### 静态函数 #########
 #一.静态函数不像成员函数第一个参数为实例化对象,静态函数没有这个特点
+#使用静态函数的好处是,不需要实例化就能使用这个方法.
 #二.调用方法
 #1. 类名.静态函数
 #2. 实例化对象.静态函数
@@ -136,3 +137,23 @@ print a1.x #100
 A.x = 300
 print a.x #200 已经改变过的实例
 print a1.x #300  没有改变过的实例
+
+
+#单下划线开始的变量和函数有两个特点:
+#1)模块里单下划线开始的变量和函数在另一个py文件里不能用from module import *导入,但是可以import module 导入或者 from module import 具体变量或者函数,这样可以导入
+#如:
+#vi hello.py
+#_name =  'xiaoming'
+#def _func():
+#	print 'hello,world'
+#
+#vi main.py
+#
+#from hello import *
+#print _name #error
+#_func() #error
+#
+#2)在类的内部以单下划线开始的变量或者函数,表示警告你这个变量或者函数
+#虽然可以被访问,但请把他们视为私有的
+
+

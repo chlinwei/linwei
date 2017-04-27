@@ -474,3 +474,80 @@ var d = Date.parse('2015-06-24T19:49:22.875+08:00');
 
 切分字符串
 'a,b;; c  d'.split(/[\s\,\;]+/); // ['a', 'b', 'c', 'd']
+
+
+
+JSON:
+1)json字符集必须为utf-8,json 对象的键必须由""包围,字符串必须由""包围
+2)json共有6种数据类型比js少了个undefined
+number：和JavaScript的number完全一致；
+boolean：就是JavaScript的true或false；
+string：就是JavaScript的string；
+null：就是JavaScript的null；
+array：就是JavaScript的Array表示方式——[]；
+object：就是JavaScript的{ ... }表示方式
+
+
+JSON.stringify(value [,replacer] [,space])
+value:JS对象
+replacer:为数组或者是一个函数,数组是由js对象被转化为json对象后的键组成,
+函数,是用来处理json对象的键和值的
+space:有4中情况
+1)省略,显示出来的值没有分割符
+{"name":"小明","age":14,"gender":true,"height":1.65,"grade":null,"middle-school":"\"W3C\"Middle School","skills":["Javascript","Java","Python","Lisp"]}
+2)为数字缩进几个字符,数字最大为10
+console.log(xiaoming,null,3)
+{
+   "name": "小明",
+   "age": 14,
+   "gender": true,
+   "height": 1.65,
+...
+3)转义字符如\t
+console.log(xiaoming,null,'\t')
+{
+	"name": "小明",
+	"age": 14,
+	"gender": true,
+	"height": 1.65,
+...
+4)普通字符串,在没行前直接加上去
+console.log(xiaoming,null,'ab')
+{
+ab"name": "小明",
+ab"age": 14,
+ab"gender": true,
+
+精准控制js序列化在js对象中添加一个toJSON()方法
+var xiaoming = {
+	name:'小明',
+	age:14,
+	gender:true,
+	height:1.65,
+	grade:null,
+	'middle-school':'\"W3C\"Middle School',
+	skills:['Javascript','Java','Python','Lisp'],
+	toJSON:function () {
+		return {
+			'Name':this.name,
+			'Age':this.age
+		}
+	}
+	
+};
+console.log(JSON.stringify(xiaoming));
+//{"Name":"小明","Age":14}
+
+JSON.parse(value,replacer),value是一个JSON对象,replacer是一个函数
+console.log(JSON.parse('{"name":"小明","age":14}',function(key,value){
+	if(key === 'name'){
+		return value + '同学';
+	}
+	return value;
+}))
+
+
+
+
+
+
