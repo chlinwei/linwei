@@ -1,0 +1,41 @@
+
+构造函数
+function Student(name){
+	this.name = name || 'haha'; //默认值'haha'
+	this.hello = function (){
+		console.log("hello," + this.name + '!');
+	}
+}
+Student.prototype.age = 14 //外部添加属性
+Student.prototype.test = function (){
+	console.log('I\'m a' + this.name + "my age is:" + this.age);
+}
+var xiaoming = new Student('小明');
+xiaoming.hello();
+console.log(xiaoming.age);
+xiaoming.test();
+
+深度解析new关键词做了哪些事情:
+var obj = {};
+obj.__proto__ = Student.prototype;
+Student.call(obj);
+return this
+
+另一种不写new的方法
+function Student(name){
+	this.name = name || 'haha';
+}
+
+Student.prototype.hello = function (){
+	console.log('hello' + this.name + '!');
+}
+function createStudent(name){
+	return new Student(name);
+}
+
+var xiaoming = createStudent('小明');
+console.log(xiaoming.name);
+xiaoming.hello();
+
+http://www.cnblogs.com/humin/p/4556820.html
+http://www.cnblogs.com/ayqy/p/4471638.html
