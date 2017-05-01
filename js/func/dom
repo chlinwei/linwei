@@ -1,0 +1,124 @@
+window:全局对象,表示浏览器窗口
+属性:
+innerWidth:浏览器窗口宽度
+innerHeight:浏览器窗口长度
+
+
+
+navigator:浏览器基本信息
+属性:
+navigator.appName:浏览器名称
+navigator.appVersion:浏览器版本
+navigator.language:浏览器设置的语言
+navigator.platform:操作系统类型
+navigator.userAgent:浏览器设定的User-Agent字符串
+注意:navigator的信息很容易被用户修改,所以javascript读取的值不一定是
+准确的
+
+screen:表示屏幕的信息
+screen.width:屏幕宽度,以像素为单位
+screen.height:屏幕高度,以像素为单位
+screen.colorDepth:返回颜色的位数,如8,16,24
+
+
+location:表示当前页面的URL信息,例如,一个完整的URL
+http://www.example.com:8080/path/index.html?a=1&b=2#TOP
+属性:
+location.protocol //'http'
+location.host //'www.example.com'
+location.port //'8080'
+location.pathname //'/path/index.html'
+location.search //'?a=1&b=2'
+location.protocol //'TOP'
+location.reload():重新当前页面
+location.assign():加载一个页面
+
+
+
+
+
+操作dom
+//返回ID为'test'的节点
+var test = document.getElementById('test');
+
+//先定位ID为'test-table'的节点,再返回其内部所有的tr节点
+var trs = document.getElementById('test-table').getElementByTagName('tr');
+
+//先定位ID为'test-div'的节点,再返回其内部所有class包含red的节点
+var reds = document.getElementById('test-div').getElementByClassName('red');
+
+//获取节点test下的所有直属子节点
+var os = test.children;
+
+//获取节点test下第一个,最后一个子节点
+var first = test.firstElementChild;
+var last = test.lastElementChild;
+
+
+//通过querySelector()和querySelectorAll()
+//通过querySelector获取ID为q1节点
+var q1 = document.querySelector('#q1');
+
+//通过querySelectorAll获取q1节点内的符合条件的所有节点
+var ps = q1.querySelectorAll('div.highlighted>p');
+
+
+
+
+
+
+更新DOM
+1.修改dom对象的innerHTML属性
+var p = document.getElementById('p-id');
+p.innerHTML = 'ABC'; 设置其内容为ABC,此时p-id对象的
+元素为<p id='p-id'>ABC</p>
+
+当然不仅仅只是添加元素的内容,还可以插入元素
+p.innerHTML = 'ABC<span style="color:red">RED</span>XYZ; '
+
+2.修改dom对象的innerText属性
+var p = document.getElementById('p-id');
+p.innerText = 'ABC'; p现在为<p>ABC</p>
+
+
+
+插入DOM
+例子:
+<p id="js">JavaScript</p>
+<div id="list">
+    <p id="java">Java</p>
+    <p id="python">Python</p>
+    <p id="scheme">Scheme</p>
+</div>
+
+
+
+
+1)将已存在的节点插入到新的位置
+var js = document.getElementById('js');
+list = document.getElementById('list');
+list.appendChild(js); //appendChild默认追加一个节点
+
+现在HTML结构变成了这样
+<div id='list'>
+	<p id="java">Java</p>
+	<p id="python">Python</p>
+	<p id="scheme">Scheme</p>
+	<p id="js">JavaScript></p>
+</div>
+
+解析:因为插入的js节点已经存于当前的文档树,因此这个节点
+首先会从原先的位置删除,再插入到新的位置
+2)动态添加一个新的节点
+
+var d = document.createElement('style');//参数为标签
+d.setAttribute('type','text/css');//给标签设置属性
+d.innerHTML = 'p {color:red}'; //给style添加内容
+document.getElementByTagName('head')[0].appendChild(d);
+
+此时:
+<head>
+	<meta charset='utf-8'>
+	<title></title>
+	<style type="text/css"> p {color:red}</style> //###
+</head>
