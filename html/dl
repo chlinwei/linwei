@@ -1,0 +1,32 @@
+dl:定义列表(definition list)
+dt(definition title) 标题
+dd(definition description) 描述
+格式:
+<dl>
+	<dt></dt>
+	<dd></dd>
+	<dd></dd>
+
+	<dt></dt>
+	<dd></dd>
+	<dd></dd>
+</dl>
+
+
+应用场景
+
+1.网站尾部信息
+2.图文混排
+
+注意点:
+1)和ul/ol一样,dl和dt/dd 是一个整体,所以他们一般请款下
+不会单独出现
+2)和ul/ol一样,由于dl和dt/dd是一个组合标签,所以dl中
+建议只放dt和dd标签
+3)一个dt可以没有对应的dd,也可以有多个对应的dd
+但是无论有还是没有dd都不推荐使用,推荐使用一个dt对应
+一个dd
+4)和li标签一样,当需要丰富界面时,可以在dt和dd标签中
+继续添加其他标签
+
+

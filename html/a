@@ -1,40 +1,45 @@
 a:链接
-href:链接的URL
-target:打开新页面的方式
+格式:
+<a href=本地地址或者网络地址>文字或图片</a>
+target:控制如何跳转
 取值:
 _blank:在新标签中打开
-_self:默认值,在当前页中打开
+_self:默认值,在当前标签中中打开
+
+注意点:
+1)title:a标签中的title和img标签中的title一样,
+都是用来控制鼠标悬停时显示的提示文本的
+2)base标签同来统一指定当前网页中所有a标签需要如何打开
+在head标签中<head><base target="_blank"></head>,如果
+在base中指定了target,a标签中也指定了target,则会按照
+a标签中的target来跳转
 
 
+假链接的格式:
+1)#
+2)javascript:
+区别:
+#的假链接会自动回到网页的顶部,而javascript:的假链接
+不会回到网页的顶部
 
 1.邮箱
 <a href="mailto:862350707@qq.com">点我</a>
 
-2.空链接
-<a href="#">点我</a>
-
-3.下载,注意一定要加download在能下载
+2.下载,注意一定要加download在能下载
 <a href="01.txt" download="hah">点我</a>
 
 
-4.锚点
+3.锚点
+格式:
+1):当前页面
+<a href="#center">跳转到中部</a>
+<h2 id="center">我是中部</h2>
 
+2)其他页面
+<a href="02.html#bottom>点我</a>
+02.html
+<h2 id="bottom>我是测试界面</h2>
 
-定义锚点:
-<body>
-<div>
-	<a href="#NO1">第一章 倚天屠龙记</a><br>
-	<a href="#NO2">第二章 倚天杀猪记</a><br>
-	<a href="#NO3">第三章 倚天打狗记</a><br>
-	<a href="#NO4">第四章 倚天宰驴记</a>
-</div>
-	<!-- 定义一个 锚点 ，内容 为 倚天屠龙记 -->
-	<a name="NO1">第一章 倚天屠龙记</a>
-	<div style="height:5000px;"></div>
-	<!-- 定义 第二章 锚点 -->
-	<div id="NO2" style="height:5000px">第二章 倚天杀猪记</div>
-	<!-- 定义 第三章 锚点 -->
-	<div id="NO3" style="height:5000px">第二章 倚天杀猪记</div>
-	<!-- 定义 第四章 锚点 -->
-	<div id="NO4" style="height:5000px">第二章 倚天杀猪记</div>
-</body>
+3)对a标签
+<a href="#haha">点我</a>
+<a name="haha">第一季</a>

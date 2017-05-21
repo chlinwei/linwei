@@ -1,6 +1,10 @@
-hr:分割线元素
-语法:<hr> ,<hr/>
-作用:在网页上显示一条水平线
-size:尺寸,设置水平线的高度,px可以省略
-width:宽度,px可以省略
-align:水平线的对齐方式
+hr标签(Horizontal rule)
+作用:在浏览器上显示一条分割线
+
+格式:
+<hr/>
+
+注意点:
+1)在浏览器中单独占一行
+2)html规范:<hr>  xhtml规范:<hr />,html5兼容html和xhtml
+<hr>和<hr />都可以
