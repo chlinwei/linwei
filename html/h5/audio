@@ -1,0 +1,19 @@
+作用:播放音频,和video用法一样,只是有3个属性不能用(width,height,poster)
+
+
+格式:
+1)
+<audio src="">
+</audio>
+2)
+<audio>
+    <source  src="" type="">
+</audio>
+
+
+
+例如:
+<audio autoplay="autoplay" controls="controls">
+	<source src="images/yinyue.mp3 type="audio/mp3">
+</audio>
+

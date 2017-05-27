@@ -13,6 +13,8 @@ _self:默认值,在当前标签中中打开
 在head标签中<head><base target="_blank"></head>,如果
 在base中指定了target,a标签中也指定了target,则会按照
 a标签中的target来跳转
+3)通过的a标签跳转到指定的位置,是没有过度动画的,
+是直接一下子跳转到了指定位置
 
 
 假链接的格式:

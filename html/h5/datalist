@@ -1,0 +1,8 @@
+<form>
+	<input type="text" list="cars">
+	<datalist id="cars">
+		<option>奔驰</option>
+		<option>宝马</option>
+		<option>奥迪</option>
+</form>
+

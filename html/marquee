@@ -1,0 +1,22 @@
+marquee标签不是W3C推荐的标签,在W3C官方文档中也无法查到这个标签
+但是各大浏览器对这个标签都支持非常好 
+
+作用:跑马灯
+属性:
+direction:控制移动的方向
+scrollamount:控制移动的速度
+loop:设置滚动次数,默认是-1表示无限次
+behavior:设置滚动类型,
+1)slide滚动到边界就停止
+2)alternate滚到边界到弹回
+注意点:还能用于图片
+
+marquee {
+    width:200px;
+    height:200px;
+	background-color:red;
+}
+<marquee>1</marquee>
+<marquee direction="right" scrollamount="20">2</marquee>
+<marquee direction="up">3</marquee>
+<marquee direction="down" loop="2">4</marquee>

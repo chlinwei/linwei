@@ -1,0 +1,20 @@
+被废弃的标签:
+b(bold):给文本加粗
+u(underlined):给文本添加下划线
+i(italic):将文本倾斜
+s(strikethrough)给文本你添加删除线
+
+
+注意点:在企业开发中,不到万不得已一定不要用这些被废弃的标签,如果
+一定要用,一般情况下都是用来作为css的钩子来使用
+
+
+strong == b
+ins == u	
+em == i
+del == s
+
+strong语义:定义重要性强调的文字
+ins(inseted)语义:定义插入的文字
+em(emphasized)语义:定义强调的文字
+del(deleted)语义:定义被删除的文字

@@ -1,0 +1,24 @@
+作用:播放视频
+属性:
+src:视频地址
+autoplay:自动播放
+controls:控制条
+poster: 用于视频没有播放之前显示一张占位图片
+loop:视频播放完毕后是否需要循环播放,一般用于做广告视频
+preload:预加载视频,preload和autoplay相冲,如果设置了autoplay,preload会失效
+muted:静音
+width
+heihgt
+
+格式:
+1)
+<video src="">
+</video>
+2)
+<video>
+	//浏览器会从下面中选出一种自己支持的格式
+	<source src="" type=""></source>
+	<source src="" type=""></source>
+</video>
+由于视频数据非常重要:所以五大浏览器厂商都不愿意
+支持别人视频的格式,所以推出了第二个video标签格式
