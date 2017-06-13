@@ -291,6 +291,31 @@ color:rgb(200,200,200)_
 }
 
 13:伪类选择器
+a标签存在一定的状态:
+1)默认状态,从未访问过的
+2)被访问过的状态
+3)鼠标长按状态
+
+1):link 修改从未被访问过状态下的样式
+2):visited 修改被访问过的状态下的样式
+3)):hover 鼠标悬停在a标签上的状态下的样式,hover出了用于a标签外,还可以用于其他任何标签
+4):active 修改鼠标长按的状态下的样式
+
+
+注意点:
+1)a标签的伪类选择器可以单独出现也可以一起出现,一起出现的
+时候顺序必须注意顺序,link visited hover active
+2)如果:link 和:visited修改的样式一样,则可以简写
+3)在企业开发中编写a标签伪类选择器最好写在标签选择器的后面
+4)企业开发中和a标签盒子相关的属性都写在a标签选择器中(显示模式/宽度/高度/margin/padding),a标签中文字/背景相关的都写在伪类选择器中
+a:visited {color:green;}
+a:link {color:green;}
+简写为:
+a {color:green;}
+
+
+
+
 
 
 五.继承性
@@ -434,6 +459,40 @@ background:背景颜色 背景图片 平铺方式 关联方式 定位方式
 注意点:
 background属性中,任何一个属性都可以被省略
 
+css 3中 背景新增的属性
+1.background-size:背景尺寸属性
+取值:
+1)具体像素:100px 200px
+第一个参数:宽度
+第二个参数:高度
+2)百分比: 50% 50%
+当前元素宽高百分比
+3)宽度等比拉伸:auto 100px
+4)高度等比拉伸:100px auto
+5)cover:告诉系统图片需要等比拉升,宽度和高度都需要填满元素
+6)contain:告诉系统图片需要等比拉升,宽度或高度填满元素
+
+2.background-origin:背景图从什么区域开始显示,默认情况下
+从padding区域开始显示
+取值:
+padding-box:默认的,从padding区域开始显示
+border-box:从border区域开始显示
+content-box:从内容区域开始显示
+
+3.background-clip:设置background-color从哪个区域开始绘制,
+默认是从border区域开始绘制的
+取值:
+border-box(默认值)
+padding-box
+content-box
+
+4.多重背景图片
+多张背景图片之间由逗号隔开,先添加的背景图片会盖住后添加的背景图片
+写法1:background:url(...) no-repeat right,bottom ,url(...)...
+写法2:
+background-image:url(...),url(...);
+background-repeat:no-repeat,no-repeat;
+background-position:left top,right top;
 5.插入图片和背景图片的区别
 背景图片:<div id="d1"></div>
 插入图片:<div id="d2"><img src="01.jpg"></div>
@@ -586,7 +645,7 @@ border-box:
 5)浮动元素字围现象(没有浮动的元素内容(文字或者图片)会包围浮动元素)
 3.定位流排版方式
 
-清楚浮动方式:
+清除浮动方式:
 1)给前面一个父元素设置高度，在企业开发中,能不写高度就不写高度,所以这种方式
 很少用
 2)给后面的浮动盒子添加clear属性
@@ -659,3 +718,270 @@ body {
     font-family:"宋体";
 	color:#333;
 }
+
+
+
+十三.定位流分类
+格式:position:relative;
+<div id="d1></div>
+<div id="d2 style="position:relative;top:5px;"></div>
+d2这个标签的外边距的顶部比没有相对定位之前向下偏移5px
+
+注意点:
+1)在相对定位中同一个方向上的定位属性只能使用一个
+2)由于相对定位是不脱离标准流的,所以在相对定位中是区分块级元素/行内元素/行内块级元素
+3)由于相对定位是不脱离标准流的,并且相对定位的元素会占用标准流中的
+位置,所以给相对定位的元素设置margin/padding/border等属性时会影响到
+标准流的布局
+4)如果一个绝对定位的元素是以body为参考点,那么其实是以网页首屏的宽度
+和高度作为参考点 ,而不是以整个网页的宽度和高度作为参考点
+5)一个绝对定位的元素会忽略祖先元素的padding
+6)相对定位:是不会脱离标准流的,会继续在标准流中占用一份空间, 不利于布局界面
+
+应用场景:
+1)用于对元素进行微调
+2)配合后面学习的绝对定位来使用
+
+2.绝对定位:绝对定位的元素是脱离标准流的,相对于body来定位的
+注意点:
+1)绝对定位的元素是不区分块级元素/行内元素/行内块级元素和浮动元素一样(脱离文档流)
+
+规律:
+1)默认情况下所有绝对行为的元素,无论有没有祖先元素,都会
+以body为参考点
+2)如果一个绝对定位的元素有祖先元素,并且祖先元素也是定位
+流,那么这个绝对定位的元素就以定位流的那个祖先元素作为参考点,这个定位流指的是
+绝对定位/相对定位/固定定位,定位流中只有static不行
+3)如果一个绝对定位的元素有祖先元素,并且祖先元素也是定位流，而且祖先元素中有
+多个元素都是定位流,那么这个绝对定位的元素会以离它最近的那个定位流的祖先元素
+4)默认情况下绝对定位的元素会以body作为参考点,所以会随着浏览器的宽高的变化而变化
+为参考点
+
+如何让一个绝对定位的元素水平居中?
+margin:0 auto 肯定是无效的,可以设置绝对定位元素的left:50%;再设置
+绝对定位元素的margin-left:负元素宽度的一半
+套路:
+子元素用绝对定位,父元素用相对定位
+
+3.固定定位:脱离标准流的,不会占用标准流的空间,和绝对定位一样不区分行内/块级/行内块
+z-index规律
+1)默认情况下定位流的元素会盖住标准流的元素
+2)默认情况下定位流的元素后面编写的会盖住前面编写的元素
+3)z-index的值越大,越显示在上面, 默认值是0
+4)只能定位流元素才能设置z-index,static无效
+
+从父现象:
+1)如果两个子元素的父元素都没有设置z-index属性,那么谁的
+z-index属性比较大谁就显示在上面
+2)如果两个元素的父元素设置了z-index属性,那么子元素的z-index
+属性就会失效,也就是说谁的父元素的z-index属性比较大，谁
+就显示在上面
+
+4.静态定位
+
+
+十四.过渡模块
+1.过渡三要素
+1)必须要有属性发生变化
+2)必须要有属性需要执行过渡效果
+3)必须告诉系统过渡效果持续的时长
+
+transition-property:width;
+transition-duration:5s;
+transition-delay:2s; //规定过渡效果何时开始,默认是0 
+
+transition-timing-function:
+linear 匀速
+ease  加速度由大变小
+ease-in   加速度由小变大
+ease-out 和ease 很像
+ease-in-out 加速度先由小变大,再由大变小
+
+过渡连写:
+1)transition: property,duration,timing-function,delay;
+
+注意点:
+当多个属性需要同时执行过渡效果时用逗号隔开即可
+1)transition-property:width,background-color;
+transition-duration:5s,5s;
+2)transition: property,duration,timing-function,delay,...;
+3)连写的时候可以省略后面两个参数,因为只要满足三要素就可以了
+4)如果多个属性运动的速度/延迟的时间/持续时间都一样,可以简写:
+transition:all 4s; 
+
+
+编写过渡套路
+1)不要管过渡,先编写基本界面
+2)修改我们认为需要修改的属性
+3)再回过去给被修改属性的那个元素添加过渡即可
+
+
+十五.2D转换模块
+transform: 
+取值:
+rotate(45deg);旋转45度
+rotateZ(默认的)
+rotateX
+rotateY
+
+translate(100px,100px); translateZ,translateY ,translateX 
+第一个参数:水平方向移动
+第二个参数:垂直方向移动
+
+
+scale(2,2);
+第一个参数:水平放大倍数
+第二个参数:垂直放大倍数
+如果水平放大和垂直放大倍数一样,则可以只写一个参数 scale(2)
+
+连写:
+transform: rotate(45deg) translate(100px,100px) scale(1,0.5)
+没有顺序
+
+注意点:
+1)2D的转换模块rotate会修改元素的坐标系,所以旋转之后再平移就会出现问题 ,
+所以最好在旋转之前就translate
+
+
+
+transform-origin: 形变中心点,默认请款下所有元素都是以自己的中心点作为参考点旋转的,
+可以通过形变中心点来修改它的参考点
+
+transform-origin: 参数1 参数2
+第一个参数:水平方向
+第二个参数:垂直方向
+取值:有三种形式,具体像素,百分比,特殊关键字(center,left,right,bottom,top)
+
+
+perspective(近大远小): 400px;
+注意:透视属性必须添加到需要呈现近大远小效果的元素的父元素上面
+
+
+
+阴影:
+1)给盒子添加阴影(6个参数)
+box-shadow:h-shadow(水平阴影) v-shadow(垂直阴影) blur(模糊距离)
+spread(阴影尺寸) color(阴影颜色) inset(内外阴影)
+注意点:
+1)盒子的阴影分为内外阴影,默认是外阴影
+2)快速添加阴影只需要编写三个参数即可: h-shadow v-shadow blur
+2)默认情况下阴影的颜色和盒子内容颜色一样
+
+
+2)给文字添加阴影(4个参数)
+text-shadow:h-shadow v-shadow blur(模糊度) color
+
+注意点:
+1)文字阴影颜色默认和文字颜色一样
+2)快速添加文字阴影只需编写前三个参数即可,h-shadow v-shadow blur	
+
+
+十六.动画模块
+
+动画和过度之间的区别
+1)不同点:过渡必须认为的触发才会执行动画,动画不需要人为的触发就能执行动画
+2)相同点:过渡和动画都是用来给元素添加动画的,过渡和动画都是系统新增的一些属性,过渡
+和动画都需要满足三要素才会有动画效果
+
+
+1.三要素:
+1)告诉系统需要执行哪个动画
+animation-name:lnj(动画名称,随便写的); 
+2)创建一个动画名称为lnj的动画
+@keyframes lnj {
+    from {
+        margin-left:0;
+    }	
+    to {
+        margin-left:500px;
+	}
+}
+
+@keyframes lnj {
+    0%{
+       transform:rotate(10deg);
+    }		
+    25%{
+       transform:rotate(50deg);
+    }		
+    50%{
+       transform:rotate(70deg);
+    }		
+    100%{
+       transform:rotate(100deg);
+    }		
+}
+3)动画持续时长
+animation-duration:3s;
+
+2.其他属性
+1)animation-delay:2s; 告诉系统多少秒之后开始执行动画和transition-duration,差不多
+2)animation-timing-function: 动画执行时的速度和transition-timing-function差不多,控制速度变化的
+3)animation-iteration-count:3;动画需要执行的次数
+还可以为关键字:infinite
+4)animation-direction:alternate;是否需要执行往返动画
+取值:
+normal:默认的,执行完一次之后回到起点
+alternate:往返动画,执行一次之后往回执行下一次,来回分别算一次
+5)animation-play-state:paused;控制动画暂停或运行
+取值:
+running:执行动画
+paused:暂停动画
+
+
+动画三个状态:
+1.等待状态
+2.执行状态
+3.结束状态
+
+animation-fill-mode作用:
+指定动画等待状态和结束状态的样式:
+取值:
+none:不做任何改变
+backwards:让元素等待状态的时候显示动画第一帧样式
+forwards:让元素结束状态保持动画最后一帧的样式
+both:让元素等待状态显示动画第一帧,让元素结束状态保持动画最后一帧的样式
+
+
+
+连写:
+animation: 动画名称 动画时长 动画运动速度 延迟时间 执行次数 往返动画;
+
+连写格式的简写:
+animation: 动画名称 动画时长
+
+
+注意点:
+1)动画中如果有和默认样式中同名的属性,会覆盖默认样式中同名的属性
+2)在编写动画的时候,固定不变的值写在前面,需要变化的值写在后面2)在编写动画的时候,固定不变的值写在前面,需要变化的值写在后面
+
+十七.3D转换模块
+1.2D和3D:
+2D就是一个平面,只有宽度和高度,没有厚度
+3D就是一个立体,有宽度和高度,还有厚度
+默认情况下所有元素都是2D的
+2.如果让某个元素呈3D展现
+和透视一样,想看到某个元素的3D效果,只需给他的父元素添加一个transform-style:preserve-3d
+
+
+
+
+十八.
+css书写格式:
+1.行内样式:直接将css代码写到元素开始标签中
+2.内嵌样式:在一对head标签中写上一对style标签,然后在style标签中编写css代码
+3.外链样式:可以单独信件一个.css文件,把css代码写到这个文件中,推荐使用
+<link rel="stylesheet" href="01.css">
+4.导入样式:可以单独新建一个.css,
+<style>
+@import "01.css";
+</style>
+
+
+外链样式和导入样式的区别:
+1)外链样式是通过link标签关联而导入样式是通过@import关联的,而这个
+@import是CSS2.1推出的,所以有兼容问题
+2)外链样式在显示界面的时候,会先加载CSS样式,再加载结构,所以
+用户看到界面时一定已经设置了样式,
+导入样式在显示界面的时候,会先加载结构,再加载样式,所以用户看到
+界面的时候不一定已经设置了样式

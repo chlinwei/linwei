@@ -408,6 +408,9 @@ arr.sort(function (s1, s2) {
     return 0;
 }); // ['apple', 'Google', 'Microsoft']
 
+arr.sort(function(s1,s2){
+    return s1 - s2; 和上面一样的效果
+}
 
 闭包:返回的是个函数
 function lazy_sum(arr) {
