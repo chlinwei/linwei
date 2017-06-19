@@ -985,3 +985,22 @@ css书写格式:
 用户看到界面时一定已经设置了样式,
 导入样式在显示界面的时候,会先加载结构,再加载样式,所以用户看到
 界面的时候不一定已经设置了样式
+
+
+
+
+offsetTop scrollTop  scrollTop 区别
+http://blog.csdn.net/fswan/article/details/17238933 
+
+clientTop 上边框长度   = border-top
+clientHeight 内容高度(如果有滚动条,则不包括滚动条) = height + padding
+
+
+
+offsetLeft 指的是左外边框距离y轴的距离 = 元素的x坐标
+注意:其实就是此元素的包含块的左内边框到该元素的左外边框的距离
+offsetHeight:指的是上外边框到下外边框的距离(没有margin)=上下border + padding + height
+
+
+scrollHeight 内容高度(包括滚动内容的长度) 和clientHeight 差不多
+scrollTop 当有滚动条的时候,滑动滚动条时,被滑过的内容的高度
