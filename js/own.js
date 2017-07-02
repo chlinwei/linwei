@@ -22,3 +22,13 @@ function insertAfter(newElement,targetElement){
 		parent.insertBefore(newElement,targetElement.nextElementSibling);
 	}
 }
+
+//获取css样式
+function getStyle(obj,attr){
+	if(obj.currentStyle[attr]){
+		return obj.currentStyle[attr];
+	}else{
+		return obj.getComputedStyle(obj,false )[attr];
+	}
+
+}
