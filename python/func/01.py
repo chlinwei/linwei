@@ -1,4 +1,7 @@
-import math
-print('The value of PI is {}'.format(math.pi))
-print('The value of PI is {!r}'.format(math.pi))
+from functools import reduce
+def add(x, y):
+    return x + y
+
+print(reduce(add, [1, 3, 5, 7, 9]))
+
 
