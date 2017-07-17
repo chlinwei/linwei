@@ -1,0 +1,107 @@
+变量:数字,字母,下划线组成,以$开始,有些特殊的字母有特殊的用途,如果非要
+用作变量名,用花括号括起来,和shell一样,${"I" like $}
+
+赋值:$x = 100
+注意:
+1)把一个值赋值给多个变量
+$x=$y=100(shell中是不可以的)
+2)交换两个变量的值(和python一样)
+$x,$y = $y,$x
+
+
+查看当前使用的变量:
+ls variable:
+
+查看已经定义的$x变量:
+ls variable:x
+
+变量是否存在,存在返回True,不存在返回False:
+Test-Path variable:x
+
+删除变量:
+del variable:x
+
+
+控制变量的5个命令:
+Clear-Variable,Get-Variable,New-Variable,Remove-Variable,Set-Variable
+
+
+
+给变量增加只读属性(不能修改变量的值,但是可以删除后再创建)
+New-Variable num -Value 100 -Force -Option readonly
+del variable:num -Force
+
+
+constant(给变量增加constant变量无法修改和删除):
+new-variable num -value 200 -option constant
+
+
+给变量增加描述:
+new-variable name -value "linwei" -Description "this is my name"
+ls Variable:name | fl
+
+自动变量:
+$HOME:加目录
+$$:返回上次运行的一条命令的名称
+$?:返回上次运行命令的状态(和shell一样)
+$^:包含会话所收到的最后一行中的第一个令牌
+$_:包含管道对象中的当前对象。在对管道中的每个对象或所选对象执行操作的命令中，可以使用此变量
+$Args:包含由未声明参数和/或传递给函数、脚本或脚本块的参数值组成的数组
+$ConsoleFileName:包含在会话中最近使用的控制台文件 (.psc1) 的路径
+$Error:错误对象数组,最近的错误是$Error[0]
+$host:包含一个对象，该对象表示 Windows PowerShell 的当前主机应用程序
+
+
+
+环境变量:保存在env:虚拟驱动器中
+
+直接访问文件路径:就能显示文件的内容
+${c:/powreshell/ping.bat}
+
+
+作用域:全局,当前,私有,脚本
+
+更改变量的可见性
+. .\test.ps1 //脚本会共享当前控制台的作用域
+
+
+变量的访控修饰符:
+$global:所有作用域中有效
+$script:脚本变量,只会在脚本内部有效,一旦脚本结束,这个变量就会被回收
+$private:私有变量只会在当前作用域中有效,不能贯穿高其他作用域
+$local:默认修饰符,在当前作用域中有效,其他作用域对它只有只读权限
+
+
+获取变量的类型
+(10).gettype().name //Int32
+
+弱类型和js,python一样
+当然也可以定义强类型
+[int32]$x = 100
+
+
+
+PSVariable:在创建变量的同时,会在后台生成一个PSVariable对象,这个对象包含着变量的其他信息,获取一个变量的PSVariable对象,get-variable 变量 
+
+
+Options:
+"None":默认值
+"ReadOnly":只读
+"Constant":常量
+"Private":只在当前作用域中可见
+"AllScope":全局
+
+
+
+PSVariable的Attributes定义了变脸的类型规范
+$var="限制变量"
+
+$condition = New-Object System.Management.Automation.ValidateLengthAttribute -ArgumentList 2,5
+(get-variable var).Attributes.add($condition)
+
+常用的变量内容验证还有5种，分别为：
+ValidateNotNullAttribute：限制变量不能为空
+ValidateNotNullOrEmptyAttribute：限制变量不等为空，不能为空字符串，不能为空集合
+ValidatePatternAttribute:限制变量要满足�定的正则表达式
+ValidateRangeAttribute：限制变量的取值范围
+ValidateSetAttribute：限制变量的取值集合

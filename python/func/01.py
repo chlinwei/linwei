@@ -1,7 +1,10 @@
-from functools import reduce
-def add(x, y):
-    return x + y
-
-print(reduce(add, [1, 3, 5, 7, 9]))
-
-
+try:
+    x = 100
+except ZeroDivisionError as e :
+    print('ZeroDivisionError:',e)
+except StopIteration as e :
+    print('StopIteration:',e)
+else: #上面的except都接受不到错误,则执行else语句
+    print("no error")
+finally:
+    print("finally....")

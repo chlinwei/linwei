@@ -1,0 +1,113 @@
+ls | sort-object length -Descending //降序排序
+ls | sort-object length,name -descending //多关键字排序
+ls | Sort-Object @{expression="Length";Descending=$true},@{ex pression="Name";Ascending=$true} //主关键字升序,次关键字降序
+
+get-service | group-object status //根据状态进行分组
+ls | group-object {$_.length -gt 1kb} //根据文件大小是否大于1kb进行分组
+ls | Group-Object {$_.name.SubString(0,1).toUpper()}
+
+//使用格式化命令分组
+Dir | Sort-Object Extension, Name | Format-Table -groupBy Extension
+
+
+
+where-object:过滤对象,参数是一个表达式
+select-object:过滤对象的属性
+forEach-object:自定义过滤
+get-uinque:过滤重复结果
+
+
+查看对象有哪些属性
+get-service | select-object -First 1 | format-list *
+注意:
+-First 1表示选择选择第一个对象
+format-list:*表示查看这个对象的所有属性
+
+
+
+根据对象的属性过滤对象
+get-service | where-object {$_.status -eq "Running"}
+
+
+列出占用cpu最大的5个进程
+get-process | sort -Descending  cpu | select -First 5
+
+
+自定义处理
+ ls | ForEach-Object {"文件名：{0} 文件大小{1}KB: " -f $_.Name,($_.length/1kb).tostring()}
+
+
+
+删除重复对象get-unique(shell uniq一样,去除相邻重复的)
+ls | foreach{$_.extension} | Sort-Object |Get-Unique
+
+
+
+measure能统计对象的属性求最小值、最大值、平均值、和。例如要查看当前目录文件占用空间的情况。
+ls | measure length -Average -Sum -Maximum -Minimum
+
+
+统计文本中,单词数,行数,字符数
+Get-Content .word.txt | measure -Line -Word -Character 
+
+
+比较对象compare-object
+$before = get-process
+$after = get-process
+compare-object $before  $after
+
+
+比较对象的属性变化
+aS C:PowerShell> $svc1=Get-Service wsearch
+PS C:PowerShell> $svc1.stop()
+PS C:PowerShell> $svc2=Get-Service wsearch
+PS C:PowerShell> Compare-Object $svc1 $svc2 -Property Status,Name
+
+
+compare-object (get-content a.txt) (get-content b.txt)
+
+
+xml保存对象到磁盘中
+
+ls | export-clixml a.xml
+
+$x = Import-Clixml a.xml	
+
+
+查看管道怎么处理,默认处理是out-default
+get-command -Verb out
+Out-Default 将输出发送到默认的格式化程序和默认的输出 cmdlet。
+Out-File 将输出发送到文件。
+Out-GridView 将输出发送到单独窗口中的交互表。
+Out-Host 将输出发送到命令行。
+Out-Null 删除输出，不将其t-Printer 将输出发送到打印机。
+Out-String 将对象作为一列字符串发送到主机。�
+
+
+标准输出重定向到空
+md testDir > $null 或
+md testDir |out-null
+
+
+封号风格命令
+pwd;get-service//这里get-service会以列表显示,因为powershell在命令中没有发现特别
+指定版式信息,就会尝试从第一条命令的第一个结果对象中寻找线索,并把这个版式强加给
+紧接着的命令,最好的办法就是pwd;get-service|out-host
+
+
+将输出结果保存为execl文件
+get-service | export-csv a.csv
+
+
+在管道后面不要使用format-table 要使用select-object
+
+
+html导出
+Get-Service | ConvertTo-Html -Title "ls result" | Out-File a.html
+
+
+
+EST(Extended Type System):由两部分组成,控制对象的版式,控制对象的属性
+
+选择属性
+dir | format-table mode,fullname
