@@ -1,0 +1,15 @@
+if命令
+
+exist 文件名:文件是否存在,存在返回真
+if exist a.txt (echo 找到了a.txt) else (echo 没有找到a.txt) 
+
+
+not:后面为真,则返回假
+if not exist a.txt (echo a) else {echo b} //如果a.txt存在,则输出b
+
+str1 == str2:如果str1等于str2返回true
+if 1==1 (echo a) else (echo b) //输出a
+
+
+/i:忽略大小写
+if /i a==A (echo ok) //输出ok

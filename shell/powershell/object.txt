@@ -1,0 +1,31 @@
+查看所有属性
+$host | get-member -memberType property
+
+
+给一个对象增加属性
+$obj = new-object PSobject
+$obj | Add-Member -MemberType NoteProperty -Name AddTime -Value (get-date)
+$obj | Add-Member -MemberType ScriptProperty -Name CurrentTime -Value {get-date}
+
+
+MemberType包括:
+AliasProperty：另外一个属性的别名
+CodeProperty：通过静态的.Net方法返回属性的内容
+Property：真正的属性
+NoteProperty：随后增加的属性
+ScriptProperty：通过脚本执行返回一个属性的值
+ParameterizedProperty：�
+
+
+
+静态方法:可以通过中括号和类型名称得到类型对象本身
+[system.DateTime] | get-member -static -memberType *Method
+
+
+调用静态方法:[system.datetime]::IsLeapYear(2017)//判断是否是闰年
+
+
+下载文件
+$webclient = New-object net.webclient
+$webclient.DownloadFile("http://www.baidu.com","a.html")
+cat a.html

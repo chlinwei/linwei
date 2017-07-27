@@ -1,0 +1,2 @@
+type 命令和shell中的cat命令一样,查看文件的内容
+type a.txt

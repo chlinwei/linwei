@@ -1,0 +1,13 @@
+goto:流程控制命令
+命令格式:goto label
+label:表示批处理文件中的某行,该行表示为批处理文件新的执行点
+
+@echo off
+echo 跳过中间的命令,只执行最后一行
+goto last //跳转到某一行,执行完后不会回到这一行
+dir 
+type a.txt
+:last
+dir a.txt //程序只会执行这一行
+
+

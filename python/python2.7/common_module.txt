@@ -1,0 +1,9 @@
+urlparse,urllib2,random,time,datetime,socket,os,re,
+shutil,zlib,cPickle,pickle,pymongo,bson.binary,
+robotparser,Queue,csv,zipfile,StringIO,
+mechanize(模拟浏览器操作),Pillow(处理图像)
+pytesseract(光学字符识别)
+
+I/O调度:celery
+
+

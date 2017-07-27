@@ -1,0 +1,30 @@
+命令格式:
+call[[Drive:][Path] FileName [BatchParameters]] [:label[agruments]]
+
+
+b.bat
+@echo off
+echo 运行b.bat程序
+call a.bat
+echo a.bat调用完毕
+echo aaaaaa
+call :xx //执行一次label后又会跳转回来
+echo bbbbb
+:xx 
+echo cccccccc
+echo dddd
+
+a.bat
+@echo 正在执行a.bat程序
+
+结果:
+C:\Users\lw>b.bat
+运行b.bat程序
+正在执行a.bat程序
+a.bat调用完毕
+aaaaaa
+cccccccc
+dddd
+bbbbb
+cccccccc
+dddd

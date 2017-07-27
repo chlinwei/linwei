@@ -1,0 +1,117 @@
+Powershell中比较运算符
+-eq 等于
+-ne 不等于
+-gt 大于
+-ge 大于等于
+-lt 小于
+-le 小于等于
+-contains 包含 和python里 in
+-notcontains 不包含 和 python not in
+
+
+
+(3,4,5) -contains 3 //true
+
+2 -eq 20 //False
+
+
+-not 求反和python一样
+-not (2 -eq 3) //True 
+
+布尔运算
+-and :和
+-or :或
+-xor :异或
+-not :逆
+
+
+$true -and $true //True
+$true -xor $false//True,不一样就为真
+
+
+
+1,2,3,4,3,2,1 -eq 3 
+3
+3
+
+
+get-process | where-object {$_.name -eq "notepad"}
+
+
+where-object 有一个别名?
+get-service | ? {$_.name like 'B'}
+
+
+If（条件满足）{
+如果条件满足就执行代码
+}
+Else
+{
+如果条件不满足
+}
+}
+}
+
+
+$x = 100
+if($x -lt 100){
+   "$x 小于100"
+}elseif($x -eq 100)
+{
+"$x 等于100"
+}else {
+ "$x 大于100"
+}
+
+
+$value=1
+switch($value)
+{
+ 1 {"begin"} //必须保证左边是布尔值True才会执行右边的
+ 2 {"start"}
+ 3 {"over"}
+}
+
+
+$value = 18
+switch($value){
+    {$_ -lt 10} {"小于10"}
+    10 {"等于10"}
+    {$_ -gt 10} {"大于10"}
+}
+
+$value=-7
+# 使用 Switch 测试取值范围
+switch($value)
+{
+    {($_ -lt 10) -and ( $_ -gt 0) }  {"小于10"}
+    10  {"等于10"}
+    {$_  -gt 10} {"大于10"}
+    Default {"没有匹配条件"}
+}
+#Output:
+#没有匹配条件
+
+
+
+$value=99
+# 使用 Switch 测试取值范围
+switch($value)
+{
+    {$_ -lt 5 }   { "小于5"; break}
+    {$_ -gt 0 }   { "大于0"; break}
+    {$_ -lt 100}  { "小于100"; break}
+    Default {"没有匹配条件"}
+}
+ 
+#大于0
+
+
+#大小写敏感
+$domain="www.mossfly.com"
+switch -case ($domain)
+{
+    "Www.moSSfly.com" {"Ok 1"}
+    "www.MOSSFLY.com" {"Ok 2" }
+    "www.mossfly.com" {"Ok 3"}
+}

@@ -1,0 +1,8 @@
+rem用来给bat程序添加注释的,和shell中的#一样
+
+脚本:
+@echo off 
+dir .
+rem 这是一个注释 //这里不会被执行,当作注释
+echo abc
+
