@@ -1,0 +1,153 @@
+{
+    "workbench.iconTheme": null,
+    "extensions.ignoreRecommendations": true,
+    "editor.fontSize": 16,
+    "vim.disableAnnoyingNeovimMessage": true,
+    "vim.leader":"<space>",
+    "vim.hlsearch": true,
+    "vim.otherModesKeyBindingsNonRecursive": [
+        //关闭高亮<leader><leader>
+        {
+            "before":["leader","leader"],
+            "after":[],
+            "commands":[
+                {
+                    "command":":nohl"
+                }
+            ]
+        },
+        //保存�<leader>w
+        {
+            "before":["leader","w"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.files.save",
+                    "args":[]
+                }
+            ]
+        },
+        //移动到行首_
+        {
+            "before":["-"],
+            "after":["_"]
+        },
+        //移动到行尾A
+        {
+            "before":["a"],
+            "after":["A"]
+        },
+        //关闭当前文件<leader>q
+        {
+            "before":["leader","q"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.closeActiveEditor",
+                    "args":[]
+                }
+            ]
+        },
+        //打开文件<leader>oo
+        {
+            "before":["leader","o","o"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.files.openFile",
+                    "args":[]
+                }
+            ]
+        },
+        //打开最近的文件<leader>or
+        {
+            "before":["leader","o","r"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.openRecent",
+                    "args":[]
+                }
+            ]
+        },
+        //打开文件夹<leader>of
+        {
+            "before":["leader","o","f"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.files.openFolder",
+                    "args":[]
+                }
+            ]
+        },
+        //新建文件<leader>nn
+        {
+            "before":["leader","n","n"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"explorer.newFile",
+                    "args":[]
+                }
+            ]
+        },
+        //新建文件<leader>nf
+        {
+            "before":["leader","n","f"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"explorer.newFolder",
+                    "args":[]
+                }
+            ]
+        },
+        //跳转到定义处
+        {
+            "before":["leader","g","g"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"editor.action.goToDeclaration",
+                    "args":[]
+                }
+            ]
+        },
+        //返回到原来的地方
+        {
+            "before":["leader","g","b"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"wrokbench.action.navigateBack",
+                    "args":[]
+                }
+            ]
+        },
+        //运行<leader>r
+        {
+            "before":["leader","r"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"code-runner.run",
+                    "args":[]
+                }
+            ]
+        }
+    ],
+    "python.pythonPath": "C:\\Python27\\python",
+    "code-runner.executorMap":{
+        "javascript": "node",
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "objective-c": "cd $dir && gcc -framework Cocoa $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+        "php": "php",
+        "python": "C:\\Python27\\python",
+        "powershell": "powershell -ExecutionPolicy ByPass -File",
+        "bat": "cmd /c",
+        "shellscript": "bash"
+    }
+}
+

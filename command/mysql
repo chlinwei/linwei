@@ -23,3 +23,23 @@ insert into test.student(name,math)values('xiaoming',87);插入数据
 alter table test.student drop name;删除name这个字段.
 alter table test.student add name  char(20);增加name这个字段
 update test.student set name="xiaoming" where math=78;更新某个数据的值
+
+
+rename table student to student1;修改表名
+
+
+数值类型:int(n),float(n)
+
+字符串类型:
+char(n):比varchar快,占用n个字节,最多255字节
+varchar(n):比char节约空间,存了多少,占多少,最多255字节
+text:最多65535字节,存储l+1
+longtext:42亿字节,存储l+2
+
+数据字段属性:
+1)unsigned:无符号整形
+2)zerofill:用0填充
+3)auto_increment
+4)null
+5)not null
+6)default
