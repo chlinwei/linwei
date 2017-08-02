@@ -1,5 +1,10 @@
 {
-    "workbench.iconTheme": null,
+    //处理缩进问题
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+
+    //图标
+    "workbench.iconTheme": "vscode-icons",
     "extensions.ignoreRecommendations": true,
     "editor.fontSize": 16,
     "vim.disableAnnoyingNeovimMessage": true,
@@ -70,6 +75,39 @@
                 }
             ]
         },
+        //打开键盘快捷方式<leader>ok
+        {
+            "before":["leader","o","k"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.openGlobalKeybindings",
+                    "args":[]
+                }
+            ]
+        },
+        //打开资源管理器<leader>oe
+        {
+            "before":["leader","o","e"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.view.explorer",
+                    "args":[]
+                }
+            ]
+        },
+        //打开用户设置<leader>os
+        {
+            "before":["leader","o","s"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.openGlobalSettings",
+                    "args":[]
+                }
+            ]
+        },
         //打开文件夹<leader>of
         {
             "before":["leader","o","f"],
@@ -114,13 +152,13 @@
                 }
             ]
         },
-        //返回到原来的地方
+        //返回到原来的地方<leader>gb
         {
             "before":["leader","g","b"],
             "after":[],
             "commands":[
                 {
-                    "command":"wrokbench.action.navigateBack",
+                    "command":"workbench.action.navigateBack",
                     "args":[]
                 }
             ]
@@ -150,4 +188,3 @@
         "shellscript": "bash"
     }
 }
-
