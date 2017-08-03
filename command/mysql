@@ -18,10 +18,14 @@ create database student;建一个student数据库
 drop database student;删除student数据库
 create table test.student(name char,math int);在数据库test中创建student表格
 drop table test.student;删除test数据库中的student表格
-show columns from 表名或者describe 表名 查看表的结构
+show columns from 表名或者describe(desc) 表名 查看表的结构
 insert into test.student(name,math)values('xiaoming',87);插入数据
 alter table test.student drop name;删除name这个字段.
 alter table test.student add name  char(20);增加name这个字段
+alter table t1 modify age int not null default 20;修改字段属性
+alter table t1 change age age1 int(10);改变字段名
+
+ alter table student add id int before name;在name字段后面添加id字段
 update test.student set name="xiaoming" where math=78;更新某个数据的值
 
 
@@ -39,7 +43,159 @@ longtext:42亿字节,存储l+2
 数据字段属性:
 1)unsigned:无符号整形
 2)zerofill:用0填充
-3)auto_increment
-4)null
-5)not null
-6)default
+3)auto_increment:自增,只有索引才能用auto_increment
+4)null:这一列值允许为null
+5)not null:这一列值不允许为null,如果为null则替换为default
+6)default:用来和not null配合使用,默认值
+7)primary key:主键
+
+查看表的索引:show index from student
+
+创建索引
+create table t2(
+    id int unsigned auto_increment,
+	name varchar(30),
+	primary key(id), //主键
+	index in_name(name) //普通索引
+)
+
+删除索引
+alter table t2 drop index in_name
+
+添加索引
+alter table t2 add index in_name
+
+
+查看mysql基本信息:\s
+查看某个时候干了某件事的信息:show create database test; 
+
+
+
+字符集:
+Server characterset:	utf8
+Db     characterset:	utf8
+Client characterset:	utf8
+Conn.  characterset:	utf8
+
+配置文件/etc/my.cnf里
+[mysqld]里character-set-server = utf8 是设置server 和Db字符集
+[mysql]里default-character-set = utf8是设置Client conn字符集
+[mysqld]collation-server = utf8_general_ci设置校验字符集
+
+
+desc select id,name from t1 where id=3;//检测sql语句
+//rows 代表找一个id=3的人检索的1行就找到了
+
+
+mysql帮助手段:? select
+
+
+in:
+delete from user where id in(1,2,5);
+between:
+delete from user where id between 3 and 5;
+or:
+delete from user whre id=3 or id=5;
+
+
+
+起别名:
+select name as n from student;
+可以省略as
+select name n from student;
+
+
+distinct:去掉重复的
+select distinct name from user; //去掉名字重复的人
+
+查询null
+select * from student where age is null;(不能写age=null)
+
+
+like:模糊匹配
+select * from student where name like '%x%';查找name含有x的内容 (%表示任意)
+
+regexp:正则表达式
+select * from student where name regexp 'l'
+
+
+order by:排序默认是由小到大(asc),加上desc就是降序了
+select * from user order by id(或者order by id desc)
+
+limit:限定输出个数
+select * from user order by id desc limit 0,3;//排序从0开始,0,3表示从第一个元素开始往后数两个,总共3行
+select * from user order by id limit 1,3;//从第二个开始,往后数两个,总共三行
+select * from user order by id limit 3;//前三行,相当于0,3
+
+
+concat():字符串连接函数
+select id,name,pass,concat('id','-',name)  idname from user;
+
+rand():随机
+select * from user order by rand() //随机排序
+
+count():统计
+select count(name) from student; 
+select count(name) total  from student;  //起别名
+查看一个表有多少天记录用count(*),这个是mysql优化过的
+
+sum():求和
+select sum(id) from user where  name='user1'
+
+avg():求平均数
+select avg(id) from user
+
+max():最大值
+select max(age) from student;
+
+min:最小值
+
+
+group by:分组聚合 
+select name,count(id) from student group by name(根据name分组)
+select name,count(id) total from mess group by name order by total 
+(注意:group by 必须写在 order by 之前)
+
+select name,count(id) total from mess group by name having total >= 5;
+(group by 必写在having 之前,having是对分组的结果进行筛选,此时不能用where)
+
+
+
+多表查询:
+1)普通多表查询
+2)子查询
+3)左链接
+
+
+
+需求:论堂用户和帖子统计
+create table user(
+id int unsigned auto_increment primary key,
+name varchar(30),
+age int);
+
+
+create table post(
+id int unsigned auto_increment primary key,
+uid int ,
+ttile varchar(200),
+content text);
+
+
+查询1:select user.name,post.title,post.content from user,post where 
+user.id = post.uid;
+name title  content 
+user4 444    4444
+user4 4222    422222222222
+user4 43333   4355555
+user2 211111 33333333
+user2 233333 2333344
+
+
+
+查询2:select user.name,count(post.id) from user,post where user.id=post.uid 
+group by post.uid
+
+name   count(post.id)
+user2      2
+user4      3
