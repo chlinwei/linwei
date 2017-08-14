@@ -1,0 +1,4 @@
+新建目录
+
+md a 新建a目录
+md a\b\c  和shell 中mkdir -p a/b/c一样

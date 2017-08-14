@@ -1,0 +1,6 @@
+用于复制文件,不能复制目录
+copy a.txt b.txt
+
+
+
+还可以用于创建文件 copy nul a.txt

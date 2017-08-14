@@ -1,3 +1,4 @@
+注意rd和rmdir是同一个命令
 删除某个空目录
 rmdir testDir
 
