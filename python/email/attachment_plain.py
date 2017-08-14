@@ -8,7 +8,7 @@ from email.MIMEBase import MIMEBase
 import smtplib
 filename = '1.PNG'
 from_addr = 'm15345710576@163.com'
-password = 'linwei359'
+password = 'xxxx'
 to_addr = '862350707@qq.com'
 smtp_server = 'smtp.163.com'
 msg = MIMEMultipart()

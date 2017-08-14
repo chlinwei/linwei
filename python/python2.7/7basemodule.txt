@@ -121,7 +121,7 @@ s.)
 
 
 
-f = open('a.txt')
+f = open('a.txt') //注意这里不能加"wb"
 data = pickle.load(f)
 print type(data)
 print data

@@ -1,0 +1,2 @@
+1.内容类型如果为plain,则很可能被当作垃圾邮件,发不出去,最好改为html
+msg = MIMEText('hello,world','plain','utf-8')

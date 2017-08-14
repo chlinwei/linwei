@@ -4,7 +4,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 import smtplib
 from_addr = 'm15345710576@163.com'
-password = 'linwei359'
+password = 'xxxx'
 to_addr = '862350707@qq.com'
 smtp_server = 'smtp.163.com'
 #msg = MIMEText('hello,world','plain','utf-8')

@@ -1,0 +1,8 @@
+删除某个空目录
+rmdir testDir
+
+删除某个非空目录
+rmdir /s/q testDir
+
+/s:是代表删除所有子目录跟其中的档案 
+/q:是不要它在删除档案或目录时,不再问我 Yes or No 的动作

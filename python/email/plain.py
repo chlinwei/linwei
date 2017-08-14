@@ -13,9 +13,10 @@ from email.header import Header
 from email.mime.text import MIMEText
 import smtplib
 from_addr = 'm15345710576@163.com'
-password = 'linwei359'
+password = 'xxxxxx'
 to_addr = '862350707@qq.com'
 smtp_server = 'smtp.163.com'
+#msg = MIMEText('你好啊,我是某某某,你好的阿凡达法师法师打速度','plain','utf-8')
 msg = MIMEText('hello,world','plain','utf-8')
 msg['From'] = from_addr
 msg['To'] = to_addr

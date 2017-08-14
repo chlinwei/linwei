@@ -7,9 +7,20 @@ if exist a.txt (echo 找到了a.txt) else (echo 没有找到a.txt)
 not:后面为真,则返回假
 if not exist a.txt (echo a) else {echo b} //如果a.txt存在,则输出b
 
+等于:==或者 equ
 str1 == str2:如果str1等于str2返回true
 if 1==1 (echo a) else (echo b) //输出a
+if 1 equ 1 (echo ok) //ok
 
-
+大于:gtr (greater than)
+大于或者等于:geq(greater than or  equal)
+小于:lss (lss than)
+小于等于:leq(less than or equal)
+不等于:neq (not equal)
 /i:忽略大小写
 if /i a==A (echo ok) //输出ok
+
+
+
+
+

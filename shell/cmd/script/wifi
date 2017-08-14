@@ -1,0 +1,13 @@
+wifi开启:
+@echo off
+netsh wlan set hostednetwork ssid=东东的wifi key=qwertasd
+if %errorlevel% neq 0 echo wifi启动失败,按任意键退出...&pause>nul&exit
+netsh wlan start hostednetwork
+if %errorlevel% neq 0 echo wifi启动失败,按任意键退出...&pause>nul&exit
+
+
+
+wifi关闭:
+@echo off
+netsh wlan stop hostednetwork
+

@@ -2,7 +2,15 @@
     //处理缩进问题
     "editor.detectIndentation": false,
     "editor.tabSize": 4,
-
+    "files.autoGuessEncoding": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/*.pyc":true,//过滤.__pyc__文件
+        "**/.DS_Store": true
+    },
     //图标
     "workbench.iconTheme": "vscode-icons",
     "extensions.ignoreRecommendations": true,
@@ -41,17 +49,6 @@
         {
             "before":["a"],
             "after":["A"]
-        },
-        //关闭当前文件<leader>q
-        {
-            "before":["leader","q"],
-            "after":[],
-            "commands":[
-                {
-                    "command":"workbench.action.closeActiveEditor",
-                    "args":[]
-                }
-            ]
         },
         //打开文件<leader>oo
         {
@@ -169,7 +166,33 @@
             "after":[],
             "commands":[
                 {
+                    "command":"workbench.action.files.save",
+                    "args":[]
+                },
+                {
                     "command":"code-runner.run",
+                    "args":[]
+                }
+            ]
+        },
+        //关闭其他编辑器<leader>co
+        {
+            "before":["leader","c","o"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.closeOtherEditors",
+                    "args":[]
+                }
+            ]
+        },
+        //关闭文件
+        {
+            "before":["leader","q"],
+            "after":[],
+            "commands":[
+                {
+                    "command":"workbench.action.closeActiveEditor",
                     "args":[]
                 }
             ]
@@ -188,3 +211,4 @@
         "shellscript": "bash"
     }
 }
+
