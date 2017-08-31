@@ -7,7 +7,7 @@ set smartcase
 set encoding=utf-8
 set fileformat=unix
 set showmode
-let mapleader=";"
+let mapleader=" "
 
 nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
@@ -15,7 +15,6 @@ nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel
 nnoremap - _
 set nowrap "设置不自动折行
 set title
-inoremap jk <esc>
 set wildmenu "自身命令模式下补全
 
 set laststatus=2
@@ -28,8 +27,8 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
-nnoremap <leader>w <C-c>:wq<enter>
-vnoremap <leader>w <C-c>:wq<enter>
+nnoremap <leader>w :w<enter>
+vnoremap <leader>w :w<enter>
 nnoremap <leader>q <esc>:q!<enter>
 nnoremap - _
 nnoremap a A
@@ -41,7 +40,7 @@ syntax on
 filetype indent on "根据文件类型进行自动缩进
 filetype on "开启文件类型侦测 filetype plugin on 
 
-"运行当前文件
+
 nnoremap <leader>r :action RunClass<cr>  
 nnoremap <leader>gg :action GotoDeclaration<CR> "查找定义
 nnoremap <leader>gb :action Back<CR> "返回
@@ -56,3 +55,4 @@ nnoremap <leader>ne :action NewElement<CR> "新建文件目录等
 nnoremap <leader>nn :action NewFile<CR> "新建文件
 nnoremap <leader>np :action NewDirectoryProject<CR> "新建工程
 nnoremap <leader>nd :action NewDir<CR>新建目录
+

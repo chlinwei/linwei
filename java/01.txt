@@ -1,0 +1,36 @@
+http://python.jobbole.com/87294/
+
+hello/
+├── hello
+│   ├── hello.py
+│   ├── hello.pyc
+│   ├── __init__.py
+│   └── __init__.pyc
+└── setup.py
+
+
+python setup.py bdist_egg 
+
+hello
+├── build
+│   ├── bdist.linux-x86_64
+│   └── lib
+│       └── hello
+│           ├── hello.py
+│           └── __init__.py
+├── dist
+│   └── hello-0.1-py2.7.egg
+├── hello
+│   ├── hello.py
+│   ├── hello.pyc
+│   ├── __init__.py
+│   └── __init__.pyc
+├── hello.egg-info
+│   ├── dependency_links.txt
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   └── top_level.txt
+└── setup.py
+
+
+
