@@ -1,0 +1,17 @@
+gzip和bzip2的操作是一样的(bzip2是为了代替gzip)
+zcat和 bzcat是一样的
+
+
+gzip 01.txt 02.txt  //分别压缩01.txt  和 02.txt,压缩后原文件不存在了
+result:01.txt.gz  02.txt.gz
+
+
+gzip -c 01.txt > 01.txt.gz //-c默认会将压缩后的内容打印到屏幕上加上重定向指定压缩后的文件名
+此时能保留原文件 
+
+zcat 01.txt.gz //查看压缩文件解压后的内容
+
+gzip -d  01.txt.gz 02.txt.gz //分别解压01.txt.gz 和 02.txt.gz,解压后原gz文件将消失
+
+gzip -dc 01.txt.gz > 01.txt //解压01.txt.gz文件并保留01.txt.gz文件
+
