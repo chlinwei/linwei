@@ -1,0 +1,333 @@
+1.添加数据库
+use  mldn:如果数据库存在则切换到此数据库,不存在则创建此数据库
+
+2.插入一条文档据到集合中
+db.dept.insert({"name":"lw","age":100}) 
+
+3.查看数据库中的所有集合
+show collections 
+
+4.查看某个集合的所有文档
+db.dept.find()
+#{ "_id" : ObjectId("5968b78398cb0290019f6e0a"), "name" : "lw", "age" : 100 }
+
+5.查看某个集合中的第一个文档
+db.dept.findOne()
+
+6.删除一个文档
+db.dept.remove({ "_id" : ObjectId("5968ba22873f134ce080bafb")})
+
+7.更新一个文档
+var deptData = {
+	"name":"lw",
+	"age":15
+};
+db.dept.update({ "_id" : ObjectId("5968ba90873f134ce080bafc")},deptData)
+
+
+8.删除一个集合
+db.集合名称.drop()
+
+9.删除当前所在的数据库
+db.dropDatabase()
+
+10.插入一个数组到集合中
+db.infos.insert([
+	{"url":"www.mldn.com"},
+	{"url":"www.baidu.com"}
+])
+
+11.插入10000条数据
+for (var x = 0;x<1000;x++){
+	db.infos.insert({"url":"mldn - "  + x});
+}
+
+
+12.查询操作
+db.集合名称.find({查询条件} [,{设置显示的字段}])
+查询url等于www.mldn.cn的文档
+db.infos.find({"url":"www.mldn.cn"})
+
+13.需要显示的字段设置1,不需要显示的字段设置0
+例如:db.nfos.find({"url":"www.mldn.cn"},{"_id":0});
+示
+14.操作符 
+关系查询操作符:$gt(大于),小于($lt),大于等于($gte),小于等于($lte)
+不能于($ne),等于(key:value,$eq)
+
+逻辑运算操作符:与($and)或($or)非($not,$nor)
+
+"and"的连接最容易:例如查询19~20岁人的信息
+db.students.find({"age":{"$gte":19,"$lte":20}}).pretty()
+
+例如age>19的
+db.students.find({"age":{"$gt":19}}).pretty();
+
+age不是19的信息 
+db.students.find({"age":{"$ne":19}}).pretty();
+
+score>90或者age>19的信息
+db.students.find({
+	"$or" :[
+		{"age":{"$gt":19}},
+		{"score":{"$gt":90}}
+	]
+})
+
+15.好看方式展现出来
+db.students.find().pretty()
+
+
+16.求模$mod
+找出age取模20,余数为1的信息
+db.students.find({"age":{"$mod":[20,1]}}).pretty();
+
+17.范围查询
+$in(在范围之中),$nin(不在范围之中)
+name是张三,'李四','王五'的信息
+db.students.find({
+	"name":{"$in":["张三","李四","王五"]}
+	}).pretty();
+})
+
+18.数组的操作
+$all,$size,$slice,$elemMatch
+
+查询数组中第二个内容为数学并且index=1的信息
+db.students.find({"course.1":"数学"});
+
+只参加两门课程的信息
+db.students.find({"course":{"$size":2}}).pretty()
+
+age为19,并且只显示两门参加课程
+db.students.find({"age":19,{"course":{"$slice":2}}}) //前两门课程
+db.students.find({"age":19,{"course":{"$slice":-2}}})//后两门课程
+db.students.find({"age":19,{"course":{"$slice":[1,2]}}})//从index=1开始返回index=1,index=2的课程
+
+
+19.嵌套
+查询age=19,parents中job为"局长"
+db.students.find({
+"$and":[
+{"age":{"$gte":19}},
+{"parent":{
+"$elemMatch":{"job":局长}
+}}
+]
+})
+
+20.判断某个字段是否存在;"$exits"
+查询含有parents这个字段的信息
+db.students.find({"parents":{"$exists":true}})
+db.students.find({"parents":{"$exists":false}})//不具有
+
+
+21.条件过滤
+db.students.find({"$where":"this.age>20"}).pretty();
+db.students.find("this.age>20").pretty()
+对于$where是可以简化的,对每一行进行使用的
+db.students.find(function(){
+	return this.age>20;
+}).pretty()
+
+
+db.students.find({"$and":[
+{"$where":"$this.age>19"},
+{"$where":"$this.age<21"}
+]})
+
+
+22.正则表达式
+基础语法:{key:正则标记}
+完整语法:{key:{"$regex":正则标记,"$options":选项}}
+options:
+"i" :忽略字母大小写
+"m" :多行查找
+"x" :空白字符除了被转义的或者字符类中意外的完全忽略
+"s": 匹配所有的字符(.),包括换行符
+
+如果直接使用(javascript)只能使用,i和m,而"x"和"s"必须使用"regex"
+
+
+查询以”谷"开头的name
+db.students.find({"name":/谷/}).pretty();
+
+查询name中带有a/A的
+db.students.find({"name":/a/i}).pretty(); 
+
+
+对数组数据匹配
+db.students.find({"course":/语/}).pretty();
+
+
+33.数据排序
+sort():升序(1),降序(-1)
+
+db.students.find().sort({"score":1}).pretty();
+
+自然排序
+db.students.find().sort({"$natural":-1}).pretty();
+
+
+35.数据分页显示
+显示第二条文档,跳过第一条文档
+db.col.find({},{"title":1,_id:0}).limit(1).skip(1)
+
+36.数据更新操作
+save()
+update()
+
+db.集合.update(更新条件,新的对象数据(更新操作符),upsert,multi)
+upsert:如果要更新的数据不存在,则增加一条新的内容(true,增加,false不增加,默认false)
+multi:是否只更新满足条件的第一行记录,如果为false(默认false)，只更新第一条,true全更新
+
+
+将age是19的人的成绩为100分--更新存在的数据
+db.students.update({"age":19},{"$set":{"score:100"}},false,false) //只更新一条
+db.students.update({"age":19},{"$set":{"score:100"}},false,true) //更新所有
+
+
+更新不存在的数据
+db.students.update({"age":30},{"$set":{"name:不存在"}},true,false)
+没有age=30的人,相当于对数据进行了创建,相当于插入了一天新的数据
+db.students.insert({{"age":30,"name":不存在}})
+
+db.students.save({"id":ObjectId("5594d0fleecd74894d1a0002"),"age":50});
+save更新需要用id
+
+
+37.修改器,10个
+1)$inc:增加某个数字字段的数据内容{"$inc":{成员:内容}}
+将age=19的学生成绩一律减少30分
+db.students.update({"age":19},{"$inc":{"score":-30}},false,true);
+
+2)$set:进行内容重新设置{"$set":{"成员":"新内容"}}
+将age=20的成绩修改为89
+db.students.update({"age":20},{"$set":{"score":89}})
+
+3)$unset:删除某个成员的内容 {"$unset":{"成员":1}}
+删除张三的age和score信息
+db.students.update("{name:"张三"}",{"$unset":["age":1,"score":1]})
+
+4)$push:将一个内容追加到指定的成员之中(基本上是数组) {"$push":{成员:value}}
+向张三添加课程
+db.students.update({"name":"张三"},{"$push":{"course":"美术"}})//
+如果有course数组,则追加,没有则创建一个course数组 
+
+5)$pushAll:和"$push"类似,可以一次追加多个内容到数组中
+{"$psuhAll":{成员:数组内容}}
+向王五里添加多个课程内容
+db.students.pushAll({"name":"王五"},{"$pushAll":{"course":["美术","音乐"]}})
+
+6)$addToSet:想数组里添加一个新的内容,这又这个内容不存在时才会增加
+{"$addToSet":{成员:内容}}
+adb.students.update({"name":"王五"},{"$addToSet":{"course":"舞蹈"}})
+此时会判断要增加的内容在数组里面是否存在,如果不存在则向数组中追加内容,和$push有点像
+如果不存在则不做任何操作
+7)$pop:删除数组内容的数据
+{"$pop":{成员:内容}} //内容为-1:删除第一个元素,1:删除最后一个元素
+
+8)$pull:从数组内删除一个指定内容的数据
+{"$pull":{成员:数据}},进行数据比对,如果是此数据则删除
+
+9)$pullAll:一次性删除多个内容
+{"$pullAll":{成员:[数据,数据,...]}}
+db.students.update({"name":"谷大神"},{"$pullAll":{"course":["语文","数学","英语"]}})
+
+10)$rename:为成员名称重命名
+{"$rename":{旧的name:新的name}}
+
+38.删除数据
+remove(parm1,parm2):
+parm1:删除条件
+parm2:如果设置为true或者是1表示只删除一个
+
+删除所有name带有谷的信息
+db.infos.remove({"name":/谷/})
+
+删除第一个name带有谷的信息
+db.infos.remove({"name":/谷/},true)
+
+db.infos.remove({}) //删除集合infos的所有文档
+
+39.游标
+var cursor = db.students.find();
+cursor.hasNext();如果下一行有数据返回true,没有返回false
+cursor.next();取出当前数据
+
+
+var cursor = db.students.find();
+while(curosr.hasNext()){
+	var doc = cursor.next();
+	printjson(doc);
+}
+
+40.索引
+mongodb里有两种索引:1)自动创建的,2)手动创建的
+
+查看默认状态下students集合的索引内容
+db.students.getIndexes()
+
+创建自己的索引:db.集合名称.ensureIndex({列:1})
+设置的1表示按照升序方式排列,如果降序设置-1
+db.students.ensureIndex({"age":-1}),此时索引name是自动命名的,"字段名称_索引的排序模式"
+db.students.find({"age":19}).explain()//对索引做一个分析
+
+db.students.find({"score":{"$gt":60}}).explain();
+score字段上并没有设置索引,所以score索引形式是全集索引
+
+score和age一起查询
+db.students.find({"$or":[
+{"age":{"$gt":19}},
+{"score":{"$gt":60}}]}).explain();
+索然age字段上存在索引,score没有索引,依然使用的是全集扫描,为了解决此问题,
+可以使用一个复合索引 
+
+db.students.ensureIndex({"age":-1,"score":-1},{name:"age_-1_score_index_-1"});
+
+db.students.find({"$or":[
+{"age:"{"$gt":19}},
+{"score":"{"$gt":60}}]}).explain();//此时还是使用的是集合索引,需要使用hint()函数强制
+使用索引
+db.students.find({"$or":[
+{"age":{"$gt":19}},
+{"score":{"$gt":60}}]}).hint({"age":-1,"score":-1}).explain()//发现此时使用的是IXSCAN
+将age:1,score:1将报错
+
+
+
+删除索引
+db.students.dropIndex({"age":-1,"score":-1});
+
+删除全部索引(_id索引不会被删除,即自定义索引)
+db.students.dropIndexes();
+
+41唯一索引:用在某一个字段上,使该字段的内容不重复
+db.students.ensureIndex({"name":1},{"unique":true});
+如果拆入两个name相同的文档,则后插入的文档将报错
+
+
+42.过期索引
+db.phones.ensureIndex({"time":1},{expireAfterSeconds:10}); 
+10秒后(也不一定是10秒,不是很准确),所保存的文档就会消失
+
+43.全文索引
+定义一个新的集合
+db.news.insert({"title":"mldn mldnjava 1xh gyh","content":"gyh"})
+db.news.insert({"title":"mldn mldnjava 1xh","content":"java"})
+db.news.insert({"title":"gyh","content":"dsfasf"})
+db.news.insert({"title":"gyh","content":"hahaha"})
+db.news.insert({"title":"sfq","content":"blue"})
+
+设置全文检索
+db.news.ensureIndex({"title":"text","content":"text"})
+
+如果要表示出全文检索,使用"$text"判断符
+要进行数据的查询使用"$search"运算符
+1)查询指定关键字:{"$search":"查询关键字"}
+2)查询多个关键字(或关系):{"$search":"查询关键字 查询关键字 ..."};
+3)查询多个关键字(与关系):{"$search":"\"查询关键字\" \"查询关键字\" ..."};
+4)查询多个关键字(排除某一个):{"$search": "查询关键字 查询关键字 ... - 排除关键字"}
+
+测试:
+db.news.find({"$text":{"$search":"java"}});

@@ -1,3 +1,4 @@
+http://www.cnblogs.com/yaozhongxiao/p/3811130.html
 git config --global user.name "chlinwei"
 git config --global user.email"862350707@qq.com"
 git add filename 把文件添加到暂存区(stage)
