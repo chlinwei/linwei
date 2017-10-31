@@ -1,0 +1,14 @@
+注意:
+1)在当前脚本的第一个命名空间前面不能有任何代码,能写注释
+$x = 100; //报错
+namespace T{
+
+}
+
+2)
+namespace T;
+class Person{} //此Person属于T空间
+namespace M;
+class A{}  //此A属于M空间
+
+3)

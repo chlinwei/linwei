@@ -1,0 +1,469 @@
+属性(类的成员变量):静态的,可以被方法操作的,在声明属性时,必须使用public/private/protected进行修饰
+注意:定义属性时的值不能是 函数,对象,资源类型
+
+方法(类的成员函数):动态的,可执行的,在声明方法时,不是必须使用public/private/protected的,不写缺省是public
+
+
+静态属性:和成员属性的防控属性一样,在类和子类的内部用self::$name访问(也可以用类名访问,但不推荐,类名有可能改变),在内的外部用类名::$name访问
+
+静态函数:和成员方法的访控属性一样,不绑定$this
+
+访问属性和方法:
+1)通过实例访问
+2)在类的内部通过$this关键字访问
+
+
+==:同一个类且被定义在相同的命名空间中,如果这两个对象的属性和值都相等,则相等
+注意:比较两个不同的对象的时候,可能相等也可能不相等
+
+===:当且仅当两个对象引用指向相同类(在某一特定的命名空间中),的同一个对象时才相等(是否具有相同的内存地址)
+
+
+析构函数(php4没有):
+当某个对象的所有引用都被删除(成为垃圾)或当对象被显示销毁时执行的函数
+特性:
+1)析构函数是由系统自动调用,虽然也可以被显示调用,但不建议使用
+2)声明:__destruct(),不能有任何参数
+
+
+优先级
+|| > = > or
+$x = false || true; //true
+$x = false or true; //true
+
+
+继承:php是单继承
+
+方法重载(overload):
+在一个类定义中,可以编写几个同名的方法,但是只要
+他们的参数个数不同,php不支持方法重载,但可以模拟,根据参数不同做
+出不同的动作
+
+方法重写(override):就是子类重写父类的方法
+注意:
+1)子类中的覆盖方法不能使用比父类中被覆盖方法更严格的访问权限
+2)子类可以拥有与父类不同的参数数量
+3)构造函数重写
+
+
+
+$this:指向当前实例化对象，不能调用静态属性,主要掉非静态的
+self:指向当前类,不能调用成员属性 ,主要来调用静态的
+parent:指向当前类的父类,不能调用父类的成员属性，主要来调用构造函数
+
+final关键字:
+1)final修饰的类不会被继承
+2)final修饰的方法不能被重写,不能修饰属性
+
+
+
+
+单例模式:
+class Db{
+    private static $db;//1)保存类的唯一实例对象
+    final private function __construct(){ //2)不能以new创建对象,3)禁止构造函数被重写
+        echo '有新的db累的对象创建了';
+    }
+    private function __clone(){ //禁���克隆
+        echo '有对象被克隆le';
+    }
+    public static function getDb(){
+        if(self::$db == null && !(self::$db instanceof self)) {
+            self::$db = new self();
+        }
+        return self::$db;
+    }
+}
+$db1 = Db::getDb();
+
+
+
+
+const和define都可以定义常量,区别:
+1)const一般用于类成员变量的定义,定义后不能修改
+define不可用于类成员变量的定义,一般用于定义全局常量
+2)const不能在条件语句中定义常量
+3)const采用的是一个普通的常量名称,define可以采用表达式作为名称
+$n = "TT".mt_rand(1,999);
+define($n,12);
+echo constant($n);//12,获取常量值
+4)const只能接受静态的标量(即常量),define可以采用任何表达式,
+define('TT1',1+2);
+5)const定义的常量名称区分大小写,define可通过第三个参数指定是否大小写
+6)const,define定义的常量名称都不能加$
+
+
+php延时绑定:运行时绑定
+class Person{
+    public static $name = 'lisi';
+    const AGE = 22;
+    public static function intro(){
+        echo "my name is".self::$name,'<br>';
+        echo "my age is".self::AGE,'<br>';
+    }
+    public static function intro1(){
+        echo "my name is".static::$name,'<br>';
+        echo "my age is".static::AGE,'<br>';
+    }
+}
+
+class Stu extends Person{
+    static $name = 'wangwu';
+    const Age = 20;
+}
+Stu::intro(); //非延时
+Stu::intro1(); //延时
+
+
+
+魔术方法
+__set($pro,$value) 和__get($pro)相同两种情况下将被调用
+1)访问(设置，获取)未定义的属性时
+2)访问(设置,获取)没有权限的属性时
+class Person{
+    public $name = 'lisi';
+    private $money = 1200;
+    function __get($pro)
+    {
+        echo '你想获取属性'.$pro.'值.<br>';
+    }
+    function __set($pro,$val){
+        echo '你想设置属性'.$pro.'且值为:'.$val.'<br>';
+    }
+}
+$lisi = new Person();
+echo $lisi->age; //没有定义的属性,注意不是方法
+echo $lisi->money;//没有访问权限
+$lisi->age = 22;
+$lisi->money = 1110;
+
+
+
+__isset()和__unset():
+__isset($property):当对一个未定义的属性或没有访问权限的属性调用isset()函数时调用此方法
+__unset($property):和__isset一样,只是调用unset()函数时，调用此方法
+
+__clone()在clone 时会调用该函数
+__toString():这个函数返回一个字符串,echo 这个对象的时候打印的结果将是__toString()函数返回的字符串
+
+__sleep(),__wakeup():
+__sleep()在对象被serialize之前被调用,返回值是包含这个对象需要
+序列化的属性数组,序列化指的是对原对象的属性进行增加和删除
+__wakeup()在对象被unserialize时被调用,常用于对象的初始化
+__invoke()当尝试以调用函数的方式调用一个对象时,__invoke方法会
+被自动调用
+
+
+__call($name,$args):和__issert差不多,__call是针对的是函数
+__callStatic($name,$args):和__call差不多,只是__callStatic是针对的静态函数,并且自己必须是静态的
+
+
+
+魔术常量:
+__LINE__:当前行号
+__FILE__:返回当前文件的完整路径和文件名
+__DIR__:返回当前文件所在的目录路径
+__FUNTION__:返回函数名称
+__CLASS__:返回类的名称
+__METHOD__:返回类的方法名
+__NAMESPACE__:当前命名空间的名称
+
+
+
+abstract修饰的类为抽象类,抽象类不能被实例化
+abstract修改是的方法为抽象方法,抽象方法只能声明不能定义具体功能实现
+抽象类:如果一个类里至少有一个方法是被声明为抽象的(因为方法是抽象的,怎么实例化呢？),那么这个类必须被
+声明为抽象类
+
+
+抽象类的继承:
+1)抽象类继承另一个抽象类时,不用重写其中的抽象方法
+2)抽象类中,不能重新定义抽象父类的抽象方法
+3)继承抽象类的非抽象类必须实现抽象类中的所有抽象方法
+
+
+自动加载:
+1)__autoload($className);
+2)set_include_path();
+3)spl_autoload_register():把函数注册至SPL的__autoload函数栈中,并移除
+系统默认的__autoload()函数
+spl_autoload_register()可以调用多次,它实际上创建了autoload函数的队列,
+按定义的顺序逐个执行,而__autoload()只可以定义一次
+
+
+接口:是一种特殊的抽象类,是抽象方法和静态常量(常量本来就是静态的)的集合,接口中抽象方法只能是
+public,默认也是public的,abstract和final修饰符也不能修饰接口中的抽象方法
+interface User{
+    const GROUP = 12;//静态常量
+    public function t(); //抽象方法
+}
+
+
+接口的实现:
+1)使用implements来实现一个接口
+2)一个类可以实现多个接口 ,用逗号隔开
+3)一个类可以继承并实现接口
+interface User{
+    function getName();
+    function setName();
+}
+
+class AdminUser{
+    public function pubNews(){
+        echo '管理员发布新闻功能';
+    }
+}
+class CommonUser extends AdminUser implements User{ //继承并实现多个接口
+    private $name;
+    function getName()
+    {
+        echo "my name is".$this->name,'<br>';
+    }
+    function setName($name='')
+    {
+        $this->name = $name;
+    }
+}
+
+
+
+接口的继承:
+1)一个接口可以继承自另外的接口,只有接口和接口之间使用继承关键字extends
+2)一个接口继承其他接口时候,直接继承父类接口的静态常量和抽象方法
+3)一个接口可以继承多个接口,接口不能继承非接口
+4)抽象类实现接口,可以不实现其中的抽象方法,而将抽象方法的实现交付给
+具体能被实例化的类去处理
+
+
+
+多态:同一个操作(函数)作用域不同类的实例,将产生不同的执行结果
+1)继承方式实现多态
+class Light{
+    function show(){
+        echo '随机颜色';
+    }
+}
+
+class BlueLight extends Light{
+    function show(){
+        echo '灯光颜色是蓝色的';
+    }
+}
+
+class RedLight extends Light{
+    function show(){
+        echo '灯光颜色是红色的';
+    }
+}
+class User
+{
+    public function openLight(Light $obj)
+    {
+        $obj->show();
+    }
+}
+$lisi = new User();
+$light1 = new BlueLight();
+$light2 = new RedLight();
+$lisi->openLight($light1);
+$lisi->openLight($light2);
+
+2)接口方式实现多态
+interface Light{
+}
+
+class BlueLight implements Light{
+    function show(){
+        echo '灯光颜色是蓝色的';
+    }
+}
+
+class RedLight implements Light{
+    function show(){
+        echo '灯光颜色是红色的';
+    }
+}
+class User
+{
+    public function openLight(Light $obj)
+    {
+        $obj->show();
+    }
+}
+$lisi = new User();
+$light1 = new BlueLight();
+$light2 = new RedLight();
+$lisi->openLight($light1);
+$lisi->openLight($light2);
+
+
+
+php实现多重继承
+1)组合方式实现多重继承(表象模拟):采用的是类内部实现对象引用技术
+2)接口方式实现多重继承(完全模拟)
+
+
+
+自定义错误处理
+1)set_error_handler()向系统声明错误处理函数
+2)使用trigger_error(),可以触发一个error例如:
+trigger_error("你输入的年龄必须大于0",E_USER_ERROR);触发自己的错误信息
+3)error_reporting(E_ALL & ~E_NOTICE);//显示所有错误消息,除了E_NOTICE级别的错误
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);//显示所有错误消息,除了E_NOTICE和E_WARNING级别的
+4)开发过程中，建议全部开启:E_ALL,线上过程全部关闭error_reporting(0);
+
+
+
+自定义错误:
+
+function error_handler($errno,$errmsg,$errfile,$errline){
+    switch ($errno){
+        case E_USER_ERROR:
+            echo '自定义错误务处理类型:['.$errno.'],错误消息:'.$errmsg,"<br>";
+            echo '产生的错误的文件:'.$errfile.',所在的行:'.$errline,"<br>";
+            break;
+        case E_WARNING:
+            echo '自定义的警告:['.$errno.'],错误消息:'.$errmsg,"<br>";
+            echo '产生的错误的文件:'.$errfile.',所在的行:'.$errline,"<br>";
+            break;
+        case E_NOTICE:
+            echo '自定义的NOTICE:['.$errno.'],错误消息:'.$errmsg,"<br>";
+            echo '产生的错误的文件:'.$errfile.',所在的行:'.$errline,"<br>";
+            break;
+        default:
+            echo '未来处理的类型:['.$errno.'],错误消息:'.$errmsg,"<br>";
+            echo '产生的错误的文件:'.$errfile.',所在的行:'.$errline,"<br>";
+            break;
+    }
+}
+echo $t 
+set_error_handler('error_handler');
+$age = -100;
+if($age<0){
+    trigger_error('输入的年龄必须大于0',E_USER_ERROR);
+}
+
+
+
+
+异常:
+Exception::getMessage - 获取异常消息内容
+Exception::getCode - 获取异常代码
+Exception::getFile - 获取发生异常的程序文件名称
+Exception::getLine - 获取发生异常的代码在文件中的行号
+
+
+
+设置顶层异常处理器
+set_exception_handler():可以处理所有未捕获异常的用户定义函数
+例子:
+class MyException extends Exception{
+}
+function my_exception_handler(Exception $e){
+    echo $e->getMessage(),'<br>';
+}
+set_exception_handler('my_exception_handler');
+class Test{
+    function __construct()
+    {
+        throw new MyException('这是一个�定义异常',3);
+    }
+}
+$t = new Test();
+
+
+反射机制
+ReflectionFunction();函数定义所在的文件以及起始位置
+ReflectionClass(); 常量/属性/方法/命名空间/类是否为final或者是abstract等
+ReflectionMethod(); 方法修饰类型/方法名/方法注释等
+/**
+ * 类 A
+ * Class A
+ */
+class A{
+    function t1(){
+        echo '我是一个不带参数的方法t1<br>';
+    }
+    function t2($str){
+        echo '我是一个带参数的方法t2,参数是:',$str,'<br>';
+    }
+    private function t3(){
+    }
+    public static function t4(){
+        echo '我是一个静态方法','<br>';
+    }
+}
+
+$a = new A();
+$ref_cls = new ReflectionClass('A');//参数可以是类名,也可以是类的实例
+//获取类中的所有方法
+$class_all_method = $ref_cls->getMethods();
+
+print_r($class_all_method);
+echo '<br>';
+
+//判断类中是否有某个方法
+var_dump($ref_cls->hasMethod('t1')); //true
+var_dump($ref_cls->hasMethod('tt')); //false
+
+
+//判断修饰符,public private protected static
+//方法1
+$ref_method = $ref_cls->getMethod('t1');
+var_dump($ref_method->isPublic());//判断是否为public
+
+
+//方法2
+$ref_method = new ReflectionMethod('A','t3');
+var_dump($ref_method->isPublic());//判断是否为public
+
+$ref_method = new ReflectionMethod('A','t4');
+var_dump($ref_method->isStatic());//判断是否为static
+
+
+//执行方法
+//静态方法调用 invoke(null,参数);
+//普通方法调用 invoke(实例对象,参数);
+//私有方法不能被invoke调用
+if($ref_method->isPublic()&& !$ref_method->isAbstract()){
+    if($ref_method->isStatic()){
+        $ref_method->invoke(null);
+    }else{
+        $ref_method->invoke($a);
+    }
+}
+
+
+
+反射机制与动态代理
+
+class A{
+    function showInfo(){
+        echo 'Class A showInfo'.'<br>';
+    }
+}
+class  B{
+    private $obj;
+    function __construct()
+    {
+        $this->obj = new A();
+    }
+    function __call($name,$args){
+        $ref_cls = new ReflectionClass($this->obj);
+        if($ref_cls->hasMethod($name)){
+            $ref_method = $ref_cls->getMethod($name);
+            if($ref_method->isPublic()&&!$ref_method->isAbstract()){
+                if($ref_method->isStatic()){
+                    $ref_method->invoke(null);
+                }else{
+                    $ref_method->invoke($this->obj);
+                }
+            }
+        }
+    }
+}
+
+
+$b = new B();
+$b->showINfo();
+

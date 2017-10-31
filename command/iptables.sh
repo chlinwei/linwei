@@ -23,20 +23,30 @@ iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -m state --state INVALID -j ACCEPT
 
 
-#icmp
-iptables -A INPUT -p icmp --icmp-type any -s 192.168.200.0/24 -j ACCEPT
-
 
 #sshd
-iptables -A INPUT -p tcp -s 192.168.200.0/24 --dport 22 -j ACCEPT
-iptables -A INPUT -p udp -s 192.168.200.0/24 --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp  --dport 6781 -j ACCEPT
+iptables -A INPUT -p udp  --dport 6781 -j ACCEPT
 
 
 #nginx
-iptables -A INPUT -p tcp -s 192.168.200.0/24 --dport 80 -j ACCEPT
-iptables -A INPUT -p udp -s 192.168.200.0/24 --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp  --dport 80 -j ACCEPT
+iptables -A INPUT -p udp  --dport 80 -j ACCEPT
 
+#mongodb
+iptables -A INPUT -p tcp  --dport 27017 -j ACCEPT
+iptables -A INPUT -p udp  --dport 27017 -j ACCEPT
+iptables -A INPUT -p tcp  --dport 28017 -j ACCEPT
+iptables -A INPUT -p udp  --dport 28017 -j ACCEPT
 
- #/usr/libexec/iptables/iptables.init save 
- service iptables save
- systemctl	restart iptables 
+#mysql
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+#nginx
+iptables -A INPUT -p tcp  --dport 8000 -j ACCEPT
+iptables -A INPUT -p udp  --dport 8000 -j ACCEPT
+#/usr/libexec/iptables/iptables.init save 
+service iptables save
+systemctl	restart iptables 
+
+service iptables save
+systemctl restart iptables 
