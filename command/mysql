@@ -11,22 +11,42 @@ mysql -ub -hwww.a.com -pb;可以直接登陆,用户名为b,密码为b,www.a.com�
 mysql -u shenge1 -h 192.168.200.157 --password=linwei  登陆或者-p手动输入密码
 mysql < 01.sql  =>在01.sql中写好mysql语句,可以这样执行.
 mysql -u shenge1 -h 192.168.200.157 --password=linwei < 01.sql
+delete删除的数据可以回滚,truncate删除的数据不能回滚
 delete from mysql.user where User='shenge1'; 删除某个用户
-show databases;显示所有数据库
+delete from student;//删除整个表里的数据,但是不会删除表,删除表用drop
+truncate table student;//删除整个表里的数据和上一行一样,truncate只能这么删除,不能根据条件删除
 show tables from mysql; 显示mysql数据库中的所有表名
+
+
+
+问题:delete from 和 truncate table的区别:
+1)delete from删除全部,也能按照条件删除,但是truncate table只能全部删除
+2)delete from 删除的数据可以回滚,truncate table 删除的数据不能回滚
+3)delete from 不可以把自增长约束重置,truncate table 可以把自增长的重置
+
+show databases;显示所有数据库
 create database student;建一个student数据库
+create database student default character set utf8;建一个student数据库,并设置默认编码
+show create database student;查看一个数据库的编码
+alter database day15 default character set gbk;修改数据库的编码
 drop database student;删除student数据库
+
+
 create table test.student(name char,math int);在数据库test中创建student表格
 drop table test.student;删除test数据库中的student表格
 show columns from 表名或者describe(desc) 表名 查看表的结构
 insert into test.student(name,math)values('xiaoming',87);插入数据
 alter table test.student drop name;删除name这个字段.
 alter table test.student add name  char(20);增加name这个字段
+#alter table test.student add column name  char(20);增加name这个字段//这里价格column也一样
 alter table t1 modify age int not null default 20;修改字段属性
+#alter table t1 modify age column int not null default 20;修改字段属性
 alter table t1 change age age1 int(10);改变字段名
 
  alter table student add id int before name;在name字段后面添加id字段
 update test.student set name="xiaoming" where math=78;更新某个数据的值
+update test.student set name="xiaoming" 将表中的所有name字段的值都改为"xiaoming"
+update student set name='王五',age=40 where id=1; //修改多个字段的值
 
 
 rename table student to student1;修改表名
@@ -100,9 +120,9 @@ delete from user whre id=3 or id=5;
 
 
 起别名:
-select name as n from student;
+select name as '姓名' from student;
 可以省略as
-select name n from student;
+select name '姓名' from student;
 
 
 distinct:去掉重复的
@@ -199,3 +219,10 @@ group by post.uid
 name   count(post.id)
 user2      2
 user4      3
+
+
+
+
+
+查询时添加常量列
+
