@@ -1,3 +1,8 @@
+myqsl -e "select * show varialbles"
+mysql  <01.sql //执行01.sql里的sql语句
+
+
+
 create user shenge1@'192.168.200.%' identified by 'linwei'//创建一个用户
 grant all privileges on *.* to shenge1@'192.168.200.%' identified by 'linwei'//给此用户赋权限.
 flush privileges;
@@ -30,6 +35,11 @@ create database student default character set utf8;建一个student数据库,并
 show create database student;查看一个数据库的编码
 alter database day15 default character set gbk;修改数据库的编码
 drop database student;删除student数据库
+alter table student default character set utf8;修改表的编码
+show create table student;查看表的编码
+alter table student change address address varchar(20) character set utf8;//修改字段的编码
+
+
 
 
 create table test.student(name char,math int);在数据库test中创建student表格
@@ -43,7 +53,7 @@ alter table t1 modify age int not null default 20;修改字段属性
 #alter table t1 modify age column int not null default 20;修改字段属性
 alter table t1 change age age1 int(10);改变字段名
 
- alter table student add id int before name;在name字段后面添加id字段
+alter table student add id int before name;在name字段后面添加id字段
 update test.student set name="xiaoming" where math=78;更新某个数据的值
 update test.student set name="xiaoming" 将表中的所有name字段的值都改为"xiaoming"
 update student set name='王五',age=40 where id=1; //修改多个字段的值
@@ -60,6 +70,15 @@ varchar(n):比char节约空间,存了多少,占多少,最多255字节
 text:最多65535字节,存储l+1
 longtext:42亿字节,存储l+2
 
+
+时间类型:
+date:日期
+datetime:日期 + 时间
+timestamp:时间戳,用于记录当前数据的插入或更新的时间,系统自己维护
+
+
+
+
 数据字段属性:
 1)unsigned:无符号整形
 2)zerofill:用0填充
@@ -68,6 +87,8 @@ longtext:42亿字节,存储l+2
 5)not null:这一列值不允许为null,如果为null则替换为default
 6)default:用来和not null配合使用,默认值
 7)primary key:主键
+
+
 
 查看表的索引:show index from student
 
@@ -84,10 +105,6 @@ alter table t2 drop index in_name
 
 添加索引
 alter table t2 add index in_name
-
-
-查看mysql基本信息:\s
-查看某个时候干了某件事的信息:show create database test; 
 
 
 
@@ -110,14 +127,6 @@ desc select id,name from t1 where id=3;//检测sql语句
 mysql帮助手段:? select
 
 
-in:
-delete from user where id in(1,2,5);
-between:
-delete from user where id between 3 and 5;
-or:
-delete from user whre id=3 or id=5;
-
-
 
 起别名:
 select name as '姓名' from student;
@@ -125,15 +134,7 @@ select name as '姓名' from student;
 select name '姓名' from student;
 
 
-distinct:去掉重复的
-select distinct name from user; //去掉名字重复的人
 
-查询null
-select * from student where age is null;(不能写age=null)
-
-
-like:模糊匹配
-select * from student where name like '%x%';查找name含有x的内容 (%表示任意)
 
 regexp:正则表达式
 select * from student where name regexp 'l'
@@ -141,11 +142,7 @@ select * from student where name regexp 'l'
 
 order by:排序默认是由小到大(asc),加上desc就是降序了
 select * from user order by id(或者order by id desc)
-
-limit:限定输出个数
-select * from user order by id desc limit 0,3;//排序从0开始,0,3表示从第一个元素开始往后数两个,总共3行
-select * from user order by id limit 1,3;//从第二个开始,往后数两个,总共三行
-select * from user order by id limit 3;//前三行,相当于0,3
+select * from student order by id asc,math desc;//先按照id进行排序,排序完后,如果id相同则按照math排序
 
 
 concat():字符串连接函数
@@ -154,7 +151,7 @@ select id,name,pass,concat('id','-',name)  idname from user;
 rand():随机
 select * from user order by rand() //随机排序
 
-count():统计
+count():统计,注意count是不统计数值为NULL的行的
 select count(name) from student; 
 select count(name) total  from student;  //起别名
 查看一个表有多少天记录用count(*),这个是mysql优化过的
@@ -170,6 +167,8 @@ select max(age) from student;
 
 min:最小值
 
+AVG:平均分
+select AVG(math) from student;
 
 group by:分组聚合 
 select name,count(id) from student group by name(根据name分组)
@@ -181,48 +180,512 @@ select name,count(id) total from mess group by name having total >= 5;
 
 
 
+
+
+
+
+查询时添加常量列:as 后面的是字段名,as前面的是值
+select id as '编号',name '姓名','java就业班' as '班级' from student;
++--------+--------+---------------+
+| 编号   | 姓名   | 班级          |
++--------+--------+---------------+
+|      1 | haah   | java就业班    |
+|      2 | hello  | java就业班    |
++--------+--------+---------------+
+
+
+
+查询时合并列:合并的字段为数值类
+MariaDB [test]> select * from student;
++------+-------+------+---------+-------+
+| id   | name  | age  | servlet | mysql |
++------+-------+------+---------+-------+
+|    1 | haah  |   20 |      75 |    80 |
+|    2 | hello |   30 |      86 |    90 |
++------+-------+------+---------+-------+
+
+select name '姓名',(servlet + mysql) as '总成绩' from student;
++--------+-----------+
+| 姓名   | 总成绩    |
++--------+-----------+
+| haah   |       155 |
+| hello  |       176 |
++--------+-----------+
+
+
+
+条件查询
+1)逻辑条件: and(与) or(或)
+select * from student id=1 and name='张三';
+select * from student id=1 or name='张三';
+2)比较条件: > < >= <= = <>(不等于) (between and)
+select * from student where math <=80;
+select * from student where math between 80 and 85; //等价于下面的
+select * from student where math>=80 and math<=85;
+
+3)判空条件: is null ,is not null,='',<>''
+select * from student where age is null;(不能写age=null)
+
+4)模糊条件: like
+模糊替代符号:
+%:替代任意个字符(相当于bash里的*)
+_:替代1个字符
+select * from student where name like '%x%';查找name含有x的内容 (%表示任意)
+select * from student where name like 'h__';
+
+5)distinct:去掉重复的
+select distinct name from user; //去掉名字重复的人
+select distinct(address) from student;//这里distinct是一个函数和上面等价
+
+6)分页查询limit n,m 有两个参数第一个参数是起始行数(从0开始),第二个参数是总共行数
+
+MariaDB [test]> select * from student;
++------+--------+------+---------+-------+--------------+--------+
+| id   | name   | age  | servlet | mysql | address      | gender |
++------+--------+------+---------+-------+--------------+--------+
+|    1 | haah   |   20 |      75 |    80 | 广州天河     | NULL   |
+|    2 | hello  |   30 |      86 |    90 | 广州越秀     |        |
+|    3 | 王五   |   30 |      85 |    65 | 广州天河     | 男     |
++------+--------+------+---------+-------+--------------+--------+
+
+MariaDB [test]> select * from student limit 1,2;
++------+--------+------+---------+-------+--------------+--------+
+| id   | name   | age  | servlet | mysql | address      | gender |
++------+--------+------+---------+-------+--------------+--------+
+|    2 | hello  |   30 |      86 |    90 | 广州越秀     |        |
+|    3 | 王五   |   30 |      85 |    65 | 广州天河     | 男     |
++------+--------+------+---------+-------+--------------+--------+
+
+7)分组group by
+1)对address进行分组,分完组后,address一样的行就会形成一个表,也就是说
+有几个不同的address就有一个表,count(*),就分别对这些表进行操作
+MariaDB [test]> select * from student;
++------+--------+------+---------+-------+--------------+--------+
+| id   | name   | age  | servlet | mysql | address      | gender |
++------+--------+------+---------+-------+--------------+--------+
+|    1 | haah   |   20 |      75 |    80 | 广州天河     | NULL   |
+|    2 | hello  |   30 |      86 |    90 | 广州越秀     |        |
+|    3 | 王五   |   30 |      85 |    65 | 广州天河     | 男     |
++------+--------+------+---------+-------+--------------+--------+
+
+
+MariaDB [test]> select address,count(*) from student group by address;
++--------------+----------+
+| address      | count(*) |
++--------------+----------+
+| 广州天河     |        2 |
+| 广州越秀     |        1 |
++--------------+----------+
+
+
+先筛选,再进行group by,此时where 放在group by 前面
+MariaDB [test]> select * from student;
++------+--------+------+---------+-------+--------------+--------+
+| id   | name   | age  | servlet | mysql | address      | gender |
++------+--------+------+---------+-------+--------------+--------+
+|    1 | haah   |   20 |      75 |    80 | 广州天河     | NULL   |
+|    2 | hello  |   30 |      86 |    90 | 广州越秀     |        |
+|    3 | 王五   |   30 |      85 |    65 | 广州天河     | 男     |
+|    4 | lisi   |   35 |      90 |    67 | 武汉         | 女     |
++------+--------+------+---------+-------+--------------+--------+
+
+MariaDB [test]> select gender as '性别',count(*)  as '人数' from student where gender is not null and gender <> '' group by gender;
++--------+--------+
+| 性别   | 人数   |
++--------+--------+
+| 女     |      1 |
+| 男     |      1 |
++--------+--------+
+
+
+
+先分组后筛选,此时要用having(而不是where)放在group by 后面
+MariaDB [test]> select * from student;
++------+--------+------+---------+-------+--------------+--------+
+| id   | name   | age  | servlet | mysql | address      | gender |
++------+--------+------+---------+-------+--------------+--------+
+|    1 | haah   |   20 |      75 |    80 | 广州天河     | NULL   |
+|    2 | hello  |   30 |      86 |    90 | 广州越秀     |        |
+|    3 | 王五   |   30 |      85 |    65 | 广州天河     | 男     |
+|    4 | lisi   |   35 |      90 |    67 | 武汉         | 女     |
++------+--------+------+---------+-------+--------------+--------+
+MariaDB [test]> select address,count(*) from student group by address having count(*) >=2;
++--------------+----------+
+| address      | count(*) |
++--------------+----------+
+| 广州天河     |        2 |
++--------------+----------+
+
+
+
+
+数据的约束:
+1)默认值约束:default 'xxx'
+create table test(name varchar(20),gender varchar(2) default '男')
+2)非空:not null
+create table test(name varchar(20) not null,gender varchar(2));
+
+MariaDB [test]> insert into test(name,gender)values(null,'那');
+ERROR 1048 (23000): Column 'name' cannot be null
+3)唯一:unique,注意不能约束NULL
+MariaDB [test]> insert into test(id,name)values(1,'张三');
+MariaDB [test]> insert into test(id,name)values(1,'李四');
+ERROR 1062 (23000): Duplicate entry '1' for key 'id'
+
+4)主键约束(唯一+非空):primary key
+1)一般会给每张表设置一个主键字段,用来标记唯一性
+2)不建议把业务含义字段作为主键,因为随着业务的变化,业务字段可能会出现重复
+3)建议给每张表独立添加一个id的字段,把这个id字段设置为主键
+create table test(id int primary key,name varchar(20));
+
+5)自增长约束
+注意:
+1)初始值为0,每次递增1
+2)重置自增长 truncate table test;
+MariaDB [test]> create table test(id int primary key auto_increment,name varchar(20));
+insert into test(name) values('张三');
+insert into test(name) values('李四');
+
+6)外键的约束:约束两张表的约束
+
+create table employee(
+		id int primary key auto_increment,
+		name varchar(20),
+		deptName varchar(20)
+)
+MariaDB [test]> insert into employee(name,deptName) values('张三','软件开发部');
+MariaDB [test]> insert into employee(name,deptName) values('李四','软件维护部');
+MariaDB [test]> insert into employee(name,deptName) values('王五','软件开发部');
+MariaDB [test]> insert into employee(name,deptName) values('陈6','软件开发部');
+
+问题:每次插入员工数据时,部门数据会出现冗余,如果数据出现了冗余,那么会浪费数据
+
+如果解决deptName问题？这时就应该建一张部门表,把部门名称放到部门表中
+
+员工表:
+create table employee(
+		id int primary key auto_increment,
+		name varchar(20),
+		deptId int
+);
+
+
+
+部门表:
+create table dept( 
+		id int primary key auto_increment,
+		name varchar(20)
+);
+
+
+insert into dept(name) values('开发部门');
+insert into dept(name) values('维护部门');
+
+insert into employee(name,deptId) values('张三',1);
+insert into employee(name,deptId) values('李四',2);
+insert into employee(name,deptId) values('王五',3);//不报错,理论上这个id值应该在dept表里的id中
+因为这个id和dept的id没有关联,所以要给deptId字段添加外键约束
+
+create table employee(
+		id int primary key auto_increment,
+		name varchar(20),
+		deptId int ,
+		CONSTRAINT employee_dept_fk FOREIGN KEY(deptId) REFERENCES dept(id)
+                   外键名称                    外键字段   参考      
+); 
+
+
+
+
+数据库设计的三大范式:
+第一范式:要求表的每个字段必须独立的不可分割的单元
+第二范式:在第一范式的基础上,要求表的除主键以外的字段都和主键有依赖关系的
+一张表应该只表达一个意思,不要出现和本表无关的字段
+第三范式:在第二范式的基础上,要求表的除主键以外的字段只能和主键有直接决定的依赖关系
+和本表有关系,但是出现数据冗余,即使用外键,这样导致查询速度边慢
+这就要权衡数据库存储空间和查询数据效率了
+
+
+
+
+
 多表查询:
-1)普通多表查询
-2)子查询
-3)左链接
+注意:
+连接条件:表数量-1
+
+MariaDB [test]> select * from employee;
++----+--------+--------+
+| id | name   | deptId |
++----+--------+--------+
+|  2 | 张三   |      4 |
+|  3 | 李四   |      4 |
+|  4 | 王五   |      5 |
+|  5 | 赵6    |      5 |
++----+--------+--------+
+4 rows in set (0.00 sec)
+
+MariaDB [test]> select * from dept;
++----+-----------------+
+| id | name            |
++----+-----------------+
+|  4 | 软件开发部      |
+|  5 | 软件维护部      |
++----+-----------------+
+2 rows in set (0.00 sec)
+
+1)内连接查询(使用最多)
+
+MariaDB [test]> select e.name,d.name from employee e ,dept d where e.deptId=d.id;
++--------+-----------------+
+| name   | name            |
++--------+-----------------+
+| 张三   | 软件开发部      |
+| 李四   | 软件开发部      |
+| 王五   | 软件维护部      |
+| 赵6    | 软件维护部      |
+
+另一种写法:
+MariaDB [test]> select e.name,d.name from employee e INNER JOIN dept d ON e.deptId=d.id;
++--------+-----------------+
+| name   | name            |
++--------+-----------------+
+| 张三   | 软件开发部      |
+| 李四   | 软件开发部      |
+| 王五   | 软件维护部      |
+| 赵6    | 软件维护部      |
++--------+-----------------+
+
+
+2)左外连接查询:左表的字段一定有,右边满足条件的话就显示
+左表:指的是from 后面的表
+右表:指的是left outer join 后面的表
+MariaDB [test]> select * from employee;
++----+--------+--------+
+| id | name   | deptId |
++----+--------+--------+
+|  2 | 张三   |      4 |
+|  3 | 李四   |      4 |
+|  4 | 王五   |      5 |
+|  5 | 赵6    |      5 |
++----+--------+--------+
+MariaDB [test]> select * from dept;
++----+-----------------+
+| id | name            |
++----+-----------------+
+|  4 | 软件开发部      |
+|  5 | 软件维护部      |
+|  6 | 秘书部门        |
++----+-----------------+
+MariaDB [test]> select d.name,e.name from dept d left outer join employee e on d.id=e.deptId;
++-----------------+--------+
+| name            | name   |
++-----------------+--------+
+| 软件开发部      | 张三   |
+| 软件开发部      | 李四   |
+| 软件维护部      | 王五   |
+| 软件维护部      | 赵6    |
+| 秘书部门        | NULL   |
++-----------------+--------+
 
 
 
-需求:论堂用户和帖子统计
-create table user(
-id int unsigned auto_increment primary key,
-name varchar(30),
-age int);
+3)右外连接查询:右表的数据全部显示,左表的数据满足条件就显示
+select d.name,e.name from employee e right outer join dept d on d.id=e.deptId;
++-----------------+--------+
+| name            | name   |
++-----------------+--------+
+| 软件开发部      | 张三   |
+| 软件开发部      | 李四   |
+| 软件维护部      | 王五   |
+| 软件维护部      | 赵6    |
+| 秘书部门        | NULL   |
++-----------------+--------+
+
+4)自连接查询
+MariaDB [test]> select id,name,bossId from employee;
++----+--------+--------+
+| id | name   | bossId |
++----+--------+--------+
+|  2 | 张三   |   NULL |
+|  3 | 李四   |      2 |
+|  4 | 王五   |      2 |
+|  5 | 赵6    |      3 |
++----+--------+--------+
+4 rows in set (0.00 sec)
 
 
-create table post(
-id int unsigned auto_increment primary key,
-uid int ,
-ttile varchar(200),
-content text);
+需求:查询员工姓名及其上司的姓名
+预期结果:
+	张三 null
+	李四 张三
+	王五 张三
+	赵6  李四
 
 
-查询1:select user.name,post.title,post.content from user,post where 
-user.id = post.uid;
-name title  content 
-user4 444    4444
-user4 4222    422222222222
-user4 43333   4355555
-user2 211111 33333333
-user2 233333 2333344
+MariaDB [test]> select e.name,b.name from employee e,employee b where e.bossId=b.id;
++--------+--------+
+| name   | name   |
++--------+--------+
+| 李四   | 张三   |
+| 王五   | 张三   |
+| 赵6    | 李四   |
++--------+--------+
+
+mysql数据库四种变量:
+1)全局变量,mysql内置变量,/etc/my.cnf定义的变量
+character_set_client:mysql接受客户端的数据编码
+character_set_results:mysql使用什么编码输出数据到客户端
+
+查看某个全局变量:select @@global.character_set_client  或者 show global variables like '%XXX%'
+修某个全局变量改:set @@global.character_set_client=gbk;
+或者set global character_set_client=gbk;
+ //此时立即生效,任何客户端都会生效,重启mysql后消失如果要永久保存,写入/etc/my.cnf中
+
+2)会话变量:为每个连接的客户端维护的一系列变量,客户端版连接时,全局变量的值会赋值给会话变量
+查看某个会话变量:select @@变量名 //show variables like '%XXX%'
+修某个会话变量改:set @@变量名=值
+
+3)用户变量:作用于当前连接
+查看某个用户变量:select @变量名
+修某个会用户量改:set @变量名=值
+
+3)局部变量:在存储过程中定义的变量,在存储过程结束局部变量就会失效
+查看某个局部变量:select 变量名
+修某个会局部量改:set 变量名=值
+定义某个局部变量:declare 变量名 数据类型;
+
+
+存储过程:也就是sql编程(带逻辑)
+1)存储过程保存到数据库服务器端,通过数据库客户端工具调用存储过程
+2)存储过程的效率很高,因为存储过程是在数据库的服务端执行的,比你每次
+发送1条sql到服务器端执行快多了
+3)存储过程的移植性非常差,你以前用了mysql现在转到了oracle就很可能执行不了
 
 
 
-查询2:select user.name,count(post.id) from user,post where user.id=post.uid 
-group by post.uid
+删除存储过程
+DROP PROCEDURE 存储过程名;
+mysql存储过程步骤:
+创建存储过程
+定义结束符号
+DELIMITER $
+CREATE PROCEDURE pro_test()
+BEGIN
+	SELECT * FROM employee;
+END $
 
-name   count(post.id)
-user2      2
-user4      3
+调用存储过程
+CALL pro_test();
+
+
+参数类型:
+IN:输入参数,可以携带数据到存储过程中
+OUT:输出参数,可以携带数据到存储过程外面
+INOUT:输出输出参数
+
+
+1)带有输入参数的存储过程
+参数类型 参数名称 数据类型
+DELIMITER $
+CREATE PROCEDURE pro_testByIn(IN eid INT) 
+BEGIN
+	SELECT * FROM employee WHERE id=eid;
+END $
+
+call pro_testByIn(2);
+
+2)带有输出参数的存储过程
+
+#set @n = 'hello,world'
+DELIMITER $
+CREATE PROCEDURE pro_testByOut(OUT n VARCHAR(20))
+BEGIN
+	SET n = 'hahaha';
+END $
+
+CALL pro_testByOut(@n);
+select @n;
+
+3)带有输入输出参数的存储过程
+
+DELIMITER $
+CREATE PROCEDURE pro_testByInOut(INOUT n VARCHAR(20))
+BEGIN
+	SELECT n;
+	SET n='500';
+END $
+
+SET @n='100';
+CALL pro_testByInOut(@n);
+SELECT @n
+
+
+4)if语句
+DELIMITER $
+CREATE PROCEDURE pro_testByIf(IN num INT,OUT str VARCHAR(20))
+BEGIN  
+	IF num=1 then 
+		set str='星期一';
+	elseif num=2 then 
+		set str='星期二'; 
+	elseif num=3 then 
+		set str='星期三';
+	end if; 
+end$
+
+call pro_testByIf(2,@str);
+select @str; 
+
+5)循环
+DELIMITER $
+CREATE PROCEDURE pro_testByWhile(IN num INT,OUT score INT)
+BEGIN  
+	declare i int default 1;  
+	declare result int default 0;
+	while i<=num do
+		set result = result + i;
+		set i = i + 1;
+	end while;
+	set score = result;
+end$
+
+call pro_testByWhile(100,@score);
+select @score;
+
+6)携带数据库的数据给输出参数(into)
+DELIMITER $
+CREATE PROCEDURE pro_testByData(IN eid INT,OUT sname varchar(20))
+BEGIN  
+   /*into 是将前面的name值赋值为sname*/
+	select name into sname from employee where id=eid;
+end$
+
+call pro_testByData(2,@sname);
+select @sname;
 
 
 
+触发器
+当往员工表插入/修改/删除一条数据的时候,同时往日志表里记录下来(自发做),这时就要使用触发器完成
+
+CREATE TRIGGER tri_empAdd AFTER INSERT on employee FOR EACH ROW
+  INSERT INTO emp_log(content) VALUE ('员工被插入了一条记录');
+
+CREATE TRIGGER tri_empUpd AFTER UPDATE on employee FOR EACH ROW
+  INSERT INTO emp_log(content) VALUE ('员工被修改了一条记录');
+
+CREATE TRIGGER tri_empDel AFTER DELETE on employee FOR EACH ROW
+  INSERT INTO emp_log(content) VALUE ('员工被删除了一条记录');
+drop TRIGGER tri_empAdd;
 
 
-查询时添加常量列
+
+权限管理
+select password('root');//其实是md5加密
+UPDATE mysql.user SET Password=Password('123456') WHERE User='lw'; //修改密码
+
+分配权限给不用的用户
+需求:分配查询test数据库的employee表的权限给eric用户,密码为"123456"
+
+GRANT 权限 ON 数据库.表 TO '账户'@'账户类型' IDENTIFIED BY '密码';
 
