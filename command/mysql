@@ -70,6 +70,8 @@ varchar(n):比char节约空间,存了多少,占多少,最多255字节
 text:最多65535字节,存储l+1
 longtext:42亿字节,存储l+2
 
+字节:
+blob(65kb) mediumblob(16MB) longblog(4G)
 
 时间类型:
 date:日期
@@ -688,4 +690,47 @@ UPDATE mysql.user SET Password=Password('123456') WHERE User='lw'; //修改密�
 需求:分配查询test数据库的employee表的权限给eric用户,密码为"123456"
 
 GRANT 权限 ON 数据库.表 TO '账户'@'账户类型' IDENTIFIED BY '密码';
+
+GRANT SELECT ON test.employee TO 'eric'@'localhost' IDENTIFIED BY '123456';
+GRANT DELETE ON test.employee TO 'eric'@'localhost' IDENTIFIED BY '123456';
+//连续两次,权限会追加
+
+
+
+
+事务的4大特性:
+原子性(Atomicity):事务是一个不可分割的工作单位,事务中的操作要么都发生,要么都不发生
+一致性(Consistency):事务必须使数据库从一个一致状态变换到另一个一致性状态
+隔离性(Isolation):事务的隔离性是多个用户并发访问数据库时,数据库为每一个用户开启的事务,不能被其他事务的操作数据所干扰，多个并发事务之间要相互隔离
+持久性(Durability):持久性是指一个事务一旦被提交,它对数据库中数据的改变就是永久性的,接下来的即使数据库发生故障也不应该对其有任何影响
+
+事务并发问题:
+脏读:一个事务读到另一个事务未提交的更新数据
+不可重复读:一个事务读到另一个事务已经提交的更新数据(和脏读相反)
+幻读:一个事务读到另一个事务已经提交的新插入的数据
+
+
+事务隔离级别:
+
+隔离级别        脏读    不可重复读    幻读
+Serializable       否       否           否
+Repeatable Read  否       否           是     默认级别
+Read Committed  否       是           是
+Read Uncommitted 是      是           是 
+
+
+
+select @@global.tx_isolation 查看事务的隔离性
+set global transaction isolation level read committed修改事务的隔离级别
+
+
+脏读例子:假设A向B转账100元,对应sql语句:
+A打开终端:update account money = money + 100 where name='b';
+此时A未提交
+B也打开终端:select money from account where name='b';发现自己多了100元
+但是事后,A rollback;问题就这样来了,钱又回到了A中,问题出在B读到了A没有提交的数据
+
+
+脏读和不可重复读的区别:脏读是读取前一个事务未提取的脏数据,不可
+重复读是重新读取了前一事务已提交的数据
 
