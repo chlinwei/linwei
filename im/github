@@ -76,3 +76,9 @@ git config --global color.ui true 显示颜色
 git rm -r --cached .
 git add .
 git  commit -m "update .gitignore"
+
+
+
+windows下Git中文显示乱码的解决方案:git config --global core.quotepath false
+linux下Git 敲命令 git status 不显示颜色的解决方案:
+git config color.ui true
