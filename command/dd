@@ -1,0 +1,6 @@
+bs 每次写入的字节数
+count 写入的次数
+
+bs * count 表示总共的大小
+
+dd if=/dev/zero of=a.txt bs=1M count=1f //此时生成一个2M的data类型的文件
