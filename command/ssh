@@ -1,0 +1,26 @@
+所有操作在client端就ok了.
+大致思路如下:在client端,生成公私钥匙对,将公钥上传到服务器上指定的用户(比如说A)的~/.ssh/下
+修改下文件,目录权限就ok了,这样你就能能从client向服务端免密钥了,
+如果你还想服务端,向客户端免密钥,反过来,就可以了.
+
+譬如,客户端client想免密钥到服务器端的用户A
+client ip:192.168.200.157
+
+A ip:192.168.200.156
+1.ssh-keygen //生成公钥和私钥,一路按回车键就好了
+生成的.ssh目录权限要求为:700
+.ssh/id_rsa(私钥)权限要求为:600,用户和用户组要求为客户端自己
+.ssh/id_rsa.pub(公钥)权限要求为:644,用户和用户组要求为客户端自己
+2.scp ~/.ssh/id_rsa.pub  A@192.168.200.156:~/authorized_keys(将公钥传到服务端,命名为authorized_keys)
+输入A的密码
+ssh A@192.168.200.156//远程连接到服务器的A用户. 
+输入A的密码
+mkdir .ssh && chmod 700 .ssh
+cp ~/authorized_keys .ssh/
+cd .ssh && chmod 644 authorized_keys
+
+此时,client连接到服务器用户A就无需输入密码了.
+
+
+如client2也想要免密钥连接到A
+则操作同上,只是将client2生成的公钥追加到authorized_keys文件里就好了
