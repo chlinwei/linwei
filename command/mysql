@@ -85,6 +85,11 @@ timestamp:时间戳,用于记录当前数据的插入或更新的时间,系统�
 1)unsigned:无符号整形
 2)zerofill:用0填充
 3)auto_increment:自增,只有索引才能用auto_increment
+设定自增的默认值
+方法1:create table tablename(xxx) auto_increment=100;
+alter 
+方法2:
+alter table tablename auto_increment = 1000;
 4)null:这一列值允许为null
 5)not null:这一列值不允许为null,如果为null则替换为default
 6)default:用来和not null配合使用,默认值
@@ -734,3 +739,16 @@ B也打开终端:select money from account where name='b';发现自己多了100�
 脏读和不可重复读的区别:脏读是读取前一个事务未提取的脏数据,不可
 重复读是重新读取了前一事务已提交的数据
 
+
+
+
+
+需求1
+CREATE TABLE student(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  age INT
+);
+要使age的值是和id一样
+方法:INSERT INTO student(age) VALUES ((SELECT auto_increment from
+information_schema.`TABLES` WHERE Table_Schema = 'test' and table_name =
+'student'));
