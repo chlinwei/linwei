@@ -36,7 +36,7 @@ show create database student;查看一个数据库的编码
 alter database day15 default character set gbk;修改数据库的编码
 drop database student;删除student数据库
 alter table student default character set utf8;修改表的编码
-show create table student;查看表的编码
+show create table student;查看表的创建语句
 alter table student change address address varchar(20) character set utf8;//修改字段的编码
 
 
@@ -752,3 +752,18 @@ CREATE TABLE student(
 方法:INSERT INTO student(age) VALUES ((SELECT auto_increment from
 information_schema.`TABLES` WHERE Table_Schema = 'test' and table_name =
 'student'));
+
+
+
+联合主键:其实就是多个字段当作主键
+CREATE TABLE test(
+  id1 INT,
+  id2 INT,
+  PRIMARY KEY (id1,id2)
+);
+
+INSERT INTO test VALUES (1,1);
+INSERT INTO test VALUES (1,2);
+INSERT INTO test VALUES (1,2); //报错,因为主键是具有唯一性+非空
+
+)
