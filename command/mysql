@@ -767,3 +767,7 @@ INSERT INTO test VALUES (1,2);
 INSERT INTO test VALUES (1,2); //报错,因为主键是具有唯一性+非空
 
 )
+
+
+
+select @@identity; //这个语句一定要跟在insert语句的后面,能获取到insert后的id

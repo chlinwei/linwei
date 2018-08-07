@@ -12,7 +12,7 @@ let mapleader=" "
 nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
 nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel 
-nnoremap - _
+nnoremap 0 _
 set nowrap "设置不自动折行
 set title
 set wildmenu "自身命令模式下补全
@@ -30,7 +30,6 @@ nnoremap <C-k> <C-w>k
 nnoremap <leader>w :w<enter>
 vnoremap <leader>w :w<enter>
 nnoremap <leader>q <esc>:q!<enter>
-nnoremap - _
 nnoremap a A
 nnoremap <leader><space> :noh<cr>
 nnoremap <A--> gT
@@ -40,7 +39,7 @@ syntax on
 filetype indent on "根据文件类型进行自动缩进
 filetype on "开启文件类型侦测 filetype plugin on 
 
-
+"运行当前文件
 nnoremap <leader>r :action RunClass<cr>  
 nnoremap <leader>gg :action GotoDeclaration<CR> "查找定义
 nnoremap <leader>gb :action Back<CR> "返回
@@ -54,5 +53,8 @@ nnoremap <leader>ga :action GotoAction<CR>
 nnoremap <leader>ne :action NewElement<CR> "新建文件目录等
 nnoremap <leader>nn :action NewFile<CR> "新建文件
 nnoremap <leader>np :action NewDirectoryProject<CR> "新建工程
-nnoremap <leader>nd :action NewDir<CR>新建目录
+nnoremap <leader>nd :action NewDir<CR> "新建目录
 
+":actionlist查看idea的快捷键
+nnoremap <leader>f :action Replace<CR> "在当前文件中替换
+nnoremap <leader>r :action RenameElement<CR> "修改元素,元素可以是函数名称,可以是类名称,变量等

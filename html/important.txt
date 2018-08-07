@@ -1,0 +1,19 @@
+1.如果子元素浮动,如何撑起父元素?
+<div>
+	<span style="float: left">>hello<span>
+	<span style="float: right">>world<span>
+</div>
+
+由于浮动元素是脱离标准流的,所以父元素是无法被撑起的,所以要清楚浮动元素
+方法1):
+	在父元素上加上overflow:hidden
+方法2):
+	在最后的浮动元素上加上一个清楚浮动元素的div
+	<span style="float: left">>hello<span>
+	<span style="float: right">>world<span>
+	<div class="clear" style="overflow:hidden;"></div>
+
+	
+
+
+
