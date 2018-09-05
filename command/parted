@@ -11,5 +11,11 @@ partprobe 重新挂载磁盘
 
 
 
+在parted /dev/sda下
+p 查看磁盘状态
 
 
+在shell里
+parted -l 查看所有磁盘状态
+
+rm 1  删除标记为1的分区

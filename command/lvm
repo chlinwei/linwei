@@ -15,6 +15,7 @@ vgextend vg1 /dev/sda8 立马增加
 
 LV阶段(lv逻辑卷)
 lvcreate -l  252 -n lv1 vg1 =>注意-n 接lv逻辑卷名,-l是PE个数
+lvcreate -L  20G -n lv1 vg1 =>注意-n 接lv逻辑卷名,-l是PE个数
 mkfs -t ext4 /dev/vg1/lv1  =>这里要写全名不能写lv1
 
 
