@@ -1,0 +1,9 @@
+centos6及其以下的命令
+chkconfig --list  列出所有服务
+chkconfig 
+
+
+开启不启动iptables
+chkconfig --level 345 iptables off
+
+
