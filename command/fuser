@@ -1,0 +1,14 @@
+moout /dev/sr0 /mnt
+
+卸载时umount /mnt 出现了:
+umount: /mnt: device is busy.
+        (In some cases useful info about processes that use
+         the device is found by lsof(8) or fuser(1))
+
+
+则可以用:
+fuser -km /mnt 用来杀死访问这个路径所有的进程
+
+
+然后再次umount就行了
+
