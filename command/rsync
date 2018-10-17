@@ -257,3 +257,24 @@ rsync -av backup@192.168.200.146::test test  --password-file=/root/rsync.passwd
 
 
 
+
+
+实时监控:yum install inotify-tools
+实时监控也就是不用daemon模式,即普通模式,通过inotifywait实时监控目录文件是否变化,服务器把数据实时同步到客户端
+因为是普通的模式,所以要输入密码,写脚本的话,输入密码不合适,所以要配置服务器到客户端的面密钥
+
+inotifywait -mrq  --format '%w %f %e' -e modify,create,move,delete,attrib ./test | while read events
+do
+rsync -a --delete ./test/ 192.168.200.149:~/test
+echo "`date +'%F %T'` 出现事件：$events" >> /tmp/rsync.log 2>&1
+done
+
+
+参数 --format:
+%w	表示发生事件的目录
+%f	表示发生事件的文件
+%e	表示发生的事件
+
+/tmp/rsync.log 的日志格式:
+2018-10-16 23:37:13 出现事件：./test/ 3 MODIFY
+
