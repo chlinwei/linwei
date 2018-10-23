@@ -1,0 +1,24 @@
+ftp 192.168.200.239
+
+命令:
+cd  xxx
+ls 
+mkdir xxx
+get 01.sh #将01.sh下载到本地
+put 01.sh  #将01.sh上传到ftp服务器 
+user lw linwei   #输入用户和密码进行登陆
+delete 01.sh #删除文件
+rmdir a  #删除目录
+
+
+
+
+
+
+
+在命令前面加上!表示在本地执行
+!pwd 本地当前路径
+!cd xxx #进入到本地xxx目录
+
+
+
