@@ -37,8 +37,18 @@ filetype indent on "根据文件类型进行自动缩进
 filetype on "开启文件类型侦测 filetype plugin on "根据侦测到的不同类型加载对应的插件
 
 
+"数字
+hi Number ctermfg=red
+"所有项的颜色
+hi Pemnu ctermfg=white ctermbg=black
+"选中项的颜色
+hi PmenuSel ctermfg=black ctermbg=lightblue
+
+"搜索高亮需要设置
+hi Search term=standout ctermfg=0 ctermbg=3
+
 "python单独设置的
 set smartindent " python必须设置不然缩进出现问题,下面那条会覆盖默认设置的
 
-"搜索高亮设置
-hi Search term=standout ctermfg=0 ctermbg=3
+"清除高亮
+nnoremap <leader><leader> :noh<cr>
