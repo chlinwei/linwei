@@ -1,68 +1,55 @@
-"let myleader=","
-let mapleader=";"
-nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
-nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
-nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel
-"注视一行
-"nnoremap <leader>cc viw<esc>a*/<esc>hbi/*<esc>lel  
-
-
-"基本配置-----------------------------------
 set nu
-set title
-inoremap jk <esc>
-set incsearch
+set t_Co=256 "在字符界面下要去掉
+set tw=79
+set noswapfile
+
+
+set hlsearch "表示高亮搜索单词
+set incsearch "表示边输入便匹配
+"大小写忽略
 set ignorecase
-set ruler
-set wildmenu
+set smartcase
+"shift+insert可以把系统剪切版的内容拷贝高vim
+"set expandtab "输入tab时自动转换为空格
+
+set encoding=utf-8
+set fileformat=unix
+let mapleader=" "
+
+
+set nowrap "设置不自动折行
+set title
+set wildmenu "自身命令模式下补全
+
 set laststatus=2
 set cursorline
-syntax enable
-syntax on
-filetype indent on
 set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set nocompatible
-nnoremap <C-b> o{}<left><cr><cr><up><tab>
-nnoremap <leader>w <C-c>:wq<enter>
-vnoremap <leader>w <C-c>:wq<enter>
-nnoremap <leader>q <esc>:q!<enter>
-vnoremap <leader>q <esc>:q!<enter>
-inoremap ( ()<LEFT>
-inoremap [ []<LEFT>
-inoremap { {}<LEFT>
-inoremap " ""<LEFT>
-inoremap ' ''<LEFT>
-nnoremap <leader>a  <Shitf>a;
-"开启文件类型侦测
-filetype on
-"根据侦测到的不同类型加载对应的插件
-filetype plugin on
-runtime bundle/pathogen/autoload/pathogen.vim
-execute pathogen#infect()
-"插件nerdcommenter 
-"<leader>cc  <leader>cu
-"插件vim-powerline的配置
-let g:Powerline_colorscheme='solarized256'
-"插件a.vim .h和.cpp文件之间的切换
-nmap <leader>ch :A<CR>
-nmap <leader>sch :AS<CR>
-"NEREtree插件 
-" 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
-nmap <Leader>fl :NERDTreeToggle<CR>
-6  " 设置NERDTree子窗口宽度
-let NERDTreeWinSize=32
-" 设置NERDTree子窗口位置
-let NERDTreeWinPos="right"
-" 显示隐藏文件
-let NERDTreeShowHidden=1
-" NERDTree 子窗口中不显示冗余帮助信息
-let NERDTreeMinimalUI=1
-" 删除文件时自动删除文件对应 buffer
-let NERDTreeAutoDeleteBuffer=1
-"开启树
-nnoremap <leader>t :NERDTree<cr>
-"关闭树 和关闭普通窗口一样,;q ;w
-"切换窗口
-"CRTL+w+w
+set shiftwidth=4 "自动缩进插入的空格数
+set softtabstop=4 "使用或自动插入或删除相应的空格数
+
+
+
+nnoremap - _
+nnoremap a A
+set nocompatible "打开不兼容模式
+syntax on
+filetype indent on "根据文件类型进行自动缩进
+filetype on "开启文件类型侦测 filetype plugin on "根据侦测到的不同类型加载对应的插件
+
+
+"数字
+hi Number ctermfg=red
+"所有项的颜色
+hi Pemnu ctermfg=white ctermbg=black
+"选中项的颜色
+hi PmenuSel ctermfg=black ctermbg=lightblue
+
+"搜索高亮需要设置
+hi Search term=standout ctermfg=0 ctermbg=3
+
+"python单独设置的
+set smartindent " python必须设置不然缩进出现问题,下面那条会覆盖默认设置的
+
+"清除高亮
+nnoremap <leader><leader> :noh<cr>
+
