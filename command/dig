@@ -93,3 +93,31 @@ ksu.edu.tw.             3600    IN      NS      dns2.ksu.edu.tw.
 ksu.edu.tw.             3600    IN      NS      dns1.ksu.edu.tw.
 ksu.edu.tw.             3600    IN      NS      dns3.twaren.net.
 ;; Received 147 bytes from 120.114.150.1#53(dns2.ksu.edu.tw) in 14 ms
+
+
+
+
+
+
+根据域名和指定的DNS服务器查询A记录
+dig -t A www.baidu.com @100.100.2.138
+; <<>> DiG 9.11.4-P2-RedHat-9.11.4-9.P2.el7 <<>> -t A www.baidu.com @100.100.2.138
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56711
+;; flags: qr rd ra; QUERY: 1, ANSWER: 3, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.baidu.com.			IN	A
+
+;; ANSWER SECTION:
+www.baidu.com.		643	IN	CNAME	www.a.shifen.com.
+www.a.shifen.com.	148	IN	A	220.181.38.150
+www.a.shifen.com.	148	IN	A	220.181.38.149
+
+;; Query time: 0 msec
+;; SERVER: 100.100.2.138#53(100.100.2.138)
+;; WHEN: Tue Nov 19 23:30:06 CST 2019
+;; MSG SIZE  rcvd: 90
+
+
