@@ -1,0 +1,9 @@
+1.将镜像导出为文件
+docker save -o centos7.5.1804.tar centos:centos7.5.1804  #导出后的文件为centos7.5.1804.tar
+
+2.运行centos系统,不会run后就立马退出的那种
+docker run -dit --name ct1 centos:centos7.5.1804
+
+
+3.进入容器内部
+docker exec -it ct1 /bin/bash
