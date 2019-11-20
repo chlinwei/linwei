@@ -10,3 +10,7 @@ curl -o a.txt  localhost
 -O:使用URL中默认的文件名保存倒本地
 
 
+
+
+#下载文件   -o 是将要下载的文件保存到-o指定的参数中
+curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
