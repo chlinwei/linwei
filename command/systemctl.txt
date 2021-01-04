@@ -1,0 +1,38 @@
+1.分析开机时间
+systemd-analyze blame(详细)
+systemd-analyze (初略)
+systemd-analyze critical-chain(瀑布式显示)
+
+
+2.列出所有的可用单元
+systemctl list-unit-files
+#运行中的单元
+systemctl list-units
+#失败的单元
+systemctl --failed
+#列出所有服务
+systemctl list-unit-files --type=service
+#列出所有套接字
+systemctl list-unit-files --type=socket
+
+3.检查是否开机启动
+systemctl is-enabled httpd
+
+4.检查是否在运行中
+systemctl is-active httpd
+systemctl status httpd
+
+
+5.显示服务的配置
+systemctl show httpd
+systemctl show -p CPUShares httpd
+
+
+6.按层次列出控制组
+systemd-cgls
+根据cpu,内存，输入和输出列出控制组
+systemd-cgtop
+
+7.获取运行级别
+systemctl get-default
+

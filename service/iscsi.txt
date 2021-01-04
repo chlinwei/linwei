@@ -1,0 +1,82 @@
+#服务器端配置(192.168.230.5)
+a.准备两种存储
+1)/dev/sdc
+2)dd if=/dev/zero of=/opt/disk.img bs=1M count=512
+
+b.软件
+服务程序:targetd
+管理软件:targetcli
+yum install -y targetd targetcli
+
+c.配置
+
+targetcli
+ls
+#创建块存储idisk1
+/backstores/block  create  idisk1  /dev/sdc
+
+#创建文件存储
+/backstores/fileio create idisk2 /opt/disk.img
+
+
+#创建服务端程序
+/iscsi/ create iqn.2021-01.com.lw:server
+
+#创建服务卷
+cd iscsi/iqn.2021-01.com.lw:server/tpg1/
+
+luns/ create /backstores/block/idisk1
+luns/ create /backstores/fileio/idisk2
+
+#创建客户端连接器(启动chap认证)
+ /iscsi/iqn.2021-01.com.lw:server/tpg1/acls create  iqn.2020-01.com.test1:client1
+ cd /iscsi/iqn.2021-01.com.lw:server/tpg1/acls/iqn.2020-01.com.test1:client1/
+#设置chap认证
+set auth userid=user
+set auth password=123456789aaaa
+
+#保存和推出
+saveconfig
+exit
+
+#启动服务
+systemctl start targetd
+systemctl enable targetd
+ps aux | grep 3260
+
+
+
+#客户端配置
+linux客户端配置(192.168.230.6)
+a.软件安装
+yum install -y iscsi-initiator-utils
+b.修改配置
+vi /etc/iscsi/initiatorname.iscsi
+InitiatorName=iqn.2020-01.com.test1:client1
+
+vi /etc/iscsi/iscsid.conf
+node.session.auth.authmethod = CHAP
+node.session.auth.username = user
+node.session.auth.password = 123456789aaaa
+
+c.启动iscsid服务
+systemctl start iscsid
+systemctl enable iscsid
+
+d.发现存储服务器
+iscsiadm -m discovery -t st -p 192.168.230.5
+
+e.登陆
+iscsiadm -m node -T iqn.2021-01.com.lw:server -p 192.168.230.5 --login
+登陆成功后会lsblk会显示服务端提供的盘
+
+注意:例如客户端把sdc分区，格式话后为sdc1,为了防止服务器挂了,客户机开机挂载不上导致卡死，挂载参数需要加载_netdev参数，
+vim /etc/fstab
+/dev/sdc1 /test1 ext4  defaults,_netdev 0 0
+
+
+
+
+windows10客户端配置
+....
+
