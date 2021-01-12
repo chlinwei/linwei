@@ -6,4 +6,49 @@ D(组播) 224.0.0.0 ~ 239.255.255.255
 E(保留) 240.0.0.0 ~ 255.255.255.255    
 
 
+添加/删除ip地址
+ip addr add 192.168.100.35/24 dev enp0s8
+ip addr del 192.168.100.35 dev enp0s
 
+添加/删除子网的ip地址
+ip addr add 192.168.100.45 dev enp0s8 label enp0s8:0
+ip addr del 192.168.100.45 dev enp0s8:0
+
+删除某个网卡的所有ip(危险)
+ip a flush dev enp0s8
+
+
+路由
+添加
+ip route add 172.0.0.0/24 via 172.0.0.4
+ip route add default 24 via 172.0.0.1(添加默认路由)
+
+删除
+ip ip route del 172.0.0.0/24 
+ip ip route del default (删除默认路由)	
+ip route flush eth1 (删除一下跳从eth1出去的路由条目)
+ip route flush 192.168.100.70 (删除下一跳为192.168.100.70的路由条目)
+ip route flush 192.168/16 (删除目标为192.168.0.0/16网段的路由)
+
+查看
+ip route show | column -t
+
+保存当前路由表到指定文件中
+ip route save > /tmp/route.txt
+
+恢复路由表
+ip route restore < /tmp/route.txt
+
+
+
+
+ip link:管理和查看网络接口
+
+禁用(也可以禁用子网卡，如果网卡没有保存则禁用后ip地址将会丢失)
+ip link set eth1 down
+
+启动网卡
+ip link set eth1 up
+
+修改mac地址
+ip link set eth1 address 00:0c:29:f3:33:77
