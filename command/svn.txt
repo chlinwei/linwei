@@ -1,0 +1,36 @@
+
+创服务端建仓库
+svnadmin  create test1
+svnadmin  create test2
+
+cd /var/repos
+[root@nihao repos]# ls
+authz  passwd  test1  test2
+
+
+修改/var/repos/test1/conf/svnserve.conf 
+修改/var/repos/test2/conf/svnserve.conf 
+svnserve.conf内容一样为:
+anon-access = none
+password-db = /var/repos/passwd
+authz-db = /var/repos/authz
+
+
+svn服务启动
+svnserve -d -r /var/repos/
+
+
+
+客户端拉取repo
+svn checkout svn://127.0.0.1/test1 --username user1 --password user1
+此时密码会直接存储到~/.subversion中
+
+#和checkout不通的是不包含.svn文件
+svn export svn://127.0.0.1/test1 --username user1 --password user1
+
+
+客户端相关命令
+svn add a.txt
+svn commit -m "a.txt" a.txt
+
+
