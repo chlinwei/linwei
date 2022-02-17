@@ -1,0 +1,11 @@
+-s, --shared 获得一个共享锁
+-x,--exclusive 获取一个独占锁
+-u --unlock 移除一个锁，通常不需要的，脚本执行完会自动丢弃
+-n --nonblock 如果没有立即获得锁，直接直接失败而不是等待
+-w --timeout: 如果没有立即获得锁，等待指定时间
+-o, --close 在运行命令前关闭文件的描述符，用于如果命令产生子进程时不受锁的管控
+-c, --command 在shell中运行一个单独的命令
+
+
+#当任务未执行完时，文件锁使用独占锁，如果锁定则失败不等待
+flock -xn /tmp/ab.sh.lock -c '/home/linwei/ab.sh
